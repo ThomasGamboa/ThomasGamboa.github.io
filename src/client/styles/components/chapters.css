@@ -1,0 +1,97 @@
+@layer components {
+  .chapter {
+    display: grid;
+    align-content: end;
+    gap: var(--space-m);
+    min-height: 100svh;
+    padding: var(--space-xl) var(--gutter);
+  }
+
+  .chapter--hero {
+    align-content: center;
+  }
+
+  .hero__title {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .hero__name {
+    font-size: var(--text-display);
+    letter-spacing: -0.02em;
+  }
+
+  .hero__role {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .hero__location,
+  .chapter__index {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    color: var(--color-text-muted);
+  }
+
+  .chapter__title {
+    font-size: var(--text-heading);
+  }
+
+  .chapter__lead {
+    font-size: var(--text-lead);
+  }
+
+  .chapter__action,
+  .page__action {
+    justify-self: start;
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .archive-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-l) var(--space-m);
+  }
+
+  .archive-item article {
+    display: grid;
+    gap: var(--space-xs);
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--color-line);
+  }
+
+  .archive-item__title {
+    font-size: var(--text-lead);
+  }
+
+  .archive-item__facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-2xs) var(--space-s);
+    font-size: var(--text-small);
+  }
+
+  .archive-item__facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .archive-item__facts dd {
+    margin: 0;
+  }
+
+  .archive-item__links {
+    font-size: var(--text-small);
+  }
+}

@@ -1,0 +1,54 @@
+@layer components {
+  .services,
+  .request {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .service-category {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .service-category__index {
+    font-family: var(--font-mono);
+    color: var(--color-signal);
+  }
+
+  .service-category__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-m);
+  }
+
+  .service {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--color-line);
+  }
+
+  .service__name {
+    font-size: var(--text-lead);
+  }
+
+  .service__description,
+  .service__note,
+  .services__disclaimer {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+  }
+
+  .service__price {
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    color: var(--color-signal);
+  }
+
+  .service__price-label {
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+}

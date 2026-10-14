@@ -1,0 +1,22 @@
+import { type Locale, localeDefinitions } from './locales.ts';
+
+export interface Price {
+  readonly amount: number;
+  readonly currency: 'USD';
+}
+
+export function formatPrice(price: Price, locale: Locale): string {
+  const amount = new Intl.NumberFormat(localeDefinitions[locale].intlLocale, {
+    maximumFractionDigits: 0,
+    useGrouping: 'always',
+  }).format(price.amount);
+  return `${amount} ${price.currency}`;
+}
+
+export function formatMonth(isoDate: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(localeDefinitions[locale].intlLocale, {
+    year: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  }).format(new Date(isoDate));
+}

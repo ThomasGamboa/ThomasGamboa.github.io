@@ -1,0 +1,70 @@
+import type { LocalizedText } from '../shared/i18n/locales.ts';
+
+export const ui = {
+  skipToContent: { es: 'Saltar al contenido', en: 'Skip to content' },
+  homeLinkLabel: { es: 'Thomas Gamboa, inicio', en: 'Thomas Gamboa, home' },
+  primaryNavigation: { es: 'Navegación principal', en: 'Main navigation' },
+  languageNavigation: { es: 'Idioma', en: 'Language' },
+  footerNavigation: { es: 'Enlaces externos', en: 'External links' },
+  navAbout: { es: 'Sobre mí', en: 'About' },
+  navProjects: { es: 'Proyectos', en: 'Projects' },
+  navContact: { es: 'Contacto', en: 'Contact' },
+  navHire: { es: 'Contratar', en: 'Hire' },
+  loadingLabel: { es: 'Cargando la experiencia', en: 'Loading the experience' },
+  loadingStatus: { es: 'Inicializando', en: 'Initializing' },
+  exploreWorld: { es: 'Explorar el mundo', en: 'Explore the world' },
+  projectTools: { es: 'Herramientas', en: 'Tools' },
+  projectFields: { es: 'Disciplinas', en: 'Disciplines' },
+  projectPublished: { es: 'Publicado', en: 'Published' },
+  projectCollaborators: { es: 'En colaboración con', en: 'In collaboration with' },
+  backToExperience: { es: 'Volver a la experiencia', en: 'Back to the experience' },
+  contactHeading: { es: 'Trabajemos juntos', en: 'Let’s work together' },
+  contactBody: {
+    es: 'Desarrollo videojuegos, experiencias web 3D y diseño de experiencias web. Cuéntame tu proyecto a través de la solicitud de contratación: con el alcance, los plazos y el presupuesto estimado podré preparar una propuesta a tu medida.',
+    en: 'I develop video games, 3D web experiences and web experience design. Tell me about your project through the hiring request: with the scope, timeline and estimated budget I can prepare a tailored proposal.',
+  },
+  contactAction: { es: 'Iniciar una solicitud', en: 'Start a request' },
+  hireEyebrow: { es: 'Contratación', en: 'Hiring' },
+  hireHeading: { es: 'Contratar a Thomas Gamboa', en: 'Hire Thomas Gamboa' },
+  hireIntro: {
+    es: 'Selecciona los servicios que necesitas, revisa sus precios iniciales y describe tu proyecto. Cada solicitud se evalúa de forma individual.',
+    en: 'Choose the services you need, review their starting prices and describe your project. Every request is evaluated individually.',
+  },
+  servicesHeading: { es: 'Servicios y precios iniciales', en: 'Services and starting prices' },
+  priceFrom: { es: 'Desde', en: 'From' },
+  priceOnRequest: { es: 'Precio según alcance', en: 'Priced by scope' },
+  pricingDisclaimer: {
+    es: 'Los importes indicados son precios iniciales. El presupuesto definitivo depende del alcance, los requisitos y la complejidad de cada proyecto.',
+    en: 'The amounts shown are starting prices. The final quote depends on the scope, requirements and complexity of each project.',
+  },
+  requestHeading: { es: 'Solicitud de proyecto', en: 'Project request' },
+  requestPending: {
+    es: 'El formulario de solicitud estará disponible muy pronto.',
+    en: 'The request form will be available very soon.',
+  },
+  footerRights: { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
+  notFoundEyebrow: { es: 'Error 404', en: 'Error 404' },
+  notFoundHeading: { es: 'Coordenadas fuera del mapa', en: 'Coordinates off the map' },
+  notFoundBody: {
+    es: 'La página que buscas no existe o cambió de ubicación.',
+    en: 'The page you are looking for does not exist or has moved.',
+  },
+  notFoundAction: { es: 'Volver al inicio', en: 'Back to the start' },
+  notFoundTitle: { es: 'Página no encontrada', en: 'Page not found' },
+  homeTitle: {
+    es: 'Thomas Gamboa — Diseñador interactivo y artista de nuevos medios',
+    en: 'Thomas Gamboa — Interactive Designer & New Media Artist',
+  },
+  homeDescription: {
+    es: 'Portafolio de Thomas Gamboa, diseñador interactivo y artista de nuevos medios en Quito, Ecuador. Videojuegos, experiencias web 3D y arte digital interactivo.',
+    en: 'Portfolio of Thomas Gamboa, interactive designer and new media artist based in Quito, Ecuador. Video games, 3D web experiences and interactive digital art.',
+  },
+  hireTitle: {
+    es: 'Contratar a Thomas Gamboa — Desarrollo web 3D y videojuegos',
+    en: 'Hire Thomas Gamboa — 3D Web Development & Games',
+  },
+  hireDescription: {
+    es: 'Solicita servicios de desarrollo de videojuegos, realidad virtual para Meta Quest, experiencias web 3D y diseño web. Consulta los precios iniciales.',
+    en: 'Request game development, Meta Quest virtual reality, 3D web experiences and web design services. Review the starting prices.',
+  },
+} as const satisfies Record<string, LocalizedText>;

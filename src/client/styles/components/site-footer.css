@@ -1,0 +1,37 @@
+@layer components {
+  .site-footer {
+    position: relative;
+    z-index: var(--layer-content);
+    display: grid;
+    gap: var(--space-m);
+    padding: var(--space-xl) var(--gutter) var(--space-l);
+    border-block-start: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .site-footer__identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-m);
+    max-width: none;
+  }
+
+  .site-footer__name {
+    color: var(--color-text);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m);
+  }
+
+  .site-footer__links a {
+    text-decoration: none;
+    color: var(--color-text);
+  }
+}

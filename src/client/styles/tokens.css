@@ -1,0 +1,46 @@
+@layer tokens {
+  :root {
+    --color-void: #000000;
+    --color-signal: #ff6565;
+    --color-text: #ebe8e3;
+    --color-text-muted: #8d8a85;
+    --color-line: rgb(235 232 227 / 0.14);
+
+    --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:
+      "Source Code Pro", ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --text-micro: 0.6875rem;
+    --text-small: 0.8125rem;
+    --text-body: clamp(1rem, 0.94rem + 0.25vw, 1.125rem);
+    --text-lead: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+    --text-heading: clamp(2rem, 1.4rem + 3vw, 4.5rem);
+    --text-display: clamp(2.75rem, 1.6rem + 6vw, 8.5rem);
+
+    --tracking-mono: 0.08em;
+    --leading-tight: 1.05;
+    --leading-body: 1.6;
+
+    --gutter: clamp(1rem, 0.6rem + 2vw, 3rem);
+    --space-2xs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-s: 1rem;
+    --space-m: 1.5rem;
+    --space-l: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    --space-xl: clamp(3rem, 2rem + 5vw, 7rem);
+    --measure: 62ch;
+
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out-quart: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+    --duration-fast: 180ms;
+    --duration-base: 420ms;
+    --duration-slow: 900ms;
+
+    --layer-canvas: 0;
+    --layer-content: 10;
+    --layer-header: 50;
+    --layer-loader: 100;
+    --layer-skip-link: 200;
+  }
+}
