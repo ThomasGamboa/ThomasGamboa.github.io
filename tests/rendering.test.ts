@@ -71,12 +71,12 @@ describe('rendered documents', () => {
 });
 
 describe('indexing files', () => {
-  it('lists every indexable route with its alternates', () => {
+  it('lists every indexable route with only sitemap and image elements', () => {
     const sitemap = renderSitemap(routes);
     const indexable = routes.filter((route) => route.indexable);
     expect(count(sitemap, /<url>/g)).toBe(indexable.length);
     expect(sitemap).not.toContain('404.html');
-    expect(sitemap).toContain('hreflang="x-default"');
+    expect(sitemap).not.toContain('xhtml');
   });
 
   it('lists page images for image search', () => {
