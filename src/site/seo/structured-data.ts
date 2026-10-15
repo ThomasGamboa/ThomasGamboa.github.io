@@ -40,6 +40,7 @@ function websiteNode(): Node {
     '@id': websiteId,
     url: absoluteUrl('/'),
     name: site.name,
+    alternateName: site.alternateNames,
     inLanguage: locales.map((locale) => localeDefinitions[locale].htmlLang),
     publisher: { '@id': personId },
   };

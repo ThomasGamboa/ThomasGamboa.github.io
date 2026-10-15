@@ -69,16 +69,16 @@ export const ui = {
   notFoundAction: { es: 'Volver al inicio', en: 'Back to home' },
   notFoundTitle: { es: 'Página no encontrada', en: 'Page not found' },
   homeTitle: {
-    es: 'Thomas Gamboa — Diseñador interactivo y artista de nuevos medios',
-    en: 'Thomas Gamboa — Interactive Designer & New Media Artist',
+    es: 'Thomas Gamboa — Diseñador interactivo',
+    en: 'Thomas Gamboa — Interactive Designer',
   },
   homeDescription: {
     es: 'Thomas Gamboa, diseñador interactivo en Quito, Ecuador. Videojuegos, instalaciones interactivas, realidad virtual, sitios web 3D y assets para Unity.',
     en: 'Thomas Gamboa, interactive designer in Quito, Ecuador. Video games, interactive installations, virtual reality, 3D websites and Unity assets.',
   },
   hireTitle: {
-    es: 'Contratar a Thomas Gamboa — Videojuegos, instalaciones y web 3D',
-    en: 'Hire Thomas Gamboa — Games, Installations & 3D Web',
+    es: 'Empecemos un proyecto juntos — Thomas Gamboa',
+    en: 'Let’s start a project together — Thomas Gamboa',
   },
   hireDescription: {
     es: 'Contrata a Thomas Gamboa para videojuegos, instalaciones interactivas, realidad virtual para Meta Quest y sitios web 3D. Precios de partida y formulario de solicitud.',

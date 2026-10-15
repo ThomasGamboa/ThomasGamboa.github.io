@@ -4,6 +4,7 @@ import type { ExternalLink } from './types.ts';
 export const site = {
   origin: 'https://thomasgamboa.github.io',
   name: 'Thomas Gamboa',
+  alternateNames: ['Thomas Gamboa Portfolio', 'Portafolio de Thomas Gamboa'],
   themeColor: '#000000',
   indexable: true,
   googleSiteVerification: 'z_LKLq8c4JsYf8vJ2gZhzg7hPCsIRAoTx444xusy5E4' as string | null,

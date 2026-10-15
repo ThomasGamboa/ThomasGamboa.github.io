@@ -55,8 +55,8 @@ export const worlds: readonly World[] = [
     page: {
       seo: {
         title: {
-          es: 'The Nightbounds — Roguelike de acción isométrico inspirado en Ecuador',
-          en: 'The Nightbounds — Isometric action roguelike inspired by Ecuador',
+          es: 'The Nightbounds — Roguelike de acción isométrico',
+          en: 'The Nightbounds — Isometric action roguelike',
         },
         description: {
           es: 'The Nightbounds es un roguelike de acción isométrico en mundo abierto, inspirado en la cultura ecuatoriana. La beta de combate está disponible en itch.io para Windows y Android.',
