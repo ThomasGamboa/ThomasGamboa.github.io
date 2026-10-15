@@ -48,6 +48,17 @@ export class ScrollTimeline {
     }
   }
 
+  hold(time: number): void {
+    this.#target = time;
+    this.#time = time;
+    this.#placed = true;
+  }
+
+  release(): void {
+    this.sync();
+    this.#time = this.#target;
+  }
+
   dispose(): void {
     this.#observer.disconnect();
     window.removeEventListener('scroll', this.sync);

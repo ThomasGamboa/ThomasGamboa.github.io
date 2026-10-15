@@ -155,7 +155,8 @@ export class Entity implements WorldModule {
     this.#scale = mix(from.scale, to.scale, t);
     this.#roughness = mix(from.roughness, to.roughness, t);
     this.#material.metalness = mix(from.metalness, to.metalness, t);
-    this.#material.iridescence = Math.max(mix(from.iridescence, to.iridescence, t), 0.0001);
+    const iridescence = mix(from.iridescence, to.iridescence, t);
+    this.#material.iridescence = iridescence > 0.001 ? iridescence : 0;
     this.#material.envMapIntensity = mix(from.reflection, to.reflection, t);
     this.#spin = mix(from.spin, to.spin, t);
     this.#applyGlass();
@@ -214,7 +215,7 @@ export class Entity implements WorldModule {
 
   #applyGlass(): void {
     if (this.#transmission) {
-      this.#material.transmission = Math.max(this.#glass, 0.0001);
+      this.#material.transmission = this.#glass > 0.001 ? this.#glass : 0;
       this.#material.opacity = 1;
     } else {
       this.#material.transmission = 0;

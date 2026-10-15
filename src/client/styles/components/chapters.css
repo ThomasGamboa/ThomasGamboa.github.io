@@ -147,6 +147,7 @@
   @media (hover: hover) {
     .archive-item__cover img {
       filter: grayscale(1) contrast(1.08) brightness(0.86);
+      will-change: filter;
     }
 
     .archive-item:is(:hover, :focus-within) .archive-item__cover img {

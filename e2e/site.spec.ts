@@ -24,7 +24,7 @@ function trackErrors(page: Page): string[] {
 
 for (const path of pages) {
   test(`${path} renders without errors or accessibility violations`, async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(180_000);
     const errors = trackErrors(page);
     const response = await page.goto(`${path}?quality=low`);
     expect(response?.ok() || path === '/404.html').toBe(true);
@@ -37,6 +37,7 @@ for (const path of pages) {
 }
 
 test('the language switch keeps the current chapter', async ({ page }) => {
+  test.setTimeout(180_000);
   await page.goto('/?quality=low#voxelnest');
   const english = page.locator('[data-language-link="en"]');
   await expect(english).toHaveAttribute('href', '/en/#voxelnest');
@@ -46,7 +47,7 @@ test('the language switch keeps the current chapter', async ({ page }) => {
 });
 
 test('a project card opens an accessible sheet that closes with Escape', async ({ page }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   const errors = trackErrors(page);
   await page.goto('/?quality=low');
   const trigger = page.locator('.archive-item__open').first();
@@ -65,7 +66,7 @@ test('a project card opens an accessible sheet that closes with Escape', async (
 
 test('dragging the 3D view does not select the chapter text', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Mouse drag only');
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   await page.goto('/?quality=low#sobre-mi');
   await expect(page.locator('[data-loader]')).toHaveAttribute('data-state', 'complete', {
     timeout: 90_000,
@@ -122,12 +123,20 @@ test('the hiring form validates steps and summarizes prices', async ({ page }) =
   await expect(summary).toContainText('6.800 USD');
   await expect(summary).toContainText('Diseño de experiencia web');
   await expect(page.locator('[data-hire-submit]')).toBeEnabled();
-  await expect(page.locator('[data-hire-submit]')).toHaveText('Enviar por correo');
+  await expect(page.locator('[data-hire-submit]')).toHaveText('Preparar el correo');
   await page.locator('[data-hire-submit]').click();
   const fallback = page.locator('[data-hire-fallback]');
   await expect(fallback).toBeVisible();
   await expect(fallback.locator('textarea')).toHaveValue(/Experiencia web 3D/);
   await expect(page.locator('[data-hire-status]')).toContainText('@');
+  await expect(fallback.locator('[data-hire-compose="gmail"]')).toHaveAttribute(
+    'href',
+    /^https:\/\/mail\.google\.com\/mail\/\?view=cm/,
+  );
+  await expect(fallback.locator('[data-hire-compose="outlook"]')).toHaveAttribute(
+    'href',
+    /^https:\/\/outlook\.live\.com\//,
+  );
 });
 
 test.describe('without JavaScript', () => {

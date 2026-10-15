@@ -63,12 +63,16 @@ export class Experience {
   #adaptive: boolean;
 
   static async create(options: ExperienceOptions): Promise<Experience> {
-    const stages = new WeightedProgress({ assets: 4, build: 1, compile: 3 }, options.onProgress);
+    const stages = new WeightedProgress(
+      { assets: 4, build: 1, compile: 3, warm: 3 },
+      options.onProgress,
+    );
     const assets = await loadAssets(experienceAssets, (progress) => stages.set('assets', progress));
     const experience = new Experience(options.canvas, assets, options.tierOverride);
     stages.set('build', 1);
     await experience.#compile();
     stages.set('compile', 1);
+    await experience.#warmUp((progress) => stages.set('warm', progress));
     return experience;
   }
 
@@ -176,6 +180,24 @@ export class Experience {
     for (const module of hidden) {
       module.object.visible = false;
     }
+  }
+
+  async #warmUp(report: (progress: number) => void): Promise<void> {
+    const stops = Array.from(
+      { length: this.timeline.chapterIds.length * 2 },
+      (_, index) => index / 2,
+    );
+    for (const [index, time] of stops.entries()) {
+      this.timeline.hold(time);
+      this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
+      this.rig.snap();
+      this.#onFrame({ delta: 1 / 60, elapsed: index / 60, frame: index });
+      report((index + 1) / stops.length);
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+    this.timeline.release();
+    this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
+    this.rig.snap();
   }
 
   #applyQuality(quality: QualitySettings): void {

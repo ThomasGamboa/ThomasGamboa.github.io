@@ -24,19 +24,25 @@ function whenStageReady(callback: () => void): void {
   observer.observe(loader, { attributes: true, attributeFilter: ['data-state'] });
 }
 
+const settleMilliseconds = 450;
+
 function lightUpChapters(tracker: ChapterTracker): void {
   let activeId: string | null = null;
+  let timer = 0;
   tracker.subscribe(({ id }) => {
     if (!id || id === activeId) {
       return;
     }
     activeId = id;
-    const title = document.querySelector<HTMLElement>(
-      `[data-chapter="${id}"] :is(.chapter__title, .hero__title)`,
-    );
-    if (title) {
-      refract(title, { strength: 12, duration: 1300 });
-    }
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      const title = document.querySelector<HTMLElement>(
+        `[data-chapter="${id}"] :is(.chapter__title, .hero__title)`,
+      );
+      if (title && activeId === id) {
+        refract(title, { strength: 12, duration: 1300 });
+      }
+    }, settleMilliseconds);
   });
 }
 

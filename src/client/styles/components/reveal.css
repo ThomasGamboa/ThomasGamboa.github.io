@@ -1,15 +1,30 @@
 @layer components {
-  .reveal-word {
-    display: inline-block;
-    transition:
-      opacity 640ms var(--ease-out-quart) var(--reveal-delay, 0ms),
-      translate 1100ms var(--ease-out-expo) var(--reveal-delay, 0ms),
-      filter 640ms var(--ease-out-quart) var(--reveal-delay, 0ms);
+  [data-reveal-state="pending"] {
+    opacity: 0;
   }
 
-  [data-reveal-state="pending"] .reveal-word {
+  :is(h1, h2, h3, h4):is([data-reveal-state="split"], [data-reveal-state="visible"]) {
+    will-change: filter;
+  }
+
+  :is(h1, h2, h3, h4)[data-reveal-state="split"] {
+    filter: blur(6px);
+  }
+
+  :is(h1, h2, h3, h4)[data-reveal-state="visible"] {
+    filter: blur(0);
+    transition: filter 900ms var(--ease-out-quart);
+  }
+
+  .reveal-line {
+    display: block;
+    transition:
+      opacity 640ms var(--ease-out-quart) var(--reveal-delay, 0ms),
+      translate 1100ms var(--ease-out-expo) var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal-state="split"] .reveal-line {
     opacity: 0;
     translate: 0 0.55em;
-    filter: blur(6px);
   }
 }

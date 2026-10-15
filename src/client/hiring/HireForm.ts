@@ -22,6 +22,7 @@ import { decodeMail } from '../ui/mail-code.ts';
 import { Verification } from './turnstile.ts';
 
 const draftKey = 'hire-request-draft';
+const composeLimit = 6000;
 const listFields = new Set<HireFieldId>(['services', 'addons', 'platforms']);
 
 function element<T extends HTMLElement>(scope: ParentNode, selector: string): T | null {
@@ -275,27 +276,32 @@ export class HireForm {
       receivedAt: new Date(),
       origin: window.location.origin,
     });
-    const query = new URLSearchParams({ subject: email.subject, body: email.text })
-      .toString()
-      .replaceAll('+', '%20');
-    const href = `mailto:${address}?${query}`;
-    this.#showFallback(href, `${email.subject}\n\n${email.text}`);
-    window.location.href = href;
+    this.#showFallback(address, email.subject, email.text);
     this.#clearDraft();
     this.#form.dataset.state = 'sent';
     this.#setStatus(hireCopy.mailOpened[this.#locale].replace('{email}', address), 'success');
   }
 
-  #showFallback(href: string, content: string): void {
+  #showFallback(address: string, subject: string, body: string): void {
     const fallback = element(this.#form, '[data-hire-fallback]');
     const text = fallback?.querySelector<HTMLTextAreaElement>('[data-hire-fallback-text]');
     const copy = fallback?.querySelector<HTMLButtonElement>('[data-hire-copy]');
-    const mailto = fallback?.querySelector<HTMLAnchorElement>('[data-hire-mailto]');
-    if (!fallback || !text || !copy || !mailto) {
+    if (!fallback || !text || !copy) {
       return;
     }
+    const content = body;
+    const linkBody = body.length > composeLimit ? `${body.slice(0, composeLimit)}…` : body;
+    const encode = (params: Record<string, string>) =>
+      new URLSearchParams(params).toString().replaceAll('+', '%20');
+    const targets: Record<string, string> = {
+      gmail: `https://mail.google.com/mail/?${encode({ view: 'cm', fs: '1', to: address, su: subject, body: linkBody })}`,
+      outlook: `https://outlook.live.com/mail/0/deeplink/compose?${encode({ to: address, subject, body: linkBody })}`,
+      mailto: `mailto:${address}?${encode({ subject, body })}`,
+    };
+    for (const link of fallback.querySelectorAll<HTMLAnchorElement>('[data-hire-compose]')) {
+      link.href = targets[link.dataset.hireCompose ?? ''] ?? link.href;
+    }
     text.value = content;
-    mailto.href = href;
     fallback.hidden = false;
     copy.onclick = () => {
       navigator.clipboard

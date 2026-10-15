@@ -199,8 +199,10 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
     <label class="field__label" for="hire-fallback-text">${hireCopy.fallbackLabel[locale]}</label>
     <textarea class="hire-fallback__text" id="hire-fallback-text" rows="12" readonly data-hire-fallback-text></textarea>
     <div class="hire-fallback__actions">
+      <a class="hire-button action" href="#hire-fallback-text" target="_blank" rel="noopener" data-hire-compose="gmail" data-cursor="${ui.cursorExternal[locale]}">${hireCopy.openGmail[locale]}</a>
+      <a class="hire-button action" href="#hire-fallback-text" target="_blank" rel="noopener" data-hire-compose="outlook" data-cursor="${ui.cursorExternal[locale]}">${hireCopy.openOutlook[locale]}</a>
+      <a class="hire-button action" href="#hire-fallback-text" data-hire-compose="mailto">${hireCopy.openMail[locale]}</a>
       <button class="hire-button action" type="button" data-hire-copy>${hireCopy.copyRequest[locale]}</button>
-      <a class="hire-button action" href="#hire-fallback-text" data-hire-mailto>${hireCopy.openMail[locale]}</a>
     </div>
   </div>`
   }

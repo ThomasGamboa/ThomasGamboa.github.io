@@ -48,6 +48,12 @@ export class CameraRig {
     }
   }
 
+  snap(): void {
+    this.#position.copy(this.#desiredPosition);
+    this.#target.copy(this.#desiredTarget);
+    this.#fov = this.#desiredFov;
+  }
+
   update({ delta, elapsed }: FrameState): void {
     const blend = 1 - Math.exp(-delta / followSeconds);
     this.#position.lerp(this.#desiredPosition, blend);
