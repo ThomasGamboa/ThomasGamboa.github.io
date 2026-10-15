@@ -11,6 +11,7 @@
     "src/client/experience/core/quality.ts",
     "src/client/experience/core/progress.ts",
     "src/client/experience/timeline/timeline-math.ts",
+    "services/hire-request/src",
     "tests",
     "vite.config.ts"
   ]

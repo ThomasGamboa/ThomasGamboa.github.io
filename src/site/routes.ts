@@ -3,10 +3,11 @@ import { worlds } from '../content/worlds.ts';
 import { defaultLocale, type Locale, locales } from '../shared/i18n/locales.ts';
 import { hirePath, homePath, projectPath } from '../shared/i18n/paths.ts';
 
-export type ClientEntry = 'home' | 'site';
+export type ClientEntry = 'home' | 'hire' | 'site';
 
 export const clientEntries: Readonly<Record<ClientEntry, string>> = {
   home: '/src/client/entries/home.ts',
+  hire: '/src/client/entries/hire.ts',
   site: '/src/client/entries/site.ts',
 };
 
@@ -64,7 +65,7 @@ export function buildRoutes(): readonly Route[] {
 
   return [
     ...localizedRoutes('home', { kind: 'home' }, 'home', homePath),
-    ...localizedRoutes('hire', { kind: 'hire' }, 'site', hirePath),
+    ...localizedRoutes('hire', { kind: 'hire' }, 'hire', hirePath),
     ...worldRoutes,
     {
       id: 'not-found',

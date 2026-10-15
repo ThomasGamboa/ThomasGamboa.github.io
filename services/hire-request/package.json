@@ -1,0 +1,14 @@
+{
+  "name": "thomas-gamboa-hire-request",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker that validates hiring requests and delivers them by email.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.0"
+  }
+}

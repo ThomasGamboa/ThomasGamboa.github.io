@@ -3,6 +3,7 @@ import type { ServiceCategory } from './types.ts';
 export const serviceCategories: readonly ServiceCategory[] = [
   {
     id: 'game-development',
+    kind: 'primary',
     title: { es: 'Desarrollo de videojuegos', en: 'Game development' },
     services: [
       {
@@ -45,6 +46,7 @@ export const serviceCategories: readonly ServiceCategory[] = [
   },
   {
     id: 'web-3d-development',
+    kind: 'primary',
     title: { es: 'Desarrollo web 3D', en: '3D web development' },
     services: [
       {
@@ -65,6 +67,7 @@ export const serviceCategories: readonly ServiceCategory[] = [
   },
   {
     id: 'web-design',
+    kind: 'primary',
     title: { es: 'Diseño de experiencias web', en: 'Web experience design' },
     services: [
       {
@@ -81,6 +84,7 @@ export const serviceCategories: readonly ServiceCategory[] = [
   },
   {
     id: 'additional',
+    kind: 'additional',
     title: { es: 'Servicios adicionales', en: 'Additional services' },
     services: [
       {

@@ -88,6 +88,7 @@ export interface Service {
 
 export interface ServiceCategory {
   readonly id: string;
+  readonly kind: 'primary' | 'additional';
   readonly title: LocalizedText;
   readonly services: readonly Service[];
 }

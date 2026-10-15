@@ -1,10 +1,6 @@
-const escapeLookup: Readonly<Record<string, string>> = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;',
-};
+import { escapeHtml } from '../shared/escape.ts';
+
+export { escapeHtml };
 
 export class SafeHtml {
   readonly value: string;
@@ -28,10 +24,6 @@ export type HtmlValue =
   | readonly HtmlValue[];
 
 export type AttributeValue = string | number | boolean | null | undefined;
-
-export function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => escapeLookup[character] ?? character);
-}
 
 export function raw(value: string): SafeHtml {
   return new SafeHtml(value);

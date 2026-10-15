@@ -8,6 +8,11 @@ export const site = {
   googleSiteVerification: null as string | null,
 } as const;
 
+export const hiring = {
+  endpoint: null as string | null,
+  turnstileSiteKey: null as string | null,
+};
+
 export const socialLinks: readonly ExternalLink[] = [
   {
     kind: 'instagram',

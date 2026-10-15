@@ -35,17 +35,11 @@ export const ui = {
     es: 'Selecciona los servicios que necesitas, revisa sus precios iniciales y describe tu proyecto. Cada solicitud se evalúa de forma individual.',
     en: 'Choose the services you need, review their starting prices and describe your project. Every request is evaluated individually.',
   },
-  servicesHeading: { es: 'Servicios y precios iniciales', en: 'Services and starting prices' },
   priceFrom: { es: 'Desde', en: 'From' },
   priceOnRequest: { es: 'Precio según alcance', en: 'Priced by scope' },
   pricingDisclaimer: {
     es: 'Los importes indicados son precios iniciales. El presupuesto definitivo depende del alcance, los requisitos y la complejidad de cada proyecto.',
     en: 'The amounts shown are starting prices. The final quote depends on the scope, requirements and complexity of each project.',
-  },
-  requestHeading: { es: 'Solicitud de proyecto', en: 'Project request' },
-  requestPending: {
-    es: 'El formulario de solicitud estará disponible muy pronto.',
-    en: 'The request form will be available very soon.',
   },
   footerRights: { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
   notFoundEyebrow: { es: 'Error 404', en: 'Error 404' },
