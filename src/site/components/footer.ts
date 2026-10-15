@@ -24,15 +24,13 @@ export function renderFooter(context: PageContext): SafeHtml {
       (chapter) =>
         html`<li><a href="${sectionPath(locale, chapter.anchor[locale])}">${chapter.label[locale]}</a></li>`,
     );
-  const pages = [
-    html`<li><a href="${hirePath(locale)}">${ui.navHire[locale]}</a></li>`,
-    ...worlds
-      .filter((world) => world.page !== null)
-      .map(
-        (world) =>
-          html`<li><a href="${projectPath(locale, world.slug)}">${world.title[locale]}</a></li>`,
-      ),
-  ];
+  const development = worlds
+    .filter((world) => world.page !== null)
+    .map(
+      (world) =>
+        html`<li><a href="${projectPath(locale, world.slug)}">${world.title[locale]}</a></li>`,
+    );
+  const hire = [html`<li><a href="${hirePath(locale)}">${ui.contactAction[locale]}</a></li>`];
   const external = socialLinks.map(
     (link) =>
       html`<li><a href="${link.href}" rel="me noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`,
@@ -47,9 +45,10 @@ export function renderFooter(context: PageContext): SafeHtml {
       <p class="site-footer__location">${profile.location.label[locale]}</p>
       ${renderSecretMail(locale, 'footer')}
     </div>
-    ${renderLinkGroup('experience', ui.footerExperience[locale], experience)}
-    ${renderLinkGroup('pages', ui.footerPages[locale], pages)}
+    ${renderLinkGroup('about', ui.footerExperience[locale], experience)}
+    ${renderLinkGroup('development', ui.inDevelopment[locale], development)}
     ${renderLinkGroup('external', ui.footerNavigation[locale], external)}
+    ${renderLinkGroup('hire', ui.navHire[locale], hire)}
   </div>
   <div class="site-footer__bottom">
     <p class="site-footer__legal"><small>© ${context.year} ${profile.name}. ${ui.footerRights[locale]}</small></p>

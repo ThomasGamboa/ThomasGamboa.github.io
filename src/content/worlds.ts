@@ -43,8 +43,8 @@ export const worlds: readonly World[] = [
     eyebrow: { es: 'Videojuego en desarrollo', en: 'Game in development' },
     title: { es: 'The Nightbounds', en: 'The Nightbounds' },
     summary: {
-      es: 'Un roguelike de acción isométrico en mundo abierto, inspirado en la cultura ecuatoriana. De día exploras y te haces fuerte; de noche sobrevives a oleadas que vuelven con más ganas en cada ciclo.',
-      en: 'An isometric open-world action roguelike inspired by Ecuadorian culture. By day you explore and grow stronger; by night you survive waves that come back hungrier every cycle.',
+      es: 'Roguelike de acción isométrico de mundo abierto, inspirado en la cultura ecuatoriana. De día exploras y subes de nivel; de noche sobrevives a oleadas de enemigos.',
+      en: 'Isometric open-world action roguelike inspired by Ecuadorian culture. By day you explore and level up; by night you survive waves of enemies.',
     },
     schemaType: 'VideoGame',
     cover: nightboundsKeyArt,
@@ -87,12 +87,12 @@ export const worlds: readonly World[] = [
         heading: { es: 'El ciclo', en: 'The cycle' },
         paragraphs: {
           es: [
-            'Cada partida se parte en dos. El día es para explorar, abrir cofres, subir de nivel y armar una build. La noche es para aguantar: oleadas de enemigos que crecen con cada ciclo hasta que algo se rompe, tú o ellos.',
-            'Es pixel art, con combate entre el bullet hell y el hack and slash, y corre en Windows y Android.',
+            'Cada partida tiene dos fases. De día exploras, abres cofres, subes de nivel y armas tu build. De noche resistes oleadas de enemigos que se vuelven más difíciles en cada ciclo.',
+            'Pixel art y combate entre bullet hell y hack and slash. Para Windows y Android.',
           ],
           en: [
-            'Every run splits in two. Daytime is for exploring, opening chests, levelling up and putting a build together. Night is for holding on: enemy waves that grow every cycle until something breaks, you or them.',
-            'It is pixel art, with combat somewhere between bullet hell and hack and slash, and it runs on Windows and Android.',
+            'Each run has two phases. By day you explore, open chests, level up and put a build together. By night you hold off enemy waves that get harder every cycle.',
+            'Pixel art, with combat between bullet hell and hack and slash. For Windows and Android.',
           ],
         },
       },
@@ -152,12 +152,12 @@ export const worlds: readonly World[] = [
         heading: { es: 'La beta de combate', en: 'The combat beta' },
         paragraphs: {
           es: [
-            'La primera beta pone a prueba solo el combate: el mundo abierto todavía no tiene misiones, personajes ni recompensas por explorar. Trae cinco personajes con armas, estadísticas y pasivas propias, más de ochenta mejoras, quince armas y un escenario generado al azar, el Valle de los Cuchillos.',
-            'El objetivo es sencillo: que alguien lo rompa. Buscar sinergias, builds absurdas y los lugares donde el equilibrio no aguanta.',
+            'La primera beta prueba solo el combate; el mundo abierto todavía no tiene misiones ni personajes. Incluye cinco personajes con armas, estadísticas y pasivas propias, más de ochenta mejoras, quince armas y un escenario generado al azar: el Valle de los Cuchillos.',
+            'Sirve para encontrar sinergias, builds rotas y problemas de balance.',
           ],
           en: [
-            'The first beta tests the combat and nothing else: the open world has no quests, characters or exploration rewards yet. It ships five characters with their own weapons, stats and passives, more than eighty upgrades, fifteen weapons and one randomly generated stage, the Valley of Knives.',
-            'The goal is simple: get someone to break it. Find synergies, absurd builds and the places where the balance gives way.',
+            'The first beta tests only the combat; the open world has no quests or characters yet. It includes five characters with their own weapons, stats and passives, more than eighty upgrades, fifteen weapons and one randomly generated stage: the Valley of Knives.',
+            'Its purpose is to find synergies, broken builds and balance problems.',
           ],
         },
       },
@@ -181,8 +181,8 @@ export const worlds: readonly World[] = [
     eyebrow: { es: 'Assets y herramientas para Unity', en: 'Unity assets and tools' },
     title: { es: 'VoxelNest', en: 'VoxelNest' },
     summary: {
-      es: 'Mi estudio de assets para Unity: entornos voxel acogedores, cielos procedurales, shaders y herramientas de editor. Piezas pequeñas, modulares y listas para usar.',
-      en: 'My Unity asset studio: cozy voxel environments, procedural skies, shaders and editor tools. Small, modular pieces that are ready to drop in.',
+      es: 'Mi estudio de assets para Unity: entornos voxel, cielos procedurales, shaders y herramientas de editor.',
+      en: 'My Unity asset studio: voxel environments, procedural skies, shaders and editor tools.',
     },
     schemaType: 'CreativeWork',
     cover: null,
@@ -208,15 +208,15 @@ export const worlds: readonly World[] = [
     blocks: [
       {
         type: 'text',
-        heading: { es: 'La idea', en: 'The idea' },
+        heading: { es: 'Qué hace', en: 'What it does' },
         paragraphs: {
           es: [
-            'VoxelNest hace assets voxel para juegos, dioramas y proyectos creativos. La estética es mínima y cálida: voxels limpios, colores suaves y piezas modulares que encajan entre sí.',
-            'Además de modelos y texturas publico shaders y herramientas de editor: SKYVOX para cielos procedurales en URP y SOeasy para ordenar ScriptableObjects en una sola ventana.',
+            'Assets voxel para juegos y dioramas en Unity: modelos modulares, texturas, cielos y shaders.',
+            'También publica herramientas de editor: SKYVOX para cielos procedurales en URP y SOeasy para gestionar ScriptableObjects.',
           ],
           en: [
-            'VoxelNest makes voxel assets for games, dioramas and creative projects. The look is minimal and warm: clean voxels, soft colors and modular pieces that fit together.',
-            'Beyond models and textures I publish shaders and editor tools: SKYVOX for procedural skies in URP and SOeasy for keeping ScriptableObjects in a single window.',
+            'Voxel assets for Unity games and dioramas: modular models, textures, skies and shaders.',
+            'It also publishes editor tools: SKYVOX for procedural skies in URP and SOeasy for managing ScriptableObjects.',
           ],
         },
       },
@@ -240,8 +240,8 @@ export const worlds: readonly World[] = [
     eyebrow: { es: 'Archivo', en: 'Archive' },
     title: { es: 'Otros proyectos', en: 'Other projects' },
     summary: {
-      es: 'Juegos, instalaciones y aplicaciones de los últimos años. Algunos se pueden jugar; otros viven en museos o en mi disco duro.',
-      en: 'Games, installations and apps from the last few years. Some you can play; others live in museums or on my hard drive.',
+      es: 'Juegos, instalaciones y aplicaciones anteriores.',
+      en: 'Earlier games, installations and apps.',
     },
     schemaType: 'CollectionPage',
     cover: null,

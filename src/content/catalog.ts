@@ -35,8 +35,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'SKYVOX',
     category: sky,
     summary: {
-      es: 'Cielo voxel procedural para URP: nubes volumétricas, ciclo de día y noche, estrellas y perfiles que cambian en pleno juego.',
-      en: 'A procedural voxel sky for URP: volumetric clouds, a day and night cycle, stars and profiles you can swap mid-game.',
+      es: 'Cielo voxel procedural para URP con nubes volumétricas, ciclo de día y noche, estrellas y perfiles intercambiables.',
+      en: 'Procedural voxel sky for URP with volumetric clouds, a day and night cycle, stars and swappable profiles.',
     },
     price: usd(19.98),
     links: [
@@ -49,8 +49,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'SOeasy PRO',
     category: tool,
     summary: {
-      es: 'Una sola ventana para encontrar, ordenar y editar ScriptableObjects, con fijados, espacios de trabajo y búsqueda de referencias.',
-      en: 'One window to find, sort and edit ScriptableObjects, with pinning, workspaces and a reference finder.',
+      es: 'Ventana para buscar, ordenar y editar ScriptableObjects, con fijados, espacios de trabajo y búsqueda de referencias.',
+      en: 'Window to find, sort and edit ScriptableObjects, with pinning, workspaces and reference search.',
     },
     price: usd(9),
     links: [assetStore(400742), itch('soeasy-pro-centralized-scriptable-objects-manager')],
@@ -60,8 +60,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'SOeasy',
     category: tool,
     summary: {
-      es: 'La versión base: recorre el proyecto y agrupa los ScriptableObjects por carpeta, sin configurar nada.',
-      en: 'The base version: it scans the project and groups ScriptableObjects by folder, no setup needed.',
+      es: 'Versión base: agrupa los ScriptableObjects del proyecto por carpeta.',
+      en: 'Base version: groups the project’s ScriptableObjects by folder.',
     },
     price: null,
     links: [assetStore(401966), itch('soeasy-centralized-scriptable-objects-manager')],
@@ -71,8 +71,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'Cozy Nature',
     category: environment,
     summary: {
-      es: '71 piezas modulares de naturaleza voxel, ligeras y listas para juego.',
-      en: '71 modular voxel nature pieces, lightweight and game-ready.',
+      es: '71 piezas modulares de naturaleza voxel, optimizadas para juego.',
+      en: '71 modular voxel nature pieces, optimized for games.',
     },
     price: usd(24.99),
     links: [
@@ -85,8 +85,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'Cozy Nature FREE',
     category: environment,
     summary: {
-      es: '20 modelos del pack de naturaleza para empezar a construir.',
-      en: '20 models from the nature pack to start building with.',
+      es: '20 modelos del pack de naturaleza.',
+      en: '20 models from the nature pack.',
     },
     price: null,
     links: [
@@ -113,8 +113,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'Fantasy Weapons & Tools FREE',
     category: props,
     summary: {
-      es: '11 modelos del pack completo para probar el sistema de niveles.',
-      en: '11 models from the full pack to try the tier system.',
+      es: '11 modelos del pack completo.',
+      en: '11 models from the full pack.',
     },
     price: null,
     links: [
@@ -141,8 +141,8 @@ export const voxelNestCatalog: readonly CatalogItem[] = [
     title: 'Cozy Kitchen',
     category: environment,
     summary: {
-      es: 'Más de 25 modelos para armar cocinas voxel.',
-      en: 'More than 25 models for building voxel kitchens.',
+      es: 'Más de 25 modelos de cocina voxel.',
+      en: 'More than 25 voxel kitchen models.',
     },
     price: usd(7),
     links: [assetStore(313398), itch('cozy-kitchen-voxel-style-modular-enviorement-asset-pack')],

@@ -25,21 +25,21 @@ export const profile = {
     utcOffsetLabel: 'UTC−5',
   },
   summary: {
-    es: 'Diseñador interactivo y artista de nuevos medios en Quito, Ecuador. Hago videojuegos, instalaciones, experiencias web 3D y assets para Unity.',
-    en: 'Interactive designer and new media artist in Quito, Ecuador. I make video games, installations, 3D web experiences and Unity assets.',
+    es: 'Diseñador interactivo y artista de nuevos medios en Quito, Ecuador. Desarrollo videojuegos, instalaciones interactivas, realidad virtual, sitios web 3D y assets para Unity.',
+    en: 'Interactive designer and new media artist in Quito, Ecuador. I build video games, interactive installations, virtual reality, 3D websites and Unity assets.',
   } satisfies LocalizedText,
   about: {
     heading: { es: 'Sobre mí', en: 'About' } satisfies LocalizedText,
     paragraphs: {
       es: [
-        'Soy Thomas Gamboa, diseñador interactivo en Quito. Hago cosas que se recorren más de lo que se miran: videojuegos, instalaciones, galerías virtuales y sitios web que se comportan como lugares.',
-        'Estudié Medios Interactivos en la Universidad San Francisco de Quito, con una subespecialización en Arte y Tecnología. Desde entonces me muevo entre Unity, Three.js, TouchDesigner y Arduino; casi siempre en ese orden, a veces todo a la vez.',
-        'Lo que más me interesa es el momento en que una pieza responde: un sensor que nota que alguien se acerca, un Kinect que te deja recorrer un manglar con el cuerpo, una moneda de 1535 que giras con un dedo. Ahora mismo construyo The Nightbounds y publico herramientas para Unity como VoxelNest.',
+        'Soy Thomas Gamboa, diseñador interactivo en Quito, Ecuador. Desarrollo videojuegos, instalaciones interactivas, experiencias de realidad virtual y sitios web 3D.',
+        'Estudié Medios Interactivos en la Universidad San Francisco de Quito, con una subespecialización en Arte y Tecnología. Trabajo sobre todo con Unity, Three.js, TouchDesigner y Arduino.',
+        'Ahora desarrollo The Nightbounds, un roguelike de acción, y publico assets y herramientas para Unity con VoxelNest.',
       ],
       en: [
-        'I’m Thomas Gamboa, an interactive designer in Quito. I make things you move through more than you look at: video games, installations, virtual galleries and websites that behave like places.',
-        'I studied Interactive Media at Universidad San Francisco de Quito, with a minor in Art and Technology. Since then I’ve been moving between Unity, Three.js, TouchDesigner and Arduino; usually in that order, sometimes all at once.',
-        'What I care about most is the moment a piece answers back: a sensor that notices someone getting close, a Kinect that lets you wander a mangrove with your body, a coin from 1535 you turn with one finger. Right now I’m building The Nightbounds and publishing Unity tools as VoxelNest.',
+        'I’m Thomas Gamboa, an interactive designer in Quito, Ecuador. I build video games, interactive installations, virtual reality experiences and 3D websites.',
+        'I studied Interactive Media at Universidad San Francisco de Quito, with a minor in Art and Technology. I work mainly with Unity, Three.js, TouchDesigner and Arduino.',
+        'I’m currently developing The Nightbounds, an action roguelike, and publishing Unity assets and tools through VoxelNest.',
       ],
     } satisfies Localized<readonly string[]>,
   },
@@ -63,8 +63,8 @@ export const profile = {
         },
         place: { es: 'Apangora · con Carla Torres', en: 'Apangora · with Carla Torres' },
         body: {
-          es: 'Apangora ganó el Premio COCOA 2024 y el premio Proyectos IT Universidades de Revista IT, y se expuso en el Museo del Agua Yaku.',
-          en: 'Apangora won the 2024 COCOA Award and Revista IT’s IT University Projects award, and was shown at the Yaku Water Museum.',
+          es: 'Ganadores de ambos premios con Apangora, expuesta en el Museo del Agua Yaku.',
+          en: 'Both awards for Apangora, exhibited at the Yaku Water Museum.',
         },
       },
       {
@@ -72,8 +72,8 @@ export const profile = {
         title: { es: 'La moneda en Ecuador', en: 'La moneda en Ecuador' },
         place: { es: 'Banco Central del Ecuador · Cuenca', en: 'Central Bank of Ecuador · Cuenca' },
         body: {
-          es: 'Una línea del tiempo para tablet sobre la historia de la moneda ecuatoriana, con sus piezas más importantes en 3D.',
-          en: 'A tablet timeline of Ecuadorian currency, with its most important coins in 3D.',
+          es: 'Aplicación para tablet sobre la historia de la moneda ecuatoriana, con monedas en 3D.',
+          en: 'Tablet app on the history of Ecuadorian currency, with coins in 3D.',
         },
       },
       {
@@ -81,8 +81,8 @@ export const profile = {
         title: { es: 'Qgalería', en: 'Qgalería' },
         place: usfq,
         body: {
-          es: 'Dos años y medio construyendo galerías virtuales: más de diez, para web, realidad virtual y realidad aumentada.',
-          en: 'Two and a half years building virtual galleries: more than ten, for the web, VR and AR.',
+          es: 'Más de diez galerías virtuales para web, realidad virtual y realidad aumentada.',
+          en: 'More than ten virtual galleries for the web, VR and AR.',
         },
       },
       {
@@ -93,8 +93,8 @@ export const profile = {
           en: 'Internationale Filmschule Köln · remote',
         },
         body: {
-          es: 'Un año desarrollando la experiencia de realidad virtual del proyecto de maestría de Alexandra Tamayo.',
-          en: 'A year developing the virtual reality experience for Alexandra Tamayo’s master’s project.',
+          es: 'Desarrollo de la experiencia de realidad virtual del proyecto de maestría de Alexandra Tamayo.',
+          en: 'Development of the virtual reality experience for Alexandra Tamayo’s master’s project.',
         },
       },
       {
@@ -102,8 +102,8 @@ export const profile = {
         title: { es: 'DIM Web', en: 'DIM Web' },
         place: { es: 'USFQ · Medios Interactivos', en: 'USFQ · Interactive Media' },
         body: {
-          es: 'Diseñé, animé y programé el sitio de la carrera como un videojuego 2D. Estuvo en línea hasta 2024.',
-          en: 'I designed, animated and programmed the program’s website as a 2D video game. It stayed online until 2024.',
+          es: 'Diseño, animación y programación del sitio de la carrera, hecho como videojuego 2D.',
+          en: 'Design, animation and programming of the program’s website, built as a 2D video game.',
         },
       },
     ] satisfies readonly PathEntry[],

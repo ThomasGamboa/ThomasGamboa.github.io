@@ -36,13 +36,17 @@ export function renderSiteMenu(context: PageContext): SafeHtml {
   <div class="site-menu__frame">
     <ol class="site-menu__chapters">${chapterItems}</ol>
     <div class="site-menu__aside">
-      <section class="site-menu__group" aria-labelledby="site-menu-worlds">
-        <h2 class="site-menu__heading" id="site-menu-worlds">${ui.menuWorlds[locale]}</h2>
-        <ul>${worldPages}<li><a href="${hirePath(locale)}">${ui.navHire[locale]}</a></li></ul>
+      <section class="site-menu__group" aria-labelledby="site-menu-development">
+        <h2 class="site-menu__heading" id="site-menu-development">${ui.inDevelopment[locale]}</h2>
+        <ul>${worldPages}</ul>
       </section>
-      <section class="site-menu__group" aria-labelledby="site-menu-elsewhere">
-        <h2 class="site-menu__heading" id="site-menu-elsewhere">${ui.menuElsewhere[locale]}</h2>
+      <section class="site-menu__group" aria-labelledby="site-menu-external">
+        <h2 class="site-menu__heading" id="site-menu-external">${ui.footerNavigation[locale]}</h2>
         <ul>${externalLinks}</ul>
+      </section>
+      <section class="site-menu__group" aria-labelledby="site-menu-hire">
+        <h2 class="site-menu__heading" id="site-menu-hire">${ui.navHire[locale]}</h2>
+        <ul><li><a href="${hirePath(locale)}">${ui.contactAction[locale]}</a></li></ul>
       </section>
     </div>
     <button class="site-menu__close" type="button" popovertarget="site-menu" popovertargetaction="hide">${ui.menuClose[locale]}</button>

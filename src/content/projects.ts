@@ -28,8 +28,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Apangora',
     publishedOn: '2024-04-01',
     summary: {
-      es: 'Un cuento interactivo sobre los manglares y el mar del Ecuador, expuesto en el Museo del Agua Yaku. Se juega con el cuerpo: un Kinect lee tus movimientos y los convierte en la forma de recorrer la historia.',
-      en: 'An interactive tale about Ecuador’s mangroves and sea, shown at the Yaku Water Museum. You play it with your body: a Kinect reads your movements and turns them into the way through the story.',
+      es: 'Instalación interactiva sobre los manglares y el mar del Ecuador, expuesta en el Museo del Agua Yaku. Se controla con el cuerpo mediante un Kinect.',
+      en: 'Interactive installation about Ecuador’s mangroves and sea, exhibited at the Yaku Water Museum. It is controlled with the body through a Kinect.',
     },
     cover: {
       src: 'projects/apangora/cover.png',
@@ -44,16 +44,16 @@ export const archiveProjects: readonly ArchiveProject[] = [
     links: [behanceLink('https://www.behance.net/gallery/195281135/Apangora')],
     story: {
       es: [
-        'Apangora es una proyección interactiva sobre los ecosistemas marinos del Ecuador: los manglares y humedales de la costa. Antes de diseñar hubo trabajo de campo en el humedal de La Segua, en Manabí, y la historia está construida sobre lo que salió de ese estudio.',
-        'Funciona como un cuento. Adultos y niños recorren el manglar y el mar, ayudan a animales atrapados y entienden por qué los manglares importan, en una experiencia pensada para estimular los sentidos.',
-        'No hay controles. Un Kinect reconoce los gestos y esa es toda la interfaz: te paras frente a la proyección, en una zona marcada en el piso, y mueves las manos.',
-        'Con Carla Torres ganamos el Premio COCOA 2024 y el premio Proyectos IT Universidades de Revista IT ese mismo año, y la instalación se expuso en el Museo del Agua Yaku, en Quito.',
+        'Proyección interactiva sobre los manglares y humedales de la costa ecuatoriana, basada en trabajo de campo en el humedal de La Segua, en Manabí.',
+        'Funciona como un cuento: el público recorre el manglar y el mar, ayuda a animales atrapados y aprende por qué estos ecosistemas importan.',
+        'No hay controles. Un Kinect reconoce los gestos de quien está frente a la proyección.',
+        'Con Carla Torres ganamos el Premio COCOA 2024 y el premio Proyectos IT Universidades de Revista IT. Se expuso en el Museo del Agua Yaku, en Quito.',
       ],
       en: [
-        'Apangora is an interactive projection about Ecuador’s marine ecosystems: the mangroves and wetlands of the coast. Before any design there was fieldwork at La Segua wetland, in Manabí, and the story is built on what came out of that study.',
-        'It works like a tale. Adults and children wander the mangrove and the sea, help trapped animals and get why mangroves matter, in an experience made to stimulate the senses.',
-        'There are no controllers. A Kinect recognizes gestures and that is the whole interface: you stand in front of the projection, on a marked spot on the floor, and move your hands.',
-        'With Carla Torres we won the 2024 COCOA Award and, that same year, Revista IT’s IT University Projects award, and the installation was shown at the Yaku Water Museum in Quito.',
+        'Interactive projection about the mangroves and wetlands of the Ecuadorian coast, based on fieldwork at La Segua wetland in Manabí.',
+        'It works like a tale: visitors move through the mangrove and the sea, help trapped animals and learn why these ecosystems matter.',
+        'There are no controllers. A Kinect reads the gestures of whoever stands in front of the projection.',
+        'With Carla Torres we won the 2024 COCOA Award and Revista IT’s IT University Projects award. It was exhibited at the Yaku Water Museum in Quito.',
       ],
     },
     awards: [
@@ -99,8 +99,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Alma Virtual',
     publishedOn: '2024-03-06',
     summary: {
-      es: 'Una obra de realidad virtual sobre la identidad en internet, seleccionada para la bienal BUAM 2023 y expuesta en el Centro de Arte Contemporáneo de Quito y en el Museo Nacional del Cacao.',
-      en: 'A virtual reality piece about identity online, selected for the 2023 BUAM biennial and shown at Quito’s Contemporary Art Center and the National Cacao Museum.',
+      es: 'Obra de realidad virtual sobre la identidad en internet. Seleccionada para la bienal BUAM 2023 y expuesta en el Centro de Arte Contemporáneo de Quito y en el Museo Nacional del Cacao.',
+      en: 'Virtual reality piece about identity online. Selected for the 2023 BUAM biennial and exhibited at Quito’s Contemporary Art Center and the National Cacao Museum.',
     },
     cover: {
       src: 'projects/alma-virtual/cover.jpg',
@@ -115,14 +115,14 @@ export const archiveProjects: readonly ArchiveProject[] = [
     links: [behanceLink('https://www.behance.net/gallery/193245431/Alma-Virtual')],
     story: {
       es: [
-        'Una obra de realidad virtual inspirada en los ensayos de Jia Tolentino sobre el yo en internet. No quiere que estés cómodo: busca incomodar lo suficiente como para que pienses en tu identidad en el mundo digital.',
-        'El alma virtual se despliega en tres secciones que se abren con portales: la conexión con las plataformas, las prácticas de control entre usuarios y la relación entre algoritmo y usuario, que termina co-creando un mundo único.',
-        'Fue uno de los 24 proyectos seleccionados para la Bienal de Arte Multimedial BUAM 2023, «Espacios líquidos: políticas de la pantalla», y se expuso en el Centro de Arte Contemporáneo de Quito y en el Museo Nacional del Cacao de Guayaquil.',
+        'Obra de realidad virtual basada en los ensayos de Jia Tolentino sobre el yo en internet. Plantea una reflexión incómoda sobre la identidad digital.',
+        'Tiene tres secciones conectadas por portales: la relación con las plataformas, el control entre usuarios y la interacción entre algoritmo y usuario.',
+        'Fue uno de los 24 proyectos seleccionados para la Bienal de Arte Multimedial BUAM 2023, «Espacios líquidos: políticas de la pantalla». Se expuso en el Centro de Arte Contemporáneo de Quito y en el Museo Nacional del Cacao de Guayaquil.',
       ],
       en: [
-        'A virtual reality piece inspired by Jia Tolentino’s essays on the self online. It does not want you comfortable: it aims to unsettle you just enough to think about your identity in the digital world.',
-        'The virtual soul unfolds in three sections opened through portals: our connection to platforms, the ways users police each other and the relationship between algorithm and user that ends up co-creating a world of its own.',
-        'It was one of 24 projects selected for the 2023 BUAM Multimedia Art Biennial, “Liquid spaces: politics of the screen”, and was shown at the Contemporary Art Center in Quito and the National Cacao Museum in Guayaquil.',
+        'Virtual reality piece based on Jia Tolentino’s essays on the self online. It raises an uncomfortable question about digital identity.',
+        'It has three sections connected by portals: our relationship with platforms, control between users and the interaction between algorithm and user.',
+        'It was one of 24 projects selected for the 2023 BUAM Multimedia Art Biennial, “Liquid spaces: politics of the screen”. It was exhibited at the Contemporary Art Center in Quito and the National Cacao Museum in Guayaquil.',
       ],
     },
     awards: [],
@@ -183,8 +183,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Ecuador Biodiversity Tour',
     publishedOn: '2024-02-22',
     summary: {
-      es: 'Una aplicación de escritorio para caminar por dos biomas del Ecuador, el bosque nublado y el páramo, y conocer a los animales que viven ahí. Materiales PBR y animación en Unity.',
-      en: 'A desktop app for walking through two Ecuadorian biomes, the cloud forest and the páramo, and meeting the animals that live there. PBR materials and animation in Unity.',
+      es: 'Aplicación de escritorio para recorrer el bosque nublado y el páramo del Ecuador y conocer su fauna. Hecha en Unity con materiales PBR.',
+      en: 'Desktop app for exploring Ecuador’s cloud forest and páramo and their wildlife. Built in Unity with PBR materials.',
     },
     cover: {
       src: 'projects/ecuador-biodiversity-tour/cover.png',
@@ -202,14 +202,14 @@ export const archiveProjects: readonly ArchiveProject[] = [
     links: [behanceLink('https://www.behance.net/gallery/192208583/Ecuador-Biodiversity-Tour')],
     story: {
       es: [
-        'Una aplicación didáctica de escritorio para recorrer dos biomas del Ecuador, el bosque de neblina del Oriente y el páramo, y conocer a la fauna que vive en ellos.',
-        'Está hecha en Unity con materiales y assets PBR, retocados en Photoshop para que encajen en cada ambiente. Los animales, la interfaz y la ambientación se animan con las herramientas de animación de Unity.',
-        'La interfaz es mínima a propósito: cualquiera puede manejarla sin explicación y quedarse mirando el paisaje.',
+        'Aplicación didáctica para recorrer dos biomas del Ecuador, el bosque de neblina del Oriente y el páramo, y conocer su fauna.',
+        'Desarrollada en Unity con materiales y assets PBR ajustados en Photoshop. Los animales, la interfaz y el entorno están animados con las herramientas de Unity.',
+        'La interfaz es mínima para que cualquiera la use sin instrucciones.',
       ],
       en: [
-        'An educational desktop app for walking through two Ecuadorian biomes, the Amazon cloud forest and the páramo, and meeting the wildlife that lives there.',
-        'It is built in Unity with PBR materials and assets, reworked in Photoshop to fit each environment. The animals, the interface and the atmosphere are animated with Unity’s animation tools.',
-        'The interface is minimal on purpose: anyone can use it without instructions and just stay to look at the landscape.',
+        'Educational app for exploring two Ecuadorian biomes, the Amazon cloud forest and the páramo, and their wildlife.',
+        'Built in Unity with PBR materials and assets adjusted in Photoshop. The animals, interface and environment are animated with Unity’s tools.',
+        'The interface is minimal so anyone can use it without instructions.',
       ],
     },
     awards: [],
@@ -252,8 +252,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'APPARTE',
     publishedOn: '2024-02-14',
     summary: {
-      es: 'Una app móvil para encontrar y publicar eventos culturales en Ecuador, tanto para quien los organiza como para quien solo quiere salir esa noche.',
-      en: 'A mobile app for finding and posting cultural events in Ecuador, for the people who organize them and for anyone who just wants to go out tonight.',
+      es: 'App móvil para encontrar y publicar eventos culturales en Ecuador.',
+      en: 'Mobile app for finding and posting cultural events in Ecuador.',
     },
     cover: {
       src: 'projects/apparte/cover.png',
@@ -268,14 +268,14 @@ export const archiveProjects: readonly ArchiveProject[] = [
     links: [behanceLink('https://www.behance.net/gallery/191470123/APPARTE')],
     story: {
       es: [
-        'Una app para la cultura local: conciertos, exposiciones, festivales y todo lo que pasa cerca, a un par de toques.',
-        'Tiene dos caminos desde el registro. Quien organiza puede crear y publicar eventos; quien solo busca qué hacer puede filtrarlos por tipo, guardarlos y ver el detalle de cada uno.',
-        'Está hecha con Ionic y Angular, con estilos en Sass, y el backend es un modelo no relacional sobre Firebase.',
+        'App para encontrar conciertos, exposiciones y festivales cercanos.',
+        'Tiene dos tipos de cuenta: gestores, que crean y publican eventos, y público, que los busca, filtra y guarda.',
+        'Desarrollada con Ionic y Angular, estilos en Sass y un backend no relacional en Firebase.',
       ],
       en: [
-        'An app for local culture: concerts, exhibitions, festivals and everything happening nearby, a couple of taps away.',
-        'Sign-up splits into two paths. Organizers can create and publish events; people just looking for plans can filter them by type, save them and open the details.',
-        'It is built with Ionic and Angular, styled with Sass, and the backend is a non-relational model on Firebase.',
+        'App for finding nearby concerts, exhibitions and festivals.',
+        'It has two account types: organizers, who create and publish events, and the public, who search, filter and save them.',
+        'Built with Ionic and Angular, styled with Sass, with a non-relational backend on Firebase.',
       ],
     },
     awards: [],
@@ -312,8 +312,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'APP BCE Cuenca',
     publishedOn: '2024-02-06',
     summary: {
-      es: 'Una línea del tiempo para tablet sobre la historia de la moneda en Ecuador, hecha para el Banco Central y su museo en Cuenca. Las monedas se giran en 3D, desde las macuquinas de 1535.',
-      en: 'A tablet timeline of currency in Ecuador, made for the Central Bank and its museum in Cuenca. You can turn the coins in 3D, starting with the macuquinas of 1535.',
+      es: 'Línea del tiempo para tablet sobre la historia de la moneda en Ecuador, hecha para el museo del Banco Central en Cuenca. Incluye monedas en 3D.',
+      en: 'Tablet timeline on the history of currency in Ecuador, made for the Central Bank museum in Cuenca. Includes coins in 3D.',
     },
     cover: {
       src: 'projects/app-bce-cuenca/cover.png',
@@ -328,14 +328,14 @@ export const archiveProjects: readonly ArchiveProject[] = [
     links: [behanceLink('https://www.behance.net/gallery/190920111/APP-BCE-Cuenca')],
     story: {
       es: [
-        'Una aplicación para tablet hecha para el Banco Central del Ecuador y su museo en Cuenca. Recorre la historia de la moneda ecuatoriana en una línea del tiempo: deslizas para avanzar y tocas cada pieza para ampliar la información.',
-        'Las monedas están en 3D, con luz, normal maps y rotación en tres ejes, así que puedes girar una macuquina de 1535 y ver su desgaste de cerca. La línea del tiempo usa los componentes 2D de Unity y las animaciones vienen de After Effects.',
-        'Se compiló para Android y es exclusiva del museo.',
+        'Aplicación para tablet hecha para el Banco Central del Ecuador y su museo en Cuenca. Recorre la historia de la moneda ecuatoriana en una línea del tiempo interactiva.',
+        'Las monedas se pueden rotar en 3D, con iluminación y normal maps. La línea del tiempo usa los componentes 2D de Unity y las animaciones se hicieron en After Effects.',
+        'Compilada para Android y disponible solo en el museo.',
       ],
       en: [
-        'A tablet app made for the Central Bank of Ecuador and its museum in Cuenca. It walks through the history of Ecuadorian currency on a timeline: swipe to move forward, tap any piece to learn more.',
-        'The coins are in 3D, with lighting, normal maps and three-axis rotation, so you can turn a macuquina from 1535 and look at its wear up close. The timeline uses Unity’s 2D components and the animation comes from After Effects.',
-        'It was built for Android and lives only at the museum.',
+        'Tablet app made for the Central Bank of Ecuador and its museum in Cuenca. It covers the history of Ecuadorian currency in an interactive timeline.',
+        'The coins can be rotated in 3D, with lighting and normal maps. The timeline uses Unity’s 2D components and the animations were made in After Effects.',
+        'Built for Android and available only at the museum.',
       ],
     },
     awards: [],
@@ -378,8 +378,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'DIM Web',
     publishedOn: '2024-01-30',
     summary: {
-      es: 'El sitio de la carrera de Medios Interactivos de la USFQ, disfrazado de videojuego 2D: profesores y estudiantes en pixel art y un camino que se recorre con flechas.',
-      en: 'The website for USFQ’s Interactive Media program, dressed up as a 2D video game: teachers and students in pixel art and a path you walk with the arrow keys.',
+      es: 'Sitio web de la carrera de Medios Interactivos de la USFQ, hecho como videojuego 2D en pixel art.',
+      en: 'Website for USFQ’s Interactive Media program, built as a 2D pixel art video game.',
     },
     cover: {
       src: 'projects/dim-web/cover.png',
@@ -397,14 +397,14 @@ export const archiveProjects: readonly ArchiveProject[] = [
     ],
     story: {
       es: [
-        'El sitio de la carrera de Medios Interactivos de la USFQ, pensado para quienes salen del colegio y están decidiendo qué estudiar. En vez de una página informativa es un videojuego 2D: caminas con las flechas, hablas con profesores y estudiantes y vas encontrando la carrera, las becas y el equipo.',
-        'Me encargué de ilustrar, animar, diseñar y programar la experiencia: personajes jugables, props y escenarios en pixel art, todo implementado en Unity y exportado a WebGL.',
-        'La idea era mostrar la mezcla de creatividad y programación de la carrera con algo que los estudiantes pudieran hacer al entrar. Estuvo en línea hasta principios de 2024.',
+        'Sitio de la carrera de Medios Interactivos de la USFQ, dirigido a estudiantes de colegio. Es un videojuego 2D: se recorre con las flechas y la información sobre la carrera, las becas y el equipo aparece en el camino.',
+        'Ilustré, animé, diseñé y programé la experiencia: personajes jugables, props y escenarios en pixel art, implementados en Unity y exportados a WebGL.',
+        'Estuvo en línea hasta principios de 2024.',
       ],
       en: [
-        'The website for USFQ’s Interactive Media program, aimed at people finishing high school and deciding what to study. Instead of an information page it is a 2D video game: you walk with the arrow keys, talk to teachers and students and find the program, the scholarships and the team along the way.',
-        'I illustrated, animated, designed and programmed the experience: playable characters, props and pixel art scenery, all implemented in Unity and exported to WebGL.',
-        'The point was to show the program’s mix of creativity and code with something students could build once they joined. It stayed online until early 2024.',
+        'Website for USFQ’s Interactive Media program, aimed at high school students. It is a 2D video game: you move with the arrow keys and information about the program, scholarships and team appears along the way.',
+        'I illustrated, animated, designed and programmed it: playable characters, props and pixel art scenery, built in Unity and exported to WebGL.',
+        'It was online until early 2024.',
       ],
     },
     awards: [],

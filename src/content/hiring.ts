@@ -64,8 +64,8 @@ export const hireFields: readonly HireField[] = [
     kind: 'services',
     label: { es: '¿Qué necesitas?', en: 'What do you need?' },
     hint: {
-      es: 'Elige uno o varios. Los precios son de partida; el presupuesto final depende del alcance.',
-      en: 'Choose one or more. Prices are starting points; the final quote depends on scope.',
+      es: 'Elige uno o varios. Los precios son de partida.',
+      en: 'Choose one or more. Prices are starting points.',
     },
     required: true,
   },
@@ -75,7 +75,7 @@ export const hireFields: readonly HireField[] = [
     label: { es: 'Extras', en: 'Extras' },
     hint: {
       es: 'Opcionales. Se suman al precio de partida.',
-      en: 'Optional. They add to the starting price.',
+      en: 'Optional. Added to the starting price.',
     },
     required: false,
   },
@@ -87,20 +87,20 @@ export const hireFields: readonly HireField[] = [
     options: [
       {
         value: 'new',
-        label: { es: 'Es una idea y quiero empezar', en: 'It is an idea and I want to start' },
+        label: { es: 'Proyecto nuevo', en: 'New project' },
       },
       {
         value: 'existing',
         label: {
-          es: 'Ya existe y necesito continuarlo o mejorarlo',
-          en: 'It exists and I need to continue or improve it',
+          es: 'Proyecto existente que hay que continuar o mejorar',
+          en: 'Existing project to continue or improve',
         },
       },
       {
         value: 'prototype',
         label: {
-          es: 'Necesito un prototipo o una prueba de concepto',
-          en: 'I need a prototype or a proof of concept',
+          es: 'Prototipo o prueba de concepto',
+          en: 'Prototype or proof of concept',
         },
       },
       { value: 'other', label: { es: 'Otro', en: 'Other' } },
@@ -109,10 +109,10 @@ export const hireFields: readonly HireField[] = [
   {
     id: 'description',
     kind: 'textarea',
-    label: { es: 'Cuéntame el proyecto', en: 'Tell me about the project' },
+    label: { es: 'Descripción del proyecto', en: 'Project description' },
     hint: {
-      es: 'Qué es, para quién, qué debería sentir o poder hacer la gente y qué es imprescindible. Mínimo 80 caracteres.',
-      en: 'What it is, who it is for, what people should feel or be able to do and what is essential. At least 80 characters.',
+      es: 'Qué es, para quién es y qué funciones necesita. Mínimo 80 caracteres.',
+      en: 'What it is, who it is for and what it needs to do. At least 80 characters.',
     },
     required: true,
     minLength: 80,
@@ -121,10 +121,10 @@ export const hireFields: readonly HireField[] = [
   {
     id: 'designStatus',
     kind: 'single-choice',
-    label: { es: '¿Tienes diseño?', en: 'Do you have a design?' },
+    label: { es: '¿Tienes el diseño?', en: 'Do you have the design?' },
     hint: {
-      es: 'La experiencia web 3D se desarrolla a partir de un diseño listo para implementar.',
-      en: 'The 3D web experience is built from a design that is ready to implement.',
+      es: 'La experiencia web 3D parte de un diseño terminado.',
+      en: 'The 3D web experience starts from a finished design.',
     },
     required: true,
     whenServices: ['web-3d-experience', 'web-experience-design'],
@@ -132,15 +132,15 @@ export const hireFields: readonly HireField[] = [
       {
         value: 'ready',
         label: {
-          es: 'Sí, completo y listo para desarrollar',
-          en: 'Yes, complete and ready to build',
+          es: 'Sí, terminado',
+          en: 'Yes, finished',
         },
       },
       {
         value: 'partial',
         label: {
-          es: 'Tengo bocetos, referencias o un diseño parcial',
-          en: 'I have sketches, references or a partial design',
+          es: 'Bocetos, referencias o diseño parcial',
+          en: 'Sketches, references or a partial design',
         },
       },
       { value: 'none', label: { es: 'Todavía no', en: 'Not yet' } },
@@ -175,8 +175,8 @@ export const hireFields: readonly HireField[] = [
     kind: 'textarea',
     label: { es: 'Referencias y materiales (opcional)', en: 'References and materials (optional)' },
     hint: {
-      es: 'Enlaces a diseños, documentos, moodboards, arte, guiones o repositorios.',
-      en: 'Links to designs, documents, moodboards, art, scripts or repositories.',
+      es: 'Enlaces a diseños, documentos, referencias o repositorios.',
+      en: 'Links to designs, documents, references or repositories.',
     },
     required: false,
     maxLength: 2000,
@@ -186,8 +186,8 @@ export const hireFields: readonly HireField[] = [
     kind: 'textarea',
     label: { es: 'Requisitos técnicos (opcional)', en: 'Technical requirements (optional)' },
     hint: {
-      es: 'Integraciones, dispositivos, rendimiento, espacio de montaje, hosting u otras restricciones.',
-      en: 'Integrations, devices, performance, installation space, hosting or other constraints.',
+      es: 'Integraciones, dispositivos, rendimiento, espacio de montaje o hosting.',
+      en: 'Integrations, devices, performance, installation space or hosting.',
     },
     required: false,
     maxLength: 2000,
@@ -197,8 +197,8 @@ export const hireFields: readonly HireField[] = [
     kind: 'select',
     label: { es: 'Presupuesto', en: 'Budget' },
     hint: {
-      es: 'Los proyectos empiezan en 1.500 USD. Un rango honesto me ayuda a proponer el alcance correcto.',
-      en: 'Projects start at 1,500 USD. An honest range helps me propose the right scope.',
+      es: 'Los proyectos empiezan en 1.500 USD.',
+      en: 'Projects start at 1,500 USD.',
     },
     required: true,
     options: [
@@ -230,7 +230,7 @@ export const hireFields: readonly HireField[] = [
     kind: 'select',
     label: { es: 'Plazo', en: 'Timeline' },
     hint: {
-      es: 'Los proyectos urgentes tienen un recargo.',
+      es: 'Los proyectos urgentes tienen recargo.',
       en: 'Rush projects carry a surcharge.',
     },
     required: true,
@@ -250,8 +250,8 @@ export const hireFields: readonly HireField[] = [
     kind: 'date',
     label: { es: 'Fecha límite (opcional)', en: 'Deadline (optional)' },
     hint: {
-      es: 'Si hay un lanzamiento, una exposición o un evento con fecha fija.',
-      en: 'If there is a launch, an exhibition or an event with a fixed date.',
+      es: 'Si hay un lanzamiento o evento con fecha fija.',
+      en: 'If there is a launch or event with a fixed date.',
     },
     required: false,
   },
@@ -295,8 +295,8 @@ export const hireFields: readonly HireField[] = [
     id: 'consent',
     kind: 'checkbox',
     label: {
-      es: 'Acepto que estos datos se usen únicamente para responder a esta solicitud.',
-      en: 'I agree that this information will only be used to answer this request.',
+      es: 'Acepto que estos datos se usen solo para responder a esta solicitud.',
+      en: 'I agree that this information is used only to reply to this request.',
     },
     required: true,
   },
@@ -307,8 +307,8 @@ export const hireSteps: readonly HireStep[] = [
     id: 'services',
     title: { es: 'Servicios', en: 'Services' },
     description: {
-      es: 'Elige lo que necesitas. Cada servicio muestra su precio de partida.',
-      en: 'Pick what you need. Each service shows its starting price.',
+      es: 'Elige los servicios.',
+      en: 'Choose the services.',
     },
     fields: ['services', 'addons'],
   },
@@ -316,8 +316,8 @@ export const hireSteps: readonly HireStep[] = [
     id: 'project',
     title: { es: 'Proyecto', en: 'Project' },
     description: {
-      es: 'Cuéntame qué quieres construir y en qué punto está.',
-      en: 'Tell me what you want to build and where it stands.',
+      es: 'Describe el proyecto.',
+      en: 'Describe the project.',
     },
     fields: [
       'projectType',
@@ -333,8 +333,8 @@ export const hireSteps: readonly HireStep[] = [
     id: 'planning',
     title: { es: 'Presupuesto y plazos', en: 'Budget and timeline' },
     description: {
-      es: 'Con un rango realista puedo proponerte un alcance que sí se pueda cumplir.',
-      en: 'With a realistic range I can propose a scope that can actually be delivered.',
+      es: 'Indica un rango realista.',
+      en: 'Give a realistic range.',
     },
     fields: ['budget', 'timeline', 'deadline'],
   },
@@ -342,8 +342,8 @@ export const hireSteps: readonly HireStep[] = [
     id: 'contact',
     title: { es: 'Contacto', en: 'Contact' },
     description: {
-      es: 'Te respondo personalmente a este correo con los siguientes pasos.',
-      en: 'I will reply personally to this email with the next steps.',
+      es: 'Te respondo a este correo.',
+      en: 'I will reply to this email.',
     },
     fields: ['name', 'email', 'company', 'website', 'consent'],
   },
@@ -364,8 +364,8 @@ export const hireCopy = {
   submit: { es: 'Enviar solicitud', en: 'Send request' },
   submitByMail: { es: 'Preparar el correo', en: 'Prepare the email' },
   mailOpened: {
-    es: 'Tu solicitud está lista. Envíala a {email} desde Gmail, Outlook o tu aplicación de correo, o cópiala y pégala donde prefieras.',
-    en: 'Your request is ready. Send it to {email} from Gmail, Outlook or your email app, or copy it and paste it wherever you like.',
+    es: 'Tu solicitud está lista. Envíala a {email} desde Gmail, Outlook o tu aplicación de correo, o cópiala.',
+    en: 'Your request is ready. Send it to {email} from Gmail, Outlook or your email app, or copy it.',
   },
   openGmail: { es: 'Abrir en Gmail', en: 'Open in Gmail' },
   openOutlook: { es: 'Abrir en Outlook', en: 'Open in Outlook' },
@@ -383,12 +383,12 @@ export const hireCopy = {
   summaryEdit: { es: 'Editar', en: 'Edit' },
   addDesign: { es: 'Añadir el diseño de experiencia web', en: 'Add web experience design' },
   budgetBelow: {
-    es: 'Tu presupuesto está por debajo del precio de partida de lo que elegiste. Puedes enviarlo igual, pero lo más probable es que haya que reducir el alcance.',
-    en: 'Your budget is below the starting price of what you picked. You can still send it, but the scope will most likely need to shrink.',
+    es: 'Tu presupuesto está por debajo del precio de partida de los servicios elegidos. Puedes enviarlo igual, pero probablemente habrá que reducir el alcance.',
+    en: 'Your budget is below the starting price of the selected services. You can still send it, but the scope will probably need to be reduced.',
   },
   success: {
-    es: 'Solicitud enviada. Te escribo a tu correo con los siguientes pasos.',
-    en: 'Request sent. I will write to your email with the next steps.',
+    es: 'Solicitud enviada. Te respondo por correo.',
+    en: 'Request sent. I will reply by email.',
   },
   failure: {
     es: 'No se pudo enviar la solicitud. Inténtalo de nuevo en unos minutos.',
@@ -421,8 +421,8 @@ export const hireErrors = {
     en: 'Select at least one main service.',
   },
   'design-required': {
-    es: 'El desarrollo web 3D necesita un diseño listo. Añade el diseño de la experiencia o indica que ya lo tienes.',
-    en: '3D web development needs a ready design. Add the experience design or confirm you already have one.',
+    es: 'La experiencia web 3D necesita un diseño terminado. Añade el diseño de experiencia web o indica que ya lo tienes.',
+    en: 'The 3D web experience needs a finished design. Add web experience design or confirm you already have one.',
   },
 } as const satisfies Record<string, LocalizedText>;
 
