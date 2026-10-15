@@ -1,9 +1,11 @@
 import { profile } from '../../content/profile.ts';
+import { archiveProjects } from '../../content/projects.ts';
 import { serviceCategories } from '../../content/services.ts';
 import { absoluteUrl, site, socialLinks } from '../../content/site.ts';
 import type { World } from '../../content/types.ts';
 import { type Locale, localeDefinitions, locales } from '../../shared/i18n/locales.ts';
 import { homePath } from '../../shared/i18n/paths.ts';
+import { mediaLibrary } from '../media.ts';
 
 type Node = Readonly<Record<string, unknown>>;
 
@@ -24,6 +26,7 @@ function personNode(locale: Locale): Node {
       addressCountry: profile.location.countryCode,
     },
     knowsAbout: profile.expertise[locale],
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad San Francisco de Quito' },
     sameAs: socialLinks.map((link) => link.href),
   };
 }
@@ -60,7 +63,45 @@ export function homeStructuredData(locale: Locale, path: string, title: string):
     websiteNode(),
     personNode(locale),
     { ...webPageNode('ProfilePage', locale, path, title), mainEntity: { '@id': personId } },
+    worksNode(locale, path),
   ]);
+}
+
+function worksNode(locale: Locale, path: string): Node {
+  return {
+    '@type': 'ItemList',
+    '@id': `${absoluteUrl(path)}#works`,
+    itemListElement: archiveProjects.map((project, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'CreativeWork',
+        name: project.title,
+        description: project.summary?.[locale],
+        image: project.cover ? absoluteUrl(mediaLibrary.imageUrl(project.cover)) : undefined,
+        dateCreated: project.publishedOn,
+        url: `${absoluteUrl(path)}#sheet-${project.id}`,
+        creator: { '@id': personId },
+        sameAs: project.links.map((link) => link.href),
+      },
+    })),
+  };
+}
+
+function trailerNode(world: World, locale: Locale): Node | undefined {
+  const video = world.blocks.find((block) => block.type === 'video' && block.provider === 'file');
+  if (video?.type !== 'video') {
+    return undefined;
+  }
+  return {
+    '@type': 'VideoObject',
+    name: video.title[locale],
+    description: world.summary[locale],
+    thumbnailUrl: absoluteUrl(mediaLibrary.ogImage(video.poster)),
+    contentUrl: absoluteUrl(video.id),
+    uploadDate: video.uploadDate,
+    duration: video.duration,
+  };
 }
 
 export function hireStructuredData(locale: Locale, path: string, title: string): Node {
@@ -109,6 +150,10 @@ export function worldStructuredData(locale: Locale, path: string, world: World):
       inLanguage: localeDefinitions[locale].htmlLang,
       author: { '@id': personId },
       creator: { '@id': personId },
+      image: world.cover ? absoluteUrl(mediaLibrary.ogImage(world.cover)) : undefined,
+      genre: world.game?.genres,
+      gamePlatform: world.game?.platforms,
+      trailer: trailerNode(world, locale),
       sameAs: world.links.map((link) => link.href),
     },
   ]);

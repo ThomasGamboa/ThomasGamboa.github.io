@@ -7,6 +7,7 @@ import { hirePath, projectPath, sectionPath } from '../../shared/i18n/paths.ts';
 import { renderBrandMark } from '../brand.ts';
 import { html, type SafeHtml } from '../html.ts';
 import type { PageContext } from '../page.ts';
+import { renderSecretMail } from './secret-mail.ts';
 
 function renderLinkGroup(id: string, title: string, links: readonly SafeHtml[]): SafeHtml {
   return html`<nav class="site-footer__group" aria-labelledby="footer-${id}">
@@ -44,6 +45,7 @@ export function renderFooter(context: PageContext): SafeHtml {
       <p class="site-footer__name">${profile.name}</p>
       <p class="site-footer__role">${profile.role[locale]}</p>
       <p class="site-footer__location">${profile.location.label[locale]}</p>
+      ${renderSecretMail(locale, 'footer')}
     </div>
     ${renderLinkGroup('experience', ui.footerExperience[locale], experience)}
     ${renderLinkGroup('pages', ui.footerPages[locale], pages)}

@@ -81,10 +81,12 @@ export type ContentBlock =
   | {
       readonly type: 'video';
       readonly heading?: LocalizedText;
-      readonly provider: 'youtube' | 'vimeo';
+      readonly provider: 'youtube' | 'vimeo' | 'file';
       readonly id: string;
       readonly title: LocalizedText;
       readonly poster: MediaReference;
+      readonly duration?: string;
+      readonly uploadDate?: string;
     }
   | {
       readonly type: 'process';
@@ -109,6 +111,8 @@ export interface World {
   readonly title: LocalizedText;
   readonly summary: LocalizedText;
   readonly schemaType: WorldSchemaType;
+  readonly cover: MediaReference | null;
+  readonly game?: { readonly genres: readonly string[]; readonly platforms: readonly string[] };
   readonly page: { readonly seo: SeoCopy; readonly action: LocalizedText } | null;
   readonly highlights: readonly Highlight[];
   readonly links: readonly ExternalLink[];

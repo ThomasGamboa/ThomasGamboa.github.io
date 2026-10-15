@@ -154,7 +154,8 @@
   }
 
   .video img,
-  .video iframe {
+  .video iframe,
+  .video video {
     position: absolute;
     inset: 0;
     width: 100%;

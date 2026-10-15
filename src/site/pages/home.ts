@@ -10,6 +10,7 @@ import { hirePath, projectPath } from '../../shared/i18n/paths.ts';
 import { renderContentBlocks } from '../components/content-blocks.ts';
 import { renderExperienceStage } from '../components/experience-stage.ts';
 import { renderHighlights } from '../components/highlights.ts';
+import { renderSecretMail } from '../components/secret-mail.ts';
 import { html, type SafeHtml } from '../html.ts';
 import { mediaLibrary } from '../media.ts';
 import type { PageContext, PageDocument } from '../page.ts';
@@ -36,9 +37,9 @@ function renderProjectMeta(project: ArchiveProject, locale: Locale): SafeHtml {
 
 function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml {
   return html`<li class="archive-item" data-project="${project.id}">
-  <article class="archive-item__card">
+  <article class="archive-item__card" data-cursor="${ui.cursorOpenProject[locale]}">
     ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
-    <h3 class="archive-item__title"><a class="archive-item__open" href="#${sheetId(project)}" aria-haspopup="dialog" data-sheet-open data-cursor="${ui.cursorOpenProject[locale]}">${project.title}</a></h3>
+    <h3 class="archive-item__title"><a class="archive-item__open" href="#${sheetId(project)}" aria-haspopup="dialog" data-sheet-open data-cursor="${ui.cursorOpenProject[locale]}"><span data-refract>${project.title}</span></a></h3>
     ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
     <p class="archive-item__meta">${renderProjectMeta(project, locale)}</p>
   </article>
@@ -134,7 +135,8 @@ function renderWorld(world: World, locale: Locale): SafeHtml {
     world.id,
     locale,
     'world',
-    html`<p class="eyebrow">${world.eyebrow[locale]}</p>
+    html`${world.cover ? mediaLibrary.picture(world.cover, locale, { sizes: '(min-width: 48rem) 42vw, 100vw', className: 'chapter__cover' }) : null}
+  <p class="eyebrow">${world.eyebrow[locale]}</p>
   <h2 class="chapter__title" id="${world.id}-title" data-reveal>${world.title[locale]}</h2>
   <p class="chapter__lead" data-reveal>${world.summary[locale]}</p>
   ${renderHighlights(world.highlights, locale)}
@@ -164,7 +166,8 @@ ${renderChapter(
   'contact',
   html`<h2 class="chapter__title" id="contact-title" data-reveal>${ui.contactHeading[locale]}</h2>
   <p class="chapter__lead" data-reveal>${ui.contactBody[locale]}</p>
-  <a class="chapter__action action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.contactAction[locale]}</a>`,
+  <a class="chapter__action action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.contactAction[locale]}</a>
+  ${renderSecretMail(locale, 'contact')}`,
 )}
 ${archiveProjects.map((project) => renderProjectSheet(project, locale))}`;
 

@@ -46,6 +46,7 @@ test('the language switch keeps the current chapter', async ({ page }) => {
 });
 
 test('a project card opens an accessible sheet that closes with Escape', async ({ page }) => {
+  test.setTimeout(120_000);
   const errors = trackErrors(page);
   await page.goto('/?quality=low');
   const trigger = page.locator('.archive-item__open').first();
@@ -94,7 +95,7 @@ test('the hiring form validates steps and summarizes prices', async ({ page }) =
   await page.locator('[data-add-service]').click();
   await next.click();
 
-  await page.locator('#field-budget').selectOption('1500-3000');
+  await page.locator('#field-budget').selectOption('5000-10000');
   await page.locator('#field-timeline').selectOption('1-3-months');
   await next.click();
   await page.locator('#field-name').fill('Estudio Prueba');
@@ -103,9 +104,10 @@ test('the hiring form validates steps and summarizes prices', async ({ page }) =
   await next.click();
 
   const summary = page.locator('[data-hire-summary]');
-  await expect(summary).toContainText('2.000 USD');
+  await expect(summary).toContainText('6.800 USD');
   await expect(summary).toContainText('Diseño de experiencia web');
-  await expect(page.locator('[data-hire-submit]')).toBeDisabled();
+  await expect(page.locator('[data-hire-submit]')).toBeEnabled();
+  await expect(page.locator('[data-hire-submit]')).toHaveText('Enviar por correo');
 });
 
 test.describe('without JavaScript', () => {

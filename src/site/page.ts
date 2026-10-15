@@ -12,6 +12,7 @@ export interface PageMeta {
   readonly title: string;
   readonly description: string;
   readonly openGraphType: 'website' | 'profile' | 'article';
+  readonly image?: { readonly url: string; readonly alt: string };
   readonly structuredData: Readonly<Record<string, unknown>> | null;
 }
 

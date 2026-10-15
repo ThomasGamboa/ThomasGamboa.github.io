@@ -35,5 +35,11 @@ export function bindProjectSheets(scope: Document): void {
       event.preventDefault();
       openSheet(sheet);
     });
+    trigger.closest('.archive-item__card')?.addEventListener('click', (event) => {
+      const link = event.target instanceof Element ? event.target.closest('a') : null;
+      if (!link) {
+        openSheet(sheet);
+      }
+    });
   }
 }

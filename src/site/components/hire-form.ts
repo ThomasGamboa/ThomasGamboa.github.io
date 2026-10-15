@@ -11,6 +11,7 @@ import { ui } from '../../content/ui.ts';
 import { formatIndex, formatPrice } from '../../shared/i18n/format.ts';
 import type { Locale } from '../../shared/i18n/locales.ts';
 import { attributes, html, type SafeHtml } from '../html.ts';
+import { mailPayload } from './secret-mail.ts';
 
 export interface HireFormOptions {
   readonly locale: Locale;
@@ -30,9 +31,14 @@ function describedBy(field: HireField): string {
   return [field.hint ? `hint-${field.id}` : null, `error-${field.id}`].filter(Boolean).join(' ');
 }
 
-function feedback(field: HireField, locale: Locale): SafeHtml {
-  return html`${field.hint ? html`<p class="field__hint" id="hint-${field.id}">${field.hint[locale]}</p>` : null}
-<p class="field__error" id="error-${field.id}" data-error-for="${field.id}" aria-live="polite"></p>`;
+function hint(field: HireField, locale: Locale): SafeHtml | null {
+  return field.hint
+    ? html`<p class="field__hint" id="hint-${field.id}">${field.hint[locale]}</p>`
+    : null;
+}
+
+function feedback(field: HireField): SafeHtml {
+  return html`<p class="field__error" id="error-${field.id}" data-error-for="${field.id}" aria-live="polite"></p>`;
 }
 
 function priceText(service: Service, locale: Locale): string {
@@ -61,14 +67,16 @@ function renderCatalog(field: HireField, categories: readonly ServiceCategory[],
 
   return html`<fieldset class="field field--catalog" data-field="${field.id}">
   <legend class="field__label">${field.label[locale]}</legend>
+  ${hint(field, locale)}
   ${groups}
-  ${feedback(field, locale)}
+  ${feedback(field)}
 </fieldset>`;
 }
 
 function renderChoices(field: HireField, locale: Locale, type: 'radio' | 'checkbox') {
   return html`<fieldset class="field field--choices" data-field="${field.id}"${attributes({ 'data-when-services': field.whenServices?.join(' ') })}>
   <legend class="field__label">${field.label[locale]}</legend>
+  ${hint(field, locale)}
   <div class="field__choices">${(field.options ?? []).map(
     (option) => html`<label class="choice">
     <input type="${type}" name="${field.id}" value="${option.value}"${attributes({ 'aria-describedby': describedBy(field) })}>
@@ -76,7 +84,7 @@ function renderChoices(field: HireField, locale: Locale, type: 'radio' | 'checkb
   </label>`,
   )}</div>
   ${field.id === 'designStatus' ? html`<button class="field__action" type="button" data-add-service="web-experience-design" hidden>${hireCopy.addDesign[locale]}</button>` : null}
-  ${feedback(field, locale)}
+  ${feedback(field)}
 </fieldset>`;
 }
 
@@ -131,13 +139,15 @@ function renderField(id: HireFieldId, locale: Locale): SafeHtml {
     <input type="checkbox" name="${field.id}" value="true"${attributes({ id: `field-${field.id}`, required: true, 'aria-describedby': describedBy(field) })}>
     <span>${field.label[locale]}</span>
   </label>
-  ${feedback(field, locale)}
+  ${hint(field, locale)}
+  ${feedback(field)}
 </div>`;
     default:
       return html`<div class="field" data-field="${field.id}"${attributes({ 'data-when-services': field.whenServices?.join(' ') })}>
   <label class="field__label" for="field-${field.id}">${field.label[locale]}</label>
+  ${hint(field, locale)}
   ${renderControl(field, locale)}
-  ${feedback(field, locale)}
+  ${feedback(field)}
 </div>`;
   }
 }
@@ -168,6 +178,7 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
     'data-locale': locale,
     'data-endpoint': endpoint,
     'data-site-key': siteKey,
+    ...(endpoint ? {} : mailPayload()),
   })}>
   <ol class="hire-progress" aria-hidden="true">${progress}</ol>
   <div class="hire-form__trap" aria-hidden="true">
@@ -178,9 +189,9 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
   <div class="hire-form__actions">
     <button class="hire-button action" type="button" data-hire-previous hidden>${hireCopy.previous[locale]}</button>
     <button class="hire-button action" type="button" data-hire-next hidden>${hireCopy.next[locale]}</button>
-    <button class="hire-button action" type="submit" data-hire-submit>${hireCopy.submit[locale]}</button>
+    <button class="hire-button action" type="submit" data-hire-submit>${endpoint ? hireCopy.submit[locale] : hireCopy.submitByMail[locale]}</button>
   </div>
-  <p class="hire-form__status" role="status" aria-live="polite" data-hire-status>${endpoint ? null : hireCopy.unavailable[locale]}</p>
+  <p class="hire-form__status" role="status" aria-live="polite" data-hire-status></p>
   <noscript><p class="hire-form__status">${hireCopy.noscript[locale]}</p></noscript>
 </form>`;
 }

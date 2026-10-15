@@ -5,6 +5,7 @@ import { mediaLibrary } from '../src/site/media.ts';
 import { renderRoute } from '../src/site/render.ts';
 import { buildRoutes } from '../src/site/routes.ts';
 import { renderRobots, renderSitemap } from '../src/site/seo/indexing.ts';
+import { routeImages } from '../src/site/seo/route-images.ts';
 
 await mediaLibrary.scan(process.cwd());
 
@@ -34,6 +35,13 @@ describe('rendered documents', () => {
         expect(count(document, /<title>[^<]+<\/title>/g)).toBe(1);
         expect(document).toMatch(/<meta name="description" content="[^"]{50,}">/);
         expect(document).toContain('<meta name="robots"');
+      });
+
+      it('describes every image with alternative text', () => {
+        const images = document.match(/<img\b[^>]*>/g) ?? [];
+        for (const image of images) {
+          expect(image).toMatch(/\salt="[^"]{3,}"/);
+        }
       });
 
       it('has exactly one h1 and a main landmark', () => {
@@ -69,6 +77,12 @@ describe('indexing files', () => {
     expect(count(sitemap, /<url>/g)).toBe(indexable.length);
     expect(sitemap).not.toContain('404.html');
     expect(sitemap).toContain('hreflang="x-default"');
+  });
+
+  it('lists page images for image search', () => {
+    const sitemap = renderSitemap(routes, routeImages);
+    expect(sitemap).toContain('xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"');
+    expect(count(sitemap, /<image:loc>https:\/\//g)).toBeGreaterThan(40);
   });
 
   it('points robots to the sitemap', () => {

@@ -60,11 +60,11 @@ function buildSections(request: HireRequest): Section[] {
         value: priceLabel(service),
       })),
       ...pricing.addons.map((service) => ({
-        label: `Adicional · ${service.name[reader]}`,
+        label: `Extra · ${service.name[reader]}`,
         value: priceLabel(service),
       })),
       {
-        label: 'Total inicial estimado',
+        label: 'Precio de partida',
         value: pricing.startingTotal ? `desde ${formatPrice(pricing.startingTotal, reader)}` : '—',
       },
     ],

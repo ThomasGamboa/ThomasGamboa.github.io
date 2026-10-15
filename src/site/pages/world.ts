@@ -4,6 +4,7 @@ import { sectionPath } from '../../shared/i18n/paths.ts';
 import { renderContentBlocks } from '../components/content-blocks.ts';
 import { renderHighlights } from '../components/highlights.ts';
 import { html } from '../html.ts';
+import { mediaLibrary } from '../media.ts';
 import type { PageContext, PageDocument } from '../page.ts';
 import { worldStructuredData } from '../seo/structured-data.ts';
 
@@ -29,6 +30,9 @@ export function renderWorldPage(context: PageContext, world: World): PageDocumen
       title: seo ? seo.title[locale] : world.title[locale],
       description: seo ? seo.description[locale] : world.summary[locale],
       openGraphType: 'article',
+      image: world.cover
+        ? { url: mediaLibrary.ogImage(world.cover), alt: world.cover.alt[locale] }
+        : undefined,
       structuredData: worldStructuredData(locale, route.path, world),
     },
     label: world.title[locale],

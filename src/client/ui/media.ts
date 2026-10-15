@@ -63,8 +63,25 @@ function bindGallery(gallery: HTMLElement): void {
   dialog.addEventListener('close', () => triggers[current]?.focus());
 }
 
+function playFile(container: HTMLElement, source: string): void {
+  const video = document.createElement('video');
+  video.src = source;
+  video.controls = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.setAttribute('aria-label', container.dataset.videoTitle ?? '');
+  container.replaceChildren(video);
+  container.dataset.state = 'playing';
+  video.play().catch(() => undefined);
+}
+
 function bindVideo(container: HTMLElement): void {
   const button = container.querySelector<HTMLButtonElement>('.video__play');
+  const file = container.dataset.videoFile;
+  if (button && file) {
+    button.addEventListener('click', () => playFile(container, file));
+    return;
+  }
   const source = container.dataset.videoEmbed;
   if (!button || !source) {
     return;
@@ -85,7 +102,9 @@ export function bindMedia(scope: ParentNode): void {
   for (const gallery of scope.querySelectorAll<HTMLElement>('[data-gallery]')) {
     bindGallery(gallery);
   }
-  for (const video of scope.querySelectorAll<HTMLElement>('[data-video-embed]')) {
+  for (const video of scope.querySelectorAll<HTMLElement>(
+    '[data-video-embed], [data-video-file]',
+  )) {
     bindVideo(video);
   }
 }

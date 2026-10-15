@@ -7,6 +7,7 @@ import { bindProjectSheets } from './project-sheets.ts';
 import { bindRefraction, refract } from './refraction.ts';
 import { revealOnScroll } from './reveal.ts';
 import { scramble } from './scramble.ts';
+import { bindSecretMail } from './secret-mail.ts';
 
 function whenStageReady(callback: () => void): void {
   const loader = document.querySelector<HTMLElement>('[data-loader]');
@@ -69,6 +70,7 @@ export function startInterface(): ChapterTracker {
   revealOnScroll(document);
   bindMedia(document);
   bindProjectSheets(document);
+  bindSecretMail(document);
   Cursor.mount(document.body);
   whenStageReady(() => {
     const headline = document.querySelector<HTMLElement>('h1');

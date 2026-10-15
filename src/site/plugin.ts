@@ -9,6 +9,7 @@ import { renderRoute } from './render.ts';
 import { buildRoutes, type Route } from './routes.ts';
 import { iconFiles, renderWebManifest } from './seo/icons.ts';
 import { renderRobots, renderSitemap } from './seo/indexing.ts';
+import { routeImages } from './seo/route-images.ts';
 import { injectSecurityPolicy } from './seo/security.ts';
 
 interface TextResponse {
@@ -27,11 +28,16 @@ const mediaTypes: Readonly<Record<string, string>> = {
   avif: 'image/avif',
   webp: 'image/webp',
   motion: 'image/webp',
+  og: 'image/jpeg',
 };
 
 function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {
   return [
-    { fileName: 'sitemap.xml', contentType: 'application/xml', body: renderSitemap(routes) },
+    {
+      fileName: 'sitemap.xml',
+      contentType: 'application/xml',
+      body: renderSitemap(routes, routeImages),
+    },
     { fileName: 'robots.txt', contentType: 'text/plain', body: renderRobots() },
     { fileName: 'favicon.svg', contentType: 'image/svg+xml', body: renderFavicon(palette.signal) },
     {
@@ -60,7 +66,7 @@ function createDevHandler(
     routesByPath.set(`/${route.outputFile}`, route);
   }
   const notFoundRoute = routes.find((route) => route.view.kind === 'not-found');
-  const staticFiles = buildStaticFiles(routes);
+  let staticFiles: readonly StaticFile[] | null = null;
 
   return async (
     request: Connect.IncomingMessage,
@@ -77,6 +83,7 @@ function createDevHandler(
       const url = new URL(request.url ?? '/', 'http://localhost');
       const pathname = decodeURIComponent(url.pathname);
 
+      staticFiles ??= buildStaticFiles(routes);
       const staticFile = staticFiles.find((file) => `/${file.fileName}` === pathname);
       if (staticFile) {
         send(response, { status: 200, ...staticFile });

@@ -1,6 +1,6 @@
 import { assetStorePublisher, itchProfile, voxelNestCatalog } from './catalog.ts';
 import { archiveProjects } from './projects.ts';
-import type { ExternalLink, World } from './types.ts';
+import type { ExternalLink, MediaReference, World } from './types.ts';
 
 const nightboundsBeta: ExternalLink = {
   kind: 'itch',
@@ -20,6 +20,19 @@ const itch: ExternalLink = {
   label: { es: 'itch.io', en: 'itch.io' },
 };
 
+function nightboundsShot(index: number, es: string, en: string): MediaReference {
+  return {
+    src: `worlds/nightbounds/${String(index).padStart(2, '0')}.webp`,
+    alt: { es, en },
+  };
+}
+
+const nightboundsKeyArt = nightboundsShot(
+  1,
+  'The Nightbounds: el logo sobre un caballero con una espada gigante en una colina de noche',
+  'The Nightbounds: the logo above a knight with a giant sword on a hill at night',
+);
+
 const freePackages = voxelNestCatalog.filter((item) => item.price === null).length;
 
 export const worlds: readonly World[] = [
@@ -34,6 +47,11 @@ export const worlds: readonly World[] = [
       en: 'An isometric open-world action roguelike inspired by Ecuadorian culture. By day you explore and grow stronger; by night you survive waves that come back hungrier every cycle.',
     },
     schemaType: 'VideoGame',
+    cover: nightboundsKeyArt,
+    game: {
+      genres: ['Roguelike', 'Action', 'Role-playing'],
+      platforms: ['Windows', 'Android'],
+    },
     page: {
       seo: {
         title: {
@@ -55,6 +73,16 @@ export const worlds: readonly World[] = [
     links: [nightboundsBeta],
     blocks: [
       {
+        type: 'video',
+        heading: { es: 'Teaser de la beta', en: 'Beta teaser' },
+        provider: 'file',
+        id: '/media/video/the-nightbounds-teaser-beta.mp4',
+        title: { es: 'Teaser de la beta de The Nightbounds', en: 'The Nightbounds beta teaser' },
+        poster: nightboundsKeyArt,
+        duration: 'PT1M19S',
+        uploadDate: '2026-10-07T20:16:00Z',
+      },
+      {
         type: 'text',
         heading: { es: 'El ciclo', en: 'The cycle' },
         paragraphs: {
@@ -67,6 +95,57 @@ export const worlds: readonly World[] = [
             'It is pixel art, with combat somewhere between bullet hell and hack and slash, and it runs on Windows and Android.',
           ],
         },
+      },
+      {
+        type: 'gallery',
+        heading: { es: 'Capturas', en: 'Screenshots' },
+        items: [
+          nightboundsShot(
+            2,
+            'Un caballero con espada en el borde de una isla de pasto rodeada de agua',
+            'A knight with a sword at the edge of a grassy island surrounded by water',
+          ),
+          nightboundsShot(
+            3,
+            'Una horda de esqueletos rodea al personaje en un campo de flores durante la noche',
+            'A horde of skeletons surrounds the player in a field of flowers at night',
+          ),
+          nightboundsShot(
+            4,
+            'Un arco de luz amarilla atraviesa a los enemigos junto a un altar de piedra',
+            'An arc of yellow light cuts through enemies next to a stone altar',
+          ),
+          nightboundsShot(
+            5,
+            'Relámpagos azules encadenan a varios enemigos bajo la lluvia',
+            'Blue lightning chains between several enemies in the rain',
+          ),
+          nightboundsShot(
+            6,
+            'Combate contra una horda bajo una luz roja, con proyectiles brillantes',
+            'Fighting a horde under red light, with glowing projectiles',
+          ),
+          nightboundsShot(
+            7,
+            'Aviso de evolución de clase: «Ahora eres el Ancestro Chamánico III»',
+            'Class evolution notice: “You are now the Shamanic Ancestor III”',
+          ),
+          nightboundsShot(
+            8,
+            'Pantalla para elegir una mejora entre Sed vampírica, Sanguinario arcano y Corte amplio',
+            'Upgrade screen offering Vampiric Thirst, Arcane Bloodthirst and Wide Cut',
+          ),
+          nightboundsShot(
+            9,
+            'Un altar de piedra con un cristal brillante en medio del pasto',
+            'A stone shrine with a glowing crystal in the middle of the grass',
+          ),
+          nightboundsShot(
+            10,
+            'Sprite en pixel art de una personaje con gorro rojo y poncho de colores',
+            'Pixel art sprite of a character in a red hat and a colorful poncho',
+          ),
+        ],
       },
       {
         type: 'text',
@@ -106,6 +185,7 @@ export const worlds: readonly World[] = [
       en: 'My Unity asset studio: cozy voxel environments, procedural skies, shaders and editor tools. Small, modular pieces that are ready to drop in.',
     },
     schemaType: 'CreativeWork',
+    cover: null,
     page: {
       seo: {
         title: {
@@ -164,6 +244,7 @@ export const worlds: readonly World[] = [
       en: 'Games, installations and apps from the last few years. Some you can play; others live in museums or on my hard drive.',
     },
     schemaType: 'CollectionPage',
+    cover: null,
     page: null,
     highlights: [],
     links: [],

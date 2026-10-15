@@ -7,6 +7,7 @@ import {
   hireSteps,
 } from '../../content/hiring.ts';
 import { ui } from '../../content/ui.ts';
+import { composeHireEmail } from '../../shared/hiring/email.ts';
 import { summarizePricing } from '../../shared/hiring/pricing.ts';
 import {
   fieldById,
@@ -17,6 +18,7 @@ import {
 import { type HireError, validateHireRequest } from '../../shared/hiring/validation.ts';
 import { formatPrice } from '../../shared/i18n/format.ts';
 import { isLocale, type Locale } from '../../shared/i18n/locales.ts';
+import { decodeMail } from '../ui/mail-code.ts';
 import { Verification } from './turnstile.ts';
 
 const draftKey = 'hire-request-draft';
@@ -133,7 +135,7 @@ export class HireForm {
     }
     if (this.#submit) {
       this.#submit.hidden = !last;
-      this.#submit.disabled = !this.#endpoint;
+      this.#submit.disabled = !this.#canSend;
     }
     if (stepId === 'review') {
       this.#renderSummary();
@@ -263,9 +265,31 @@ export class HireForm {
     }
   }
 
+  get #canSend(): boolean {
+    return Boolean(this.#endpoint || this.#form.dataset.mail);
+  }
+
+  #sendByMail(request: HireRequest): void {
+    const address = decodeMail(this.#form);
+    const email = composeHireEmail(request, {
+      receivedAt: new Date(),
+      origin: window.location.origin,
+    });
+    const query = new URLSearchParams({ subject: email.subject, body: email.text })
+      .toString()
+      .replaceAll('+', '%20');
+    window.location.href = `mailto:${address}?${query}`;
+    this.#clearDraft();
+    this.#setStatus(hireCopy.mailOpened[this.#locale].replace('{email}', address), 'success');
+  }
+
   async #send(request: HireRequest): Promise<void> {
     if (!this.#endpoint) {
-      this.#setStatus(hireCopy.unavailable[this.#locale]);
+      if (this.#form.dataset.mail) {
+        this.#sendByMail(request);
+      } else {
+        this.#setStatus(hireCopy.unavailable[this.#locale]);
+      }
       return;
     }
     const trap = new FormData(this.#form).get('trap');
@@ -328,8 +352,10 @@ export class HireForm {
     } finally {
       this.#sending = false;
       if (this.#submit) {
-        this.#submit.disabled = !this.#endpoint;
-        this.#submit.textContent = hireCopy.submit[this.#locale];
+        this.#submit.disabled = !this.#canSend;
+        this.#submit.textContent = this.#endpoint
+          ? hireCopy.submit[this.#locale]
+          : hireCopy.submitByMail[this.#locale];
       }
     }
   };

@@ -186,6 +186,7 @@ export function bindRefraction(scope: Document): void {
     if (from && target.contains(from)) {
       return;
     }
-    refract(target, { strength: 6, duration: 650 });
+    const surface = target.querySelector<HTMLElement>('[data-refract]') ?? target;
+    refract(surface, { strength: 6, duration: 650 });
   });
 }

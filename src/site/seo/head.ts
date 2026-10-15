@@ -30,7 +30,8 @@ function alternateLinks(context: PageContext): SafeHtml[] {
 
 function openGraph(context: PageContext, meta: PageMeta): SafeHtml {
   const definition = localeDefinitions[context.locale];
-  const image = absoluteUrl(`/og/thomas-gamboa-${context.locale}.jpg`);
+  const image = absoluteUrl(meta.image?.url ?? `/og/thomas-gamboa-${context.locale}.jpg`);
+  const imageAlt = meta.image?.alt ?? meta.title;
   const alternateLocales = locales
     .filter((locale) => locale !== context.locale && context.route.alternates[locale])
     .map(
@@ -48,9 +49,12 @@ ${alternateLocales}
 <meta property="og:image" content="${image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${meta.title}">
+<meta property="og:image:alt" content="${imageAlt}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${image}">`;
+<meta name="twitter:title" content="${meta.title}">
+<meta name="twitter:description" content="${meta.description}">
+<meta name="twitter:image" content="${image}">
+<meta name="twitter:image:alt" content="${imageAlt}">`;
 }
 
 export function renderHead(context: PageContext, meta: PageMeta): SafeHtml {

@@ -2,7 +2,7 @@ import type { ContentBlock } from '../../content/types.ts';
 import { ui } from '../../content/ui.ts';
 import { formatIndex, formatStorePrice } from '../../shared/i18n/format.ts';
 import type { Locale } from '../../shared/i18n/locales.ts';
-import { html, type SafeHtml } from '../html.ts';
+import { attributes, html, type SafeHtml } from '../html.ts';
 import { mediaLibrary } from '../media.ts';
 
 const embedOrigins = {
@@ -47,7 +47,7 @@ function renderBlock(block: ContentBlock, locale: Locale): SafeHtml {
     case 'video':
       return html`<section class="content-block content-block--video">
   ${block.heading ? html`<h2>${block.heading[locale]}</h2>` : null}
-  <div class="video" data-video-embed="${embedOrigins[block.provider](block.id)}" data-video-title="${block.title[locale]}">
+  <div class="video"${attributes(block.provider === 'file' ? { 'data-video-file': block.id } : { 'data-video-embed': embedOrigins[block.provider](block.id) })} data-video-title="${block.title[locale]}">
     ${mediaLibrary.picture(block.poster, locale, { sizes: '(min-width: 64rem) 70vw, 100vw' })}
     <button class="video__play" type="button" data-cursor="${ui.cursorPlay[locale]}">${ui.playVideo[locale]}: ${block.title[locale]}</button>
   </div>

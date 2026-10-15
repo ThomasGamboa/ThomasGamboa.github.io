@@ -30,7 +30,10 @@ export function summarizePricing(
 ): PricingSummary {
   const services = resolveServices(request.services);
   const addons = resolveServices(request.addons);
-  const amount = services.reduce((sum, service) => sum + (service.startingPrice?.amount ?? 0), 0);
+  const amount = [...services, ...addons].reduce(
+    (sum, service) => sum + (service.startingPrice?.amount ?? 0),
+    0,
+  );
   const startingTotal: Price | null = amount > 0 ? { amount, currency: 'USD' } : null;
   const maximum = budgetMaximum(request.budget);
   return {

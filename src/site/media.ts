@@ -15,7 +15,7 @@ const pixelArtWidth = 512;
 const formats = ['avif', 'webp'] as const;
 const supported = new Set(['.png', '.jpg', '.jpeg', '.webp']);
 
-type Format = (typeof formats)[number] | 'motion';
+type Format = (typeof formats)[number] | 'motion' | 'og';
 
 interface MediaSource {
   readonly key: string;
@@ -82,10 +82,7 @@ export class MediaLibrary {
   }
 
   picture(reference: MediaReference, locale: Locale, options: ImageOptions): SafeHtml {
-    const source = this.#sources.get(reference.src);
-    if (!source) {
-      throw new Error(`Media "${reference.src}" not found in ${mediaDirectory}`);
-    }
+    const source = this.#source(reference);
     const sets = formats.map((format) => {
       const variants = this.#variantsFor(source, format);
       return variants.map((variant) => `/${variant.fileName} ${variant.width}w`).join(', ');
@@ -114,6 +111,25 @@ export class MediaLibrary {
 </picture>`;
   }
 
+  imageUrl(reference: MediaReference): string {
+    const variant = this.#variantsFor(this.#source(reference), 'webp').at(-1);
+    return variant ? `/${variant.fileName}` : '';
+  }
+
+  ogImage(reference: MediaReference): string {
+    const source = this.#source(reference);
+    const fileName = `${mediaPublicPrefix}/${slugify(source.key)}-${source.hash}-og.jpg`;
+    const variant = this.#variants.get(fileName) ?? {
+      source,
+      width: 1200,
+      format: 'og',
+      fileName,
+    };
+    this.#variants.set(fileName, variant);
+    this.#used.add(fileName);
+    return `/${fileName}`;
+  }
+
   async render(variant: MediaVariant, cacheDirectory: string): Promise<Buffer> {
     const cached = path.join(cacheDirectory, variant.fileName.replaceAll('/', '_'));
     const existing = await readFile(cached).catch(() => null);
@@ -121,6 +137,15 @@ export class MediaLibrary {
       return existing;
     }
     const { source } = variant;
+    if (variant.format === 'og') {
+      const output = await sharp(source.file, { page: Math.floor(source.frames / 2) })
+        .resize(1200, 630, { fit: 'cover', position: 'attention' })
+        .jpeg({ quality: 84, mozjpeg: true })
+        .toBuffer();
+      await mkdir(cacheDirectory, { recursive: true });
+      await writeFile(cached, output);
+      return output;
+    }
     const animated = variant.format === 'motion';
     const pipeline = sharp(source.file, {
       animated,
@@ -149,6 +174,14 @@ export class MediaLibrary {
       this.#used.add(fileName);
       return variant;
     });
+  }
+
+  #source(reference: MediaReference): MediaSource {
+    const source = this.#sources.get(reference.src);
+    if (!source) {
+      throw new Error(`Media "${reference.src}" not found in ${mediaDirectory}`);
+    }
+    return source;
   }
 
   #motionVariantsFor(source: MediaSource): MediaVariant[] {

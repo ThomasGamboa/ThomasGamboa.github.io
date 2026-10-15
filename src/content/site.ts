@@ -5,8 +5,13 @@ export const site = {
   origin: 'https://thomasgamboa.github.io',
   name: 'Thomas Gamboa',
   themeColor: '#000000',
-  indexable: false,
-  googleSiteVerification: null as string | null,
+  indexable: true,
+  googleSiteVerification: 'z_LKLq8c4JsYf8vJ2gZhzg7hPCsIRAoTx444xusy5E4' as string | null,
+} as const;
+
+export const contactMail = {
+  user: 'vedaobmagsamoht',
+  host: 'moc.liamg',
 } as const;
 
 export const hiring = {

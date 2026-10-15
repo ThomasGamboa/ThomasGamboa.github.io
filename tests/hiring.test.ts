@@ -19,7 +19,7 @@ const valid: HireRequest = {
   headset: '',
   materials: '',
   requirements: '',
-  budget: '500-1500',
+  budget: '2000-5000',
   timeline: '1-3-months',
   deadline: '',
   name: 'Estudio Prueba',
@@ -109,9 +109,9 @@ describe('pricing summary', () => {
     const summary = summarizePricing({
       services: ['game-prototype', 'mobile-game'],
       addons: ['deployment'],
-      budget: '1500-3000',
+      budget: '5000-10000',
     });
-    expect(summary.startingTotal?.amount).toBe(3200);
+    expect(summary.startingTotal?.amount).toBe(10850);
     expect(summary.addons).toHaveLength(1);
     expect(summary.budgetBelowStart).toBe(true);
     expect(summarizePricing({ ...valid }).budgetBelowStart).toBe(false);
@@ -124,7 +124,7 @@ describe('hire email', () => {
       {
         ...valid,
         name: '<b>Estudio</b>',
-        budget: 'under-500',
+        budget: 'under-2000',
         services: ['meta-quest-vr'],
         headset: 'quest-3',
       },
@@ -134,8 +134,8 @@ describe('hire email', () => {
     expect(email.html).toContain('&lt;b&gt;Estudio&lt;/b&gt;');
     expect(email.html).not.toContain('<b>Estudio</b>');
     expect(email.text).toContain('Meta Quest 3');
-    expect(email.text).toContain('Despliegue y publicación');
-    expect(email.text).toContain('desde 700 USD');
+    expect(email.text).toContain('Extra · Publicación');
+    expect(email.text).toContain('desde 5.350 USD');
     expect(email.text).toContain('hola@example.com');
   });
 });
