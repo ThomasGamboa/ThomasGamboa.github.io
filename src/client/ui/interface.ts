@@ -1,6 +1,7 @@
 import { ChapterTracker } from './ChapterTracker.ts';
 import { Cursor } from './Cursor.ts';
 import { Hud } from './Hud.ts';
+import { bindMedia } from './media.ts';
 import { bindChapterLinks, bindLanguageLinks, bindSiteMenu } from './navigation.ts';
 import { revealOnScroll } from './reveal.ts';
 
@@ -14,6 +15,7 @@ export function startInterface(): ChapterTracker {
   bindLanguageLinks(document, tracker);
   bindSiteMenu(document);
   revealOnScroll(document);
+  bindMedia(document);
   Cursor.mount(document.body);
   return tracker;
 }

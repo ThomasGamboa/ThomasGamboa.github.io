@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { absoluteUrl } from '../src/content/site.ts';
 import { escapeHtml, html, raw } from '../src/site/html.ts';
+import { mediaLibrary } from '../src/site/media.ts';
 import { renderRoute } from '../src/site/render.ts';
 import { buildRoutes } from '../src/site/routes.ts';
 import { renderRobots, renderSitemap } from '../src/site/seo/indexing.ts';
+
+await mediaLibrary.scan(process.cwd());
 
 const routes = buildRoutes();
 

@@ -9,6 +9,7 @@ import type { Locale } from '../../shared/i18n/locales.ts';
 import { hirePath, projectPath } from '../../shared/i18n/paths.ts';
 import { renderExperienceStage } from '../components/experience-stage.ts';
 import { html, type SafeHtml } from '../html.ts';
+import { mediaLibrary } from '../media.ts';
 import type { PageContext, PageDocument } from '../page.ts';
 import { homeStructuredData } from '../seo/structured-data.ts';
 
@@ -29,6 +30,7 @@ function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml
 
   return html`<li class="archive-item" data-project="${project.id}">
   <article>
+    ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
     <h3 class="archive-item__title">${project.title}</h3>
     ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
     <dl class="archive-item__facts">

@@ -3,6 +3,7 @@ import path from 'node:path';
 import { type Connect, normalizePath, type Plugin, type ViteDevServer } from 'vite';
 import { palette } from '../shared/design/palette.ts';
 import { renderFavicon } from './brand.ts';
+import { mediaLibrary, mediaPublicPrefix } from './media.ts';
 import { renderRoute } from './render.ts';
 import { buildRoutes, type Route } from './routes.ts';
 import { renderRobots, renderSitemap } from './seo/indexing.ts';
@@ -19,6 +20,11 @@ interface StaticFile {
   readonly body: string;
 }
 
+const mediaTypes: Readonly<Record<string, string>> = {
+  avif: 'image/avif',
+  webp: 'image/webp',
+};
+
 function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {
   return [
     { fileName: 'sitemap.xml', contentType: 'application/xml', body: renderSitemap(routes) },
@@ -33,7 +39,12 @@ function send(response: ServerResponse, { status, contentType, body }: TextRespo
   response.end(body);
 }
 
-function createDevHandler(server: ViteDevServer, routes: readonly Route[]) {
+function createDevHandler(
+  server: ViteDevServer,
+  routes: readonly Route[],
+  root: string,
+  cacheDirectory: string,
+) {
   const routesByPath = new Map<string, Route>();
   for (const route of routes) {
     routesByPath.set(route.path, route);
@@ -53,12 +64,28 @@ function createDevHandler(server: ViteDevServer, routes: readonly Route[]) {
     }
 
     try {
+      await mediaLibrary.scan(root);
       const url = new URL(request.url ?? '/', 'http://localhost');
       const pathname = decodeURIComponent(url.pathname);
 
       const staticFile = staticFiles.find((file) => `/${file.fileName}` === pathname);
       if (staticFile) {
         send(response, { status: 200, ...staticFile });
+        return;
+      }
+
+      if (pathname.startsWith(`/${mediaPublicPrefix}/`)) {
+        const variant = mediaLibrary.variant(pathname.slice(1));
+        if (!variant) {
+          next();
+          return;
+        }
+        response.statusCode = 200;
+        response.setHeader(
+          'Content-Type',
+          mediaTypes[variant.format] ?? 'application/octet-stream',
+        );
+        response.end(await mediaLibrary.render(variant, cacheDirectory));
         return;
       }
 
@@ -98,13 +125,16 @@ function createDevHandler(server: ViteDevServer, routes: readonly Route[]) {
 export function staticSite(): Plugin {
   const routes = buildRoutes();
   let routesByFile = new Map<string, Route>();
+  let root = process.cwd();
+  let cacheDirectory = path.join(root, 'node_modules/.cache/media');
 
   return {
     name: 'portfolio:static-site',
     enforce: 'pre',
 
     config(userConfig) {
-      const root = path.resolve(userConfig.root ?? process.cwd());
+      root = path.resolve(userConfig.root ?? process.cwd());
+      cacheDirectory = path.join(root, 'node_modules/.cache/media');
       const input = Object.fromEntries(
         routes.map((route) => [route.id, path.join(root, route.outputFile)]),
       );
@@ -112,6 +142,10 @@ export function staticSite(): Plugin {
         routes.map((route) => [normalizePath(path.join(root, route.outputFile)), route]),
       );
       return { build: { rolldownOptions: { input } } };
+    },
+
+    async buildStart() {
+      await mediaLibrary.scan(root);
     },
 
     resolveId(id) {
@@ -125,13 +159,23 @@ export function staticSite(): Plugin {
     },
 
     configureServer(server) {
-      server.middlewares.use(createDevHandler(server, routes));
+      server.middlewares.use(createDevHandler(server, routes, root, cacheDirectory));
     },
 
-    generateBundle() {
+    async generateBundle() {
       for (const file of buildStaticFiles(routes)) {
         this.emitFile({ type: 'asset', fileName: file.fileName, source: file.body });
       }
+      const variants = mediaLibrary.usedVariants;
+      const outputs = await Promise.all(
+        variants.map((variant) => mediaLibrary.render(variant, cacheDirectory)),
+      );
+      variants.forEach((variant, index) => {
+        const source = outputs[index];
+        if (source) {
+          this.emitFile({ type: 'asset', fileName: variant.fileName, source });
+        }
+      });
     },
   };
 }

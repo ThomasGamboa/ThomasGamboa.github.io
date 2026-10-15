@@ -28,7 +28,8 @@
       "style": {
         "noNonNullAssertion": "error",
         "useConst": "error",
-        "useTemplate": "error"
+        "useTemplate": "error",
+        "noDescendingSpecificity": "off"
       },
       "suspicious": {
         "noConsole": {

@@ -11,6 +11,7 @@
 @import "./components/hud.css";
 @import "./components/site-footer.css";
 @import "./components/chapters.css";
+@import "./components/content-blocks.css";
 @import "./components/pointer.css";
 @import "./components/reveal.css";
 @import "./transitions.css";

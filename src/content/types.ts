@@ -14,6 +14,16 @@ export interface Collaborator {
   readonly href?: string;
 }
 
+export interface MediaReference {
+  readonly src: string;
+  readonly alt: LocalizedText;
+}
+
+export interface ProcessStep {
+  readonly title: LocalizedText;
+  readonly body: LocalizedText;
+}
+
 export interface SeoCopy {
   readonly title: LocalizedText;
   readonly description: LocalizedText;
@@ -34,6 +44,30 @@ export type ContentBlock =
       readonly type: 'links';
       readonly heading: LocalizedText;
       readonly items: readonly ExternalLink[];
+    }
+  | {
+      readonly type: 'media';
+      readonly image: MediaReference;
+      readonly caption?: LocalizedText;
+      readonly layout: 'wide' | 'inset';
+    }
+  | {
+      readonly type: 'gallery';
+      readonly heading?: LocalizedText;
+      readonly items: readonly MediaReference[];
+    }
+  | {
+      readonly type: 'video';
+      readonly heading?: LocalizedText;
+      readonly provider: 'youtube' | 'vimeo';
+      readonly id: string;
+      readonly title: LocalizedText;
+      readonly poster: MediaReference;
+    }
+  | {
+      readonly type: 'process';
+      readonly heading: LocalizedText;
+      readonly steps: readonly ProcessStep[];
     };
 
 export type WorldId = 'nightbounds' | 'voxelnest' | 'archive';
@@ -58,6 +92,7 @@ export interface ArchiveProject {
   readonly title: string;
   readonly publishedOn: string;
   readonly summary: LocalizedText | null;
+  readonly cover: MediaReference | null;
   readonly fields: Localized<readonly string[]>;
   readonly tools: readonly string[];
   readonly collaborators: readonly Collaborator[];

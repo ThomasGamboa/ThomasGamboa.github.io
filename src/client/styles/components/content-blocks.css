@@ -1,0 +1,211 @@
+@layer components {
+  .content-block {
+    display: grid;
+    gap: var(--space-m);
+    max-width: 72rem;
+  }
+
+  .content-block h2 {
+    font-size: var(--text-lead);
+    font-weight: var(--weight-light);
+  }
+
+  .content-block--stack ul,
+  .content-block--links ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-m);
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+  }
+
+  .content-block--media {
+    margin: 0;
+  }
+
+  .content-block--wide {
+    max-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+  }
+
+  .content-block--media img {
+    width: 100%;
+    height: auto;
+  }
+
+  .content-block figcaption {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-s);
+  }
+
+  .gallery__trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .gallery__trigger img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: scale var(--duration-slow) var(--ease-out-expo);
+  }
+
+  .gallery__trigger:hover img {
+    scale: 1.04;
+  }
+
+  .gallery__index {
+    position: absolute;
+    inset-block-start: var(--space-xs);
+    inset-inline-start: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    color: var(--color-text);
+    mix-blend-mode: difference;
+  }
+
+  .lightbox {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-xl) var(--gutter);
+    border: 0;
+    background-color: var(--color-veil);
+    color: var(--color-text);
+  }
+
+  .lightbox::backdrop {
+    background-color: rgb(0 0 0 / 0.6);
+    backdrop-filter: blur(10px);
+  }
+
+  .lightbox__stage {
+    display: grid;
+    place-items: center;
+    height: 100%;
+  }
+
+  .lightbox__stage img {
+    max-width: 100%;
+    max-height: calc(100svh - var(--space-xl) * 2);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .lightbox :is(.lightbox__close, .lightbox__previous, .lightbox__next) {
+    position: absolute;
+    padding: var(--space-s);
+    font-family: var(--font-mono);
+    font-size: var(--text-lead);
+    color: var(--color-text);
+  }
+
+  .lightbox :is(.lightbox__close, .lightbox__previous, .lightbox__next):hover {
+    color: var(--color-signal);
+  }
+
+  .lightbox__close {
+    inset-block-start: var(--space-s);
+    inset-inline-end: var(--gutter);
+  }
+
+  .lightbox__previous {
+    inset-block-start: 50%;
+    inset-inline-start: var(--space-s);
+  }
+
+  .lightbox__next {
+    inset-block-start: 50%;
+    inset-inline-end: var(--space-s);
+  }
+
+  .lightbox__counter {
+    position: absolute;
+    inset-block-end: var(--space-m);
+    inset-inline-start: var(--gutter);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    color: var(--color-text-muted);
+  }
+
+  .video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--color-void);
+  }
+
+  .video img,
+  .video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+
+  .video__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(transparent, rgb(0 0 0 / 0.5));
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .video__play:hover {
+    color: var(--color-signal);
+  }
+
+  .process {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-m);
+  }
+
+  .process__step {
+    display: grid;
+    gap: var(--space-xs);
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--color-line);
+  }
+
+  .process__index {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    color: var(--color-signal);
+  }
+
+  .process__step h3 {
+    font-size: var(--text-body);
+  }
+
+  .process__step p {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+  }
+}

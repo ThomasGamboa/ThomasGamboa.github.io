@@ -17,8 +17,15 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Apangora',
     publishedOn: '2024-04-01',
     summary: {
-      es: 'Experiencia interactiva desarrollada en Unity con Microsoft Kinect.',
-      en: 'Interactive experience developed in Unity with Microsoft Kinect.',
+      es: 'Instalación interactiva desarrollada en Unity con Microsoft Kinect.',
+      en: 'Interactive installation developed in Unity with Microsoft Kinect.',
+    },
+    cover: {
+      src: 'projects/apangora/cover.png',
+      alt: {
+        es: 'Apangora, instalación interactiva: título sobre un bosque iluminado',
+        en: 'Apangora, interactive installation: title over a lit forest',
+      },
     },
     fields: interactionDesign,
     tools: ['Unity 3D', 'Microsoft Kinect', 'Visual Studio Code'],
@@ -30,6 +37,13 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Alma Virtual',
     publishedOn: '2024-03-06',
     summary: null,
+    cover: {
+      src: 'projects/alma-virtual/cover.jpg',
+      alt: {
+        es: 'Alma Virtual: escaleras y puertas suspendidas sobre el agua',
+        en: 'Alma Virtual: stairs and doors suspended above water',
+      },
+    },
     fields: interactionDesign,
     tools: ['Unity 3D', 'Adobe Photoshop', 'Adobe Audition'],
     collaborators: [carlaMagica],
@@ -42,6 +56,13 @@ export const archiveProjects: readonly ArchiveProject[] = [
     summary: {
       es: 'Recorrido interactivo por la biodiversidad del Ecuador desarrollado en Unity.',
       en: 'Interactive journey through the biodiversity of Ecuador, developed in Unity.',
+    },
+    cover: {
+      src: 'projects/ecuador-biodiversity-tour/cover.png',
+      alt: {
+        es: 'Ecuador Biodiversity Tour en pantalla: menú sobre un bosque tropical',
+        en: 'Ecuador Biodiversity Tour on screen: menu over a tropical forest',
+      },
     },
     fields: {
       es: ['Diseño de interacción', 'Diseño gráfico'],
@@ -59,6 +80,13 @@ export const archiveProjects: readonly ArchiveProject[] = [
       es: 'Aplicación móvil para descubrir eventos cercanos.',
       en: 'Mobile app for discovering nearby events.',
     },
+    cover: {
+      src: 'projects/apparte/cover.png',
+      alt: {
+        es: 'APPARTE en un teléfono: lista de eventos cercanos',
+        en: 'APPARTE on a phone: list of nearby events',
+      },
+    },
     fields: interactionDesign,
     tools: ['Ionic', 'Angular', 'Firebase', 'Figma', 'Adobe Illustrator', 'Adobe After Effects'],
     collaborators: [carlaMagica],
@@ -72,6 +100,13 @@ export const archiveProjects: readonly ArchiveProject[] = [
       es: 'Aplicación interactiva con una línea del tiempo sobre la moneda en Ecuador.',
       en: 'Interactive app featuring a timeline of currency in Ecuador.',
     },
+    cover: {
+      src: 'projects/app-bce-cuenca/cover.png',
+      alt: {
+        es: 'APP BCE Cuenca en una tableta: línea del tiempo de la moneda en Ecuador',
+        en: 'APP BCE Cuenca on a tablet: timeline of currency in Ecuador',
+      },
+    },
     fields: interactionDesign,
     tools: ['Unity 3D', 'Adobe Illustrator', 'Adobe After Effects'],
     collaborators: [],
@@ -84,6 +119,13 @@ export const archiveProjects: readonly ArchiveProject[] = [
     summary: {
       es: 'Sitio web interactivo en formato de videojuego 2D, desarrollado con Unity para WebGL.',
       en: 'Interactive website built as a 2D video game, developed with Unity for WebGL.',
+    },
+    cover: {
+      src: 'projects/dim-web/cover.png',
+      alt: {
+        es: 'DIM Web en un monitor: personaje pixel art junto a un cartel',
+        en: 'DIM Web on a monitor: pixel art character next to a sign',
+      },
     },
     fields: interactionDesign,
     tools: ['Unity 3D', 'C#', 'WebGL', 'JavaScript', 'Adobe Photoshop', 'Adobe Illustrator'],
