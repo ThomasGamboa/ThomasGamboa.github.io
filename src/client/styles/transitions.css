@@ -1,0 +1,42 @@
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out-expo);
+}
+
+::view-transition-old(root) {
+  animation: page-exit 380ms var(--ease-in-out-quart) both;
+}
+
+::view-transition-new(root) {
+  animation: page-enter 900ms var(--ease-out-expo) both;
+}
+
+@keyframes page-exit {
+  to {
+    opacity: 0;
+    filter: blur(8px);
+    scale: 0.985;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

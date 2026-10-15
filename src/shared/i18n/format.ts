@@ -13,6 +13,10 @@ export function formatPrice(price: Price, locale: Locale): string {
   return `${amount} ${price.currency}`;
 }
 
+export function formatIndex(index: number): string {
+  return String(index).padStart(2, '0');
+}
+
 export function formatMonth(isoDate: string, locale: Locale): string {
   return new Intl.DateTimeFormat(localeDefinitions[locale].intlLocale, {
     year: 'numeric',

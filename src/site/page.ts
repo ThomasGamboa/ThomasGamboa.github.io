@@ -17,6 +17,7 @@ export interface PageMeta {
 
 export interface PageDocument {
   readonly meta: PageMeta;
+  readonly label: string;
   readonly main: SafeHtml;
   readonly overlay?: SafeHtml;
 }

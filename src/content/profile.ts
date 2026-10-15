@@ -10,6 +10,10 @@ export const profile = {
     locality: 'Quito',
     countryCode: 'EC',
     label: { es: 'Quito, Ecuador', en: 'Quito, Ecuador' } satisfies LocalizedText,
+    latitude: -0.1807,
+    longitude: -78.4678,
+    timeZone: 'America/Guayaquil',
+    utcOffsetLabel: 'UTC−5',
   },
   summary: {
     es: 'Diseñador interactivo y artista de nuevos medios en Quito, Ecuador. Desarrollo videojuegos, experiencias web 3D y proyectos multimedia donde el diseño, la programación y el arte digital se cruzan.',

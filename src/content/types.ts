@@ -69,6 +69,7 @@ export type ChapterId = 'hero' | 'about' | WorldId | 'contact';
 export interface Chapter {
   readonly id: ChapterId;
   readonly anchor: LocalizedText;
+  readonly label: LocalizedText;
 }
 
 export type ServiceRequirement = {

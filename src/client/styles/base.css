@@ -2,6 +2,7 @@
   :root {
     color-scheme: dark;
     background-color: var(--color-void);
+    scroll-padding-block-start: 4rem;
   }
 
   body {
@@ -9,7 +10,9 @@
     color: var(--color-text);
     font-family: var(--font-sans);
     font-size: var(--text-body);
+    font-weight: var(--weight-body);
     line-height: var(--leading-body);
+    font-synthesis: none;
     overflow-x: clip;
   }
 
@@ -17,7 +20,7 @@
   h2,
   h3,
   h4 {
-    font-weight: 300;
+    font-weight: var(--weight-light);
     line-height: var(--leading-tight);
     text-wrap: balance;
   }
@@ -37,6 +40,13 @@
     color: var(--color-signal);
   }
 
+  button {
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+
   :focus-visible {
     outline: 1px solid var(--color-signal);
     outline-offset: 4px;
@@ -45,6 +55,13 @@
   ::selection {
     background-color: var(--color-signal);
     color: var(--color-void);
+  }
+
+  .brand-symbol {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
   }
 
   .skip-link {

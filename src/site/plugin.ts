@@ -1,6 +1,8 @@
 import type { ServerResponse } from 'node:http';
 import path from 'node:path';
 import { type Connect, normalizePath, type Plugin, type ViteDevServer } from 'vite';
+import { palette } from '../shared/design/palette.ts';
+import { renderFavicon } from './brand.ts';
 import { renderRoute } from './render.ts';
 import { buildRoutes, type Route } from './routes.ts';
 import { renderRobots, renderSitemap } from './seo/indexing.ts';
@@ -9,6 +11,20 @@ interface TextResponse {
   readonly status: number;
   readonly contentType: string;
   readonly body: string;
+}
+
+interface StaticFile {
+  readonly fileName: string;
+  readonly contentType: string;
+  readonly body: string;
+}
+
+function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {
+  return [
+    { fileName: 'sitemap.xml', contentType: 'application/xml', body: renderSitemap(routes) },
+    { fileName: 'robots.txt', contentType: 'text/plain', body: renderRobots() },
+    { fileName: 'favicon.svg', contentType: 'image/svg+xml', body: renderFavicon(palette.signal) },
+  ];
 }
 
 function send(response: ServerResponse, { status, contentType, body }: TextResponse): void {
@@ -24,6 +40,7 @@ function createDevHandler(server: ViteDevServer, routes: readonly Route[]) {
     routesByPath.set(`/${route.outputFile}`, route);
   }
   const notFoundRoute = routes.find((route) => route.view.kind === 'not-found');
+  const staticFiles = buildStaticFiles(routes);
 
   return async (
     request: Connect.IncomingMessage,
@@ -39,16 +56,9 @@ function createDevHandler(server: ViteDevServer, routes: readonly Route[]) {
       const url = new URL(request.url ?? '/', 'http://localhost');
       const pathname = decodeURIComponent(url.pathname);
 
-      if (pathname === '/sitemap.xml') {
-        send(response, {
-          status: 200,
-          contentType: 'application/xml',
-          body: renderSitemap(routes),
-        });
-        return;
-      }
-      if (pathname === '/robots.txt') {
-        send(response, { status: 200, contentType: 'text/plain', body: renderRobots() });
+      const staticFile = staticFiles.find((file) => `/${file.fileName}` === pathname);
+      if (staticFile) {
+        send(response, { status: 200, ...staticFile });
         return;
       }
 
@@ -119,8 +129,9 @@ export function staticSite(): Plugin {
     },
 
     generateBundle() {
-      this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: renderSitemap(routes) });
-      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: renderRobots() });
+      for (const file of buildStaticFiles(routes)) {
+        this.emitFile({ type: 'asset', fileName: file.fileName, source: file.body });
+      }
     },
   };
 }

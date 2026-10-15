@@ -1,24 +1,35 @@
-import { chapterAnchor } from '../../content/chapters.ts';
+import { chapters } from '../../content/chapters.ts';
 import { site } from '../../content/site.ts';
 import { ui } from '../../content/ui.ts';
-import { worlds } from '../../content/worlds.ts';
-import { localeDefinitions, locales } from '../../shared/i18n/locales.ts';
-import { hirePath, homePath, sectionPath } from '../../shared/i18n/paths.ts';
+import { type Locale, localeDefinitions, locales } from '../../shared/i18n/locales.ts';
+import { hirePath, homePath } from '../../shared/i18n/paths.ts';
+import { renderBrandMark } from '../brand.ts';
 import { attributes, html, type SafeHtml } from '../html.ts';
 import type { PageContext } from '../page.ts';
 
-function languageSwitch(context: PageContext): SafeHtml {
+function chapterAnchorsFor(context: PageContext, locale: Locale): string | null {
+  if (context.route.view.kind !== 'home') {
+    return null;
+  }
+  return JSON.stringify(
+    Object.fromEntries(chapters.map((chapter) => [chapter.id, chapter.anchor[locale]])),
+  );
+}
+
+function renderLanguageSwitch(context: PageContext): SafeHtml {
   const items = locales.map((locale) => {
     const definition = localeDefinitions[locale];
     const href = context.route.alternates[locale] ?? homePath(locale);
-    const current = locale === context.locale;
     return html`<li><a${attributes({
+      class: 'language-switch__link',
       href,
       hreflang: definition.hreflang,
       lang: definition.htmlLang,
-      title: definition.label,
-      'aria-current': current ? 'true' : null,
+      'aria-label': definition.label,
+      'aria-current': locale === context.locale ? 'true' : null,
+      'data-tooltip': definition.label,
       'data-language-link': locale,
+      'data-chapter-anchors': chapterAnchorsFor(context, locale),
     })}>${definition.shortLabel}</a></li>`;
   });
 
@@ -29,21 +40,17 @@ function languageSwitch(context: PageContext): SafeHtml {
 
 export function renderHeader(context: PageContext): SafeHtml {
   const { locale } = context;
-  const firstWorld = worlds[0];
-  const navigation = [
-    { href: sectionPath(locale, chapterAnchor('about')[locale]), label: ui.navAbout[locale] },
-    firstWorld
-      ? { href: sectionPath(locale, firstWorld.anchor[locale]), label: ui.navProjects[locale] }
-      : null,
-    { href: sectionPath(locale, chapterAnchor('contact')[locale]), label: ui.navContact[locale] },
-  ].filter((item) => item !== null);
 
-  return html`<header class="site-header" data-site-header>
-  <a class="site-header__brand" href="${homePath(locale)}" aria-label="${ui.homeLinkLabel[locale]}">${site.name}</a>
-  <nav class="site-header__navigation" aria-label="${ui.primaryNavigation[locale]}">
-    <ol class="site-header__list">${navigation.map((item) => html`<li><a href="${item.href}">${item.label}</a></li>`)}</ol>
-  </nav>
-  <a class="site-header__action" href="${hirePath(locale)}">${ui.navHire[locale]}</a>
-  ${languageSwitch(context)}
+  return html`<header class="site-header">
+  <a class="brand" href="${homePath(locale)}" aria-label="${ui.homeLinkLabel[locale]}">
+    ${renderBrandMark('brand__mark')}
+    <span class="brand__name" aria-hidden="true">${site.name}</span>
+  </a>
+  <a class="site-header__action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.navHire[locale]}</a>
+  ${renderLanguageSwitch(context)}
+  <button class="menu-toggle" type="button" popovertarget="site-menu" aria-controls="site-menu">
+    <span class="menu-toggle__label">${ui.menuToggle[locale]}</span>
+    <span class="menu-toggle__glyph" aria-hidden="true"></span>
+  </button>
 </header>`;
 }

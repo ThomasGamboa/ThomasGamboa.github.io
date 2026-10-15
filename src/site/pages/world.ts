@@ -13,7 +13,7 @@ export function renderWorldPage(context: PageContext, world: World): PageDocumen
   const main = html`<article class="page page--world" data-world="${world.id}" aria-labelledby="world-title">
   <header class="page__header">
     <p class="eyebrow">${world.eyebrow[locale]}</p>
-    <h1 class="page__title" id="world-title">${world.title[locale]}</h1>
+    <h1 class="page__title" id="world-title" data-reveal>${world.title[locale]}</h1>
     <p class="page__lead">${world.summary[locale]}</p>
   </header>
   ${renderContentBlocks(world.blocks, locale)}
@@ -29,6 +29,7 @@ export function renderWorldPage(context: PageContext, world: World): PageDocumen
       openGraphType: 'article',
       structuredData: worldStructuredData(locale, route.path, world),
     },
+    label: world.title[locale],
     main,
   };
 }

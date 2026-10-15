@@ -1,7 +1,10 @@
 import { ui } from '../../content/ui.ts';
 import { localeDefinitions } from '../../shared/i18n/locales.ts';
+import { renderBrandSymbol } from '../brand.ts';
 import { renderFooter } from '../components/footer.ts';
 import { renderHeader } from '../components/header.ts';
+import { renderHud } from '../components/hud.ts';
+import { renderSiteMenu } from '../components/site-menu.ts';
 import { html } from '../html.ts';
 import type { PageContext, PageDocument } from '../page.ts';
 import { clientEntries } from '../routes.ts';
@@ -16,9 +19,12 @@ export function renderDocument(context: PageContext, page: PageDocument): string
 ${renderHead(context, page.meta)}
 </head>
 <body>
+${renderBrandSymbol()}
 <a class="skip-link" href="#main">${ui.skipToContent[locale]}</a>
 ${page.overlay ?? null}
+${renderHud(context, page.label)}
 ${renderHeader(context)}
+${renderSiteMenu(context)}
 <main id="main" class="site-main" tabindex="-1">
 ${page.main}
 </main>

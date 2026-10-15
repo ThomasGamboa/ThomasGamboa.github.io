@@ -38,7 +38,7 @@ export function renderHirePage(context: PageContext): PageDocument {
   const main = html`<div class="page page--hire">
   <header class="page__header">
     <p class="eyebrow">${ui.hireEyebrow[locale]}</p>
-    <h1 class="page__title">${ui.hireHeading[locale]}</h1>
+    <h1 class="page__title" data-reveal>${ui.hireHeading[locale]}</h1>
     <p class="page__lead">${ui.hireIntro[locale]}</p>
   </header>
   <section class="services" aria-labelledby="services-title">
@@ -61,6 +61,7 @@ export function renderHirePage(context: PageContext): PageDocument {
       openGraphType: 'website',
       structuredData: hireStructuredData(locale, route.path, title),
     },
+    label: ui.hireEyebrow[locale],
     main,
   };
 }

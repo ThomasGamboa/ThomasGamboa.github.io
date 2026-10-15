@@ -31,6 +31,7 @@ export function renderNotFoundPage(context: PageContext): PageDocument {
       openGraphType: 'website',
       structuredData: null,
     },
+    label: ui.notFoundEyebrow[locale],
     main,
   };
 }

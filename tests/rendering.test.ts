@@ -72,3 +72,59 @@ describe('indexing files', () => {
     expect(renderRobots()).toContain(`Sitemap: ${absoluteUrl('/sitemap.xml')}`);
   });
 });
+
+describe('navigation integrity', () => {
+  const documents = new Map(
+    routes.map((route) => [route.path, renderRoute(route, new Date('2026-01-01T00:00:00Z'))]),
+  );
+
+  function ids(document: string): string[] {
+    return [...document.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1] ?? '');
+  }
+
+  it('never repeats an id within a document', () => {
+    for (const [path, document] of documents) {
+      const all = ids(document);
+      expect(
+        all.filter((id, index) => all.indexOf(id) !== index),
+        path,
+      ).toEqual([]);
+    }
+  });
+
+  it('resolves every internal link to an existing page and anchor', () => {
+    for (const [path, document] of documents) {
+      for (const [, href] of document.matchAll(/href="(\/[^"]*)"/g)) {
+        if (!href || href.startsWith('/src/') || /\.(ico|svg)$/.test(href)) {
+          continue;
+        }
+        const [target = '', anchor] = href.split('#');
+        const targetDocument = documents.get(target);
+        expect(targetDocument, `${path} → ${href}`).toBeDefined();
+        if (anchor && targetDocument) {
+          expect(ids(targetDocument), `${path} → ${href}`).toContain(anchor);
+        }
+      }
+    }
+  });
+
+  it('maps every chapter to an anchor in each language link of the experience', () => {
+    const home = documents.get('/') ?? '';
+    const anchorMaps = [...home.matchAll(/data-chapter-anchors="([^"]+)"/g)].map(
+      (match) => JSON.parse((match[1] ?? '').replaceAll('&quot;', '"')) as Record<string, string>,
+    );
+    expect(anchorMaps).toHaveLength(2);
+    const chapterIds = [...home.matchAll(/data-chapter="([^"]+)"/g)].map((match) => match[1]);
+    for (const anchors of anchorMaps) {
+      expect(Object.keys(anchors).sort()).toEqual([...chapterIds].sort());
+    }
+  });
+
+  it('wires the index popover and the SVG favicon on every page', () => {
+    for (const [path, document] of documents) {
+      expect(count(document, /id="site-menu"[^>]*popover/g), path).toBe(1);
+      expect(document, path).toContain('popovertarget="site-menu"');
+      expect(document, path).toContain('href="/favicon.svg"');
+    }
+  });
+});

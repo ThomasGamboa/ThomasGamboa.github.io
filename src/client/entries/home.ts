@@ -1,5 +1,8 @@
 import '../styles/main.css';
 import { LoadingScreen } from '../loading/LoadingScreen.ts';
+import { startInterface } from '../ui/interface.ts';
+
+startInterface();
 
 const loadingScreen = LoadingScreen.attach(document);
 const canvas = document.querySelector<HTMLCanvasElement>('[data-experience-canvas]');

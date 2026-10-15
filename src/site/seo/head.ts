@@ -67,7 +67,8 @@ ${canonical}
 ${alternateLinks(context)}
 ${openGraph(context, meta)}
 ${verification}
-<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>document.documentElement.classList.replace('no-js', 'js')</script>
 ${meta.structuredData ? jsonScript(meta.structuredData) : null}`;
 }
