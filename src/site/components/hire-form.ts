@@ -192,6 +192,18 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
     <button class="hire-button action" type="submit" data-hire-submit>${endpoint ? hireCopy.submit[locale] : hireCopy.submitByMail[locale]}</button>
   </div>
   <p class="hire-form__status" role="status" aria-live="polite" data-hire-status></p>
+  ${
+    endpoint
+      ? null
+      : html`<div class="hire-fallback" data-hire-fallback hidden>
+    <label class="field__label" for="hire-fallback-text">${hireCopy.fallbackLabel[locale]}</label>
+    <textarea class="hire-fallback__text" id="hire-fallback-text" rows="12" readonly data-hire-fallback-text></textarea>
+    <div class="hire-fallback__actions">
+      <button class="hire-button action" type="button" data-hire-copy>${hireCopy.copyRequest[locale]}</button>
+      <a class="hire-button action" href="#hire-fallback-text" data-hire-mailto>${hireCopy.openMail[locale]}</a>
+    </div>
+  </div>`
+  }
   <noscript><p class="hire-form__status">${hireCopy.noscript[locale]}</p></noscript>
 </form>`;
 }

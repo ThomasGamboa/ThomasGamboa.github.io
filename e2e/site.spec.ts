@@ -123,6 +123,11 @@ test('the hiring form validates steps and summarizes prices', async ({ page }) =
   await expect(summary).toContainText('Diseño de experiencia web');
   await expect(page.locator('[data-hire-submit]')).toBeEnabled();
   await expect(page.locator('[data-hire-submit]')).toHaveText('Enviar por correo');
+  await page.locator('[data-hire-submit]').click();
+  const fallback = page.locator('[data-hire-fallback]');
+  await expect(fallback).toBeVisible();
+  await expect(fallback.locator('textarea')).toHaveValue(/Experiencia web 3D/);
+  await expect(page.locator('[data-hire-status]')).toContainText('@');
 });
 
 test.describe('without JavaScript', () => {

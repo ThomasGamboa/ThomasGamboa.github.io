@@ -278,9 +278,36 @@ export class HireForm {
     const query = new URLSearchParams({ subject: email.subject, body: email.text })
       .toString()
       .replaceAll('+', '%20');
-    window.location.href = `mailto:${address}?${query}`;
+    const href = `mailto:${address}?${query}`;
+    this.#showFallback(href, `${email.subject}\n\n${email.text}`);
+    window.location.href = href;
     this.#clearDraft();
+    this.#form.dataset.state = 'sent';
     this.#setStatus(hireCopy.mailOpened[this.#locale].replace('{email}', address), 'success');
+  }
+
+  #showFallback(href: string, content: string): void {
+    const fallback = element(this.#form, '[data-hire-fallback]');
+    const text = fallback?.querySelector<HTMLTextAreaElement>('[data-hire-fallback-text]');
+    const copy = fallback?.querySelector<HTMLButtonElement>('[data-hire-copy]');
+    const mailto = fallback?.querySelector<HTMLAnchorElement>('[data-hire-mailto]');
+    if (!fallback || !text || !copy || !mailto) {
+      return;
+    }
+    text.value = content;
+    mailto.href = href;
+    fallback.hidden = false;
+    copy.onclick = () => {
+      navigator.clipboard
+        .writeText(content)
+        .then(() => {
+          copy.textContent = hireCopy.copied[this.#locale];
+        })
+        .catch(() => {
+          text.focus();
+          text.select();
+        });
+    };
   }
 
   async #send(request: HireRequest): Promise<void> {

@@ -346,6 +346,33 @@
     display: none;
   }
 
+  .hire-fallback {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .hire-fallback[hidden] {
+    display: none;
+  }
+
+  .hire-fallback__text {
+    width: 100%;
+    padding: var(--space-s);
+    border: 1px solid var(--color-line-strong);
+    background-color: var(--color-void);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    line-height: var(--leading-body);
+    resize: vertical;
+  }
+
+  .hire-fallback__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+  }
+
   .hire-form[data-state="sent"] .hire-form__status {
     font-size: var(--text-lead);
     color: var(--color-text);
