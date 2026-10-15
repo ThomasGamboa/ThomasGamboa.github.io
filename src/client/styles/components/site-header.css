@@ -81,6 +81,8 @@
   }
 
   .language-switch__link {
+    display: inline-block;
+    padding-block: 0.25rem;
     color: var(--color-text-faint);
   }
 
