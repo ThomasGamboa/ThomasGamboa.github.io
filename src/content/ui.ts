@@ -41,6 +41,7 @@ export const ui = {
   projectFields: { es: 'Disciplinas', en: 'Disciplines' },
   projectPublished: { es: 'Publicado', en: 'Published' },
   projectCollaborators: { es: 'En colaboración con', en: 'In collaboration with' },
+  projectAwards: { es: 'Reconocimientos', en: 'Awards' },
   backToExperience: { es: 'Volver a la experiencia', en: 'Back to the experience' },
   contactHeading: { es: 'Trabajemos juntos', en: 'Let’s work together' },
   contactBody: {

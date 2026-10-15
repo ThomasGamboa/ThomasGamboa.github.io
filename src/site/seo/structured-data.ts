@@ -27,6 +27,9 @@ function personNode(locale: Locale): Node {
     },
     knowsAbout: profile.expertise[locale],
     alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad San Francisco de Quito' },
+    award: archiveProjects.flatMap((project) =>
+      project.awards.map((award) => `${award[locale]} (${project.title})`),
+    ),
     sameAs: socialLinks.map((link) => link.href),
   };
 }
@@ -82,6 +85,7 @@ function worksNode(locale: Locale, path: string): Node {
         dateCreated: project.publishedOn,
         url: `${absoluteUrl(path)}#sheet-${project.id}`,
         creator: { '@id': personId },
+        award: project.awards.length ? project.awards.map((award) => award[locale]) : undefined,
         sameAs: project.links.map((link) => link.href),
       },
     })),

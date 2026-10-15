@@ -131,6 +131,7 @@ export interface ArchiveProject {
   readonly collaborators: readonly Collaborator[];
   readonly links: readonly ExternalLink[];
   readonly story: Localized<readonly string[]>;
+  readonly awards: readonly LocalizedText[];
   readonly gallery: readonly MediaReference[];
   readonly video: { readonly id: string; readonly title: LocalizedText } | null;
 }

@@ -40,6 +40,7 @@ function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml
   <article class="archive-item__card" data-cursor="${ui.cursorOpenProject[locale]}">
     ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
     <h3 class="archive-item__title"><a class="archive-item__open" href="#${sheetId(project)}" aria-haspopup="dialog" data-sheet-open data-cursor="${ui.cursorOpenProject[locale]}"><span data-refract>${project.title}</span></a></h3>
+    ${project.awards.length ? html`<p class="archive-item__award">${project.awards.map((award) => award[locale]).join(' · ')}</p>` : null}
     ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
     <p class="archive-item__meta">${renderProjectMeta(project, locale)}</p>
   </article>
@@ -86,6 +87,7 @@ function renderProjectSheet(project: ArchiveProject, locale: Locale): SafeHtml {
     </header>
     <div class="project-sheet__story">${project.story[locale].map((paragraph) => html`<p>${paragraph}</p>`)}</div>
     <dl class="archive-item__facts">
+      ${project.awards.length ? html`<dt>${ui.projectAwards[locale]}</dt><dd>${project.awards.map((award, index) => html`${index > 0 ? html`<br>` : null}${award[locale]}`)}</dd>` : null}
       <dt>${ui.projectTools[locale]}</dt>
       <dd>${project.tools.join(', ')}</dd>
       ${collaborators}

@@ -1,7 +1,7 @@
 import type { ArchiveProject, Collaborator, ExternalLink, MediaReference } from './types.ts';
 
-const carlaMagica: Collaborator = {
-  name: 'Carla Mágica',
+const carlaTorres: Collaborator = {
+  name: 'Carla Torres',
   href: 'https://www.behance.net/carlamagica',
 };
 
@@ -28,8 +28,8 @@ export const archiveProjects: readonly ArchiveProject[] = [
     title: 'Apangora',
     publishedOn: '2024-04-01',
     summary: {
-      es: 'Un cuento interactivo sobre los manglares y el mar del Ecuador, pensado para el Museo del Agua Yaku. Se juega con el cuerpo: un Kinect lee tus movimientos y los convierte en la forma de recorrer la historia.',
-      en: 'An interactive tale about Ecuador’s mangroves and sea, designed for the Yaku Water Museum. You play it with your body: a Kinect reads your movements and turns them into the way through the story.',
+      es: 'Un cuento interactivo sobre los manglares y el mar del Ecuador, expuesto en el Museo del Agua Yaku. Se juega con el cuerpo: un Kinect lee tus movimientos y los convierte en la forma de recorrer la historia.',
+      en: 'An interactive tale about Ecuador’s mangroves and sea, shown at the Yaku Water Museum. You play it with your body: a Kinect reads your movements and turns them into the way through the story.',
     },
     cover: {
       src: 'projects/apangora/cover.png',
@@ -40,20 +40,29 @@ export const archiveProjects: readonly ArchiveProject[] = [
     },
     fields: interactionDesign,
     tools: ['Unity 3D', 'Microsoft Kinect', 'Visual Studio Code'],
-    collaborators: [carlaMagica],
+    collaborators: [carlaTorres],
     links: [behanceLink('https://www.behance.net/gallery/195281135/Apangora')],
     story: {
       es: [
         'Apangora es una proyección interactiva sobre los ecosistemas marinos del Ecuador: los manglares y humedales de la costa. Antes de diseñar hubo trabajo de campo en el humedal de La Segua, en Manabí, y la historia está construida sobre lo que salió de ese estudio.',
         'Funciona como un cuento. Adultos y niños recorren el manglar y el mar, ayudan a animales atrapados y entienden por qué los manglares importan, en una experiencia pensada para estimular los sentidos.',
         'No hay controles. Un Kinect reconoce los gestos y esa es toda la interfaz: te paras frente a la proyección, en una zona marcada en el piso, y mueves las manos.',
+        'Con Carla Torres ganamos el Premio COCOA 2024 y el premio Proyectos IT Universidades de Revista IT ese mismo año, y la instalación se expuso en el Museo del Agua Yaku, en Quito.',
       ],
       en: [
         'Apangora is an interactive projection about Ecuador’s marine ecosystems: the mangroves and wetlands of the coast. Before any design there was fieldwork at La Segua wetland, in Manabí, and the story is built on what came out of that study.',
         'It works like a tale. Adults and children wander the mangrove and the sea, help trapped animals and get why mangroves matter, in an experience made to stimulate the senses.',
         'There are no controllers. A Kinect recognizes gestures and that is the whole interface: you stand in front of the projection, on a marked spot on the floor, and move your hands.',
+        'With Carla Torres we won the 2024 COCOA Award and, that same year, Revista IT’s IT University Projects award, and the installation was shown at the Yaku Water Museum in Quito.',
       ],
     },
+    awards: [
+      { es: 'Ganador del Premio COCOA 2024', en: 'Winner of the 2024 COCOA Award' },
+      {
+        es: 'Ganador del premio Proyectos IT Universidades 2024, Revista IT',
+        en: 'Winner of the 2024 IT University Projects award, Revista IT',
+      },
+    ],
     gallery: [
       shot(
         'apangora',
@@ -102,7 +111,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
     },
     fields: interactionDesign,
     tools: ['Unity 3D', 'Adobe Photoshop', 'Adobe Audition'],
-    collaborators: [carlaMagica],
+    collaborators: [carlaTorres],
     links: [behanceLink('https://www.behance.net/gallery/193245431/Alma-Virtual')],
     story: {
       es: [
@@ -116,6 +125,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
         'It was one of 24 projects selected for the 2023 BUAM Multimedia Art Biennial, “Liquid spaces: politics of the screen”, and was shown at the Contemporary Art Center in Quito and the National Cacao Museum in Guayaquil.',
       ],
     },
+    awards: [],
     gallery: [
       shot(
         'alma-virtual',
@@ -202,6 +212,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
         'The interface is minimal on purpose: anyone can use it without instructions and just stay to look at the landscape.',
       ],
     },
+    awards: [],
     gallery: [
       shot(
         'ecuador-biodiversity-tour',
@@ -253,7 +264,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
     },
     fields: interactionDesign,
     tools: ['Ionic', 'Angular', 'Firebase', 'Figma', 'Adobe Illustrator', 'Adobe After Effects'],
-    collaborators: [carlaMagica],
+    collaborators: [carlaTorres],
     links: [behanceLink('https://www.behance.net/gallery/191470123/APPARTE')],
     story: {
       es: [
@@ -267,6 +278,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
         'It is built with Ionic and Angular, styled with Sass, and the backend is a non-relational model on Firebase.',
       ],
     },
+    awards: [],
     gallery: [
       shot(
         'apparte',
@@ -326,6 +338,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
         'It was built for Android and lives only at the museum.',
       ],
     },
+    awards: [],
     gallery: [
       shot(
         'app-bce-cuenca',
@@ -394,6 +407,7 @@ export const archiveProjects: readonly ArchiveProject[] = [
         'The point was to show the program’s mix of creativity and code with something students could build once they joined. It stayed online until early 2024.',
       ],
     },
+    awards: [],
     gallery: [
       shot(
         'dim-web',

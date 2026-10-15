@@ -7,7 +7,11 @@ export interface SitemapImage {
   readonly url: string;
 }
 
-function sitemapEntry(route: Route, images: readonly SitemapImage[]): string {
+function sitemapEntry(
+  route: Route,
+  images: readonly SitemapImage[],
+  lastModified: string | null,
+): string {
   const alternates = locales.flatMap((locale) => {
     const path = route.alternates[locale];
     return path
@@ -25,6 +29,7 @@ function sitemapEntry(route: Route, images: readonly SitemapImage[]): string {
   return [
     '  <url>',
     `    <loc>${escapeHtml(absoluteUrl(route.path))}</loc>`,
+    ...(lastModified ? [`    <lastmod>${lastModified}</lastmod>`] : []),
     ...alternates,
     ...images.map(
       (image) => `    <image:image><image:loc>${escapeHtml(image.url)}</image:loc></image:image>`,
@@ -36,10 +41,11 @@ function sitemapEntry(route: Route, images: readonly SitemapImage[]): string {
 export function renderSitemap(
   routes: readonly Route[],
   imagesFor: (route: Route) => readonly SitemapImage[] = () => [],
+  lastModified: string | null = null,
 ): string {
   const entries = routes
     .filter((route) => route.indexable)
-    .map((route) => sitemapEntry(route, imagesFor(route)));
+    .map((route) => sitemapEntry(route, imagesFor(route), lastModified));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',

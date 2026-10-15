@@ -36,7 +36,7 @@ function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {
     {
       fileName: 'sitemap.xml',
       contentType: 'application/xml',
-      body: renderSitemap(routes, routeImages),
+      body: renderSitemap(routes, routeImages, new Date().toISOString().slice(0, 10)),
     },
     { fileName: 'robots.txt', contentType: 'text/plain', body: renderRobots() },
     { fileName: 'favicon.svg', contentType: 'image/svg+xml', body: renderFavicon(palette.signal) },

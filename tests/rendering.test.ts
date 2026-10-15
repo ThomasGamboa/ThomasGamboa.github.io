@@ -83,6 +83,11 @@ describe('indexing files', () => {
     const sitemap = renderSitemap(routes, routeImages);
     expect(sitemap).toContain('xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"');
     expect(count(sitemap, /<image:loc>https:\/\//g)).toBeGreaterThan(40);
+    const dated = renderSitemap(routes, routeImages, '2026-10-15');
+    expect(count(dated, /<lastmod>2026-10-15<\/lastmod>/g)).toBe(
+      routes.filter((route) => route.indexable).length,
+    );
+    expect(dated.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset')).toBe(true);
   });
 
   it('points robots to the sitemap', () => {

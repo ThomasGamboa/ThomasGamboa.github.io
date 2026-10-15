@@ -118,6 +118,15 @@
     outline-offset: 3px;
   }
 
+  .archive-item__award {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--color-signal);
+    text-shadow: var(--glow-signal);
+  }
+
   .archive-item__meta {
     font-family: var(--font-mono);
     font-size: var(--text-micro);

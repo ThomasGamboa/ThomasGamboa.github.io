@@ -56,6 +56,18 @@ export const profile = {
         },
       },
       {
+        period: '2024',
+        title: {
+          es: 'Premio COCOA y premio Proyectos IT Universidades',
+          en: 'COCOA Award and IT University Projects award',
+        },
+        place: { es: 'Apangora · con Carla Torres', en: 'Apangora · with Carla Torres' },
+        body: {
+          es: 'Apangora ganó el Premio COCOA 2024 y el premio Proyectos IT Universidades de Revista IT, y se expuso en el Museo del Agua Yaku.',
+          en: 'Apangora won the 2024 COCOA Award and Revista IT’s IT University Projects award, and was shown at the Yaku Water Museum.',
+        },
+      },
+      {
         period: '2023 — 2024',
         title: { es: 'La moneda en Ecuador', en: 'La moneda en Ecuador' },
         place: { es: 'Banco Central del Ecuador · Cuenca', en: 'Central Bank of Ecuador · Cuenca' },
