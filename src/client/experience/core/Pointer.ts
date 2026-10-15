@@ -25,6 +25,7 @@ export class Pointer {
   constructor() {
     window.addEventListener('pointermove', this.#onMove, { passive: true });
     window.addEventListener('pointerdown', this.#onDown, { passive: true });
+    window.addEventListener('mousedown', this.#onMouseDown);
     window.addEventListener('pointerup', this.#onUp, { passive: true });
     window.addEventListener('pointercancel', this.#onCancel, { passive: true });
     document.documentElement.addEventListener('pointerleave', this.#onLeave);
@@ -71,6 +72,7 @@ export class Pointer {
   dispose(): void {
     window.removeEventListener('pointermove', this.#onMove);
     window.removeEventListener('pointerdown', this.#onDown);
+    window.removeEventListener('mousedown', this.#onMouseDown);
     window.removeEventListener('pointerup', this.#onUp);
     window.removeEventListener('pointercancel', this.#onCancel);
     document.documentElement.removeEventListener('pointerleave', this.#onLeave);
@@ -83,7 +85,7 @@ export class Pointer {
     };
   }
 
-  #isScene(event: PointerEvent): boolean {
+  #isScene(event: MouseEvent): boolean {
     return !(event.target instanceof Element && event.target.closest(ignoredSelector));
   }
 
@@ -105,6 +107,14 @@ export class Pointer {
       this.#target.x = point.x;
       this.#target.y = point.y;
     }
+  };
+
+  readonly #onMouseDown = (event: MouseEvent): void => {
+    if (event.button !== 0 || !this.#isScene(event)) {
+      return;
+    }
+    event.preventDefault();
+    window.getSelection()?.removeAllRanges();
   };
 
   readonly #onDown = (event: PointerEvent): void => {

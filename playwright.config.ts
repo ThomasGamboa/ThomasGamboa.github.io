@@ -19,9 +19,11 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: `npm run build && npx vite preview --port ${port} --strictPort`,
+    command: process.env.E2E_PREBUILT
+      ? `npx vite preview --port ${port} --strictPort`
+      : `npm run build && npx vite preview --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
+    timeout: 600_000,
   },
 });

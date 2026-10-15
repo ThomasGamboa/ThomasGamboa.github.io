@@ -63,6 +63,21 @@ test('a project card opens an accessible sheet that closes with Escape', async (
   expect(errors).toEqual([]);
 });
 
+test('dragging the 3D view does not select the chapter text', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Mouse drag only');
+  test.setTimeout(120_000);
+  await page.goto('/?quality=low#sobre-mi');
+  await expect(page.locator('[data-loader]')).toHaveAttribute('data-state', 'complete', {
+    timeout: 90_000,
+  });
+  const viewport = page.viewportSize() ?? { width: 1280, height: 720 };
+  await page.mouse.move(viewport.width * 0.8, viewport.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(viewport.width * 0.05, viewport.height * 0.4, { steps: 12 });
+  await page.mouse.up();
+  expect(await page.evaluate('String(getSelection() ?? "")')).toBe('');
+});
+
 test('the index opens as a popover and closes with Escape', async ({ page }) => {
   await page.goto('/contratar/');
   await page.locator('.menu-toggle').click();

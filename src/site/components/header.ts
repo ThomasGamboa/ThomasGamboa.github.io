@@ -48,7 +48,7 @@ export function renderHeader(context: PageContext): SafeHtml {
   <a class="site-header__action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.navHire[locale]}</a>
   ${renderLanguageSwitch(context)}
   <button class="menu-toggle" type="button" popovertarget="site-menu" aria-controls="site-menu">
-    <span class="menu-toggle__label">${ui.menuToggle[locale]}</span>
+    <span class="menu-toggle__label visually-hidden">${ui.menuToggle[locale]}</span>
     <span class="menu-toggle__glyph" aria-hidden="true"></span>
   </button>
 </header>`;
