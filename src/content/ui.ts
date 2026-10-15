@@ -48,7 +48,7 @@ export const ui = {
   },
   contactAction: { es: 'Iniciar una solicitud', en: 'Start a request' },
   hireEyebrow: { es: 'Contratación', en: 'Hiring' },
-  hireHeading: { es: 'Contratar a Thomas Gamboa', en: 'Hire Thomas Gamboa' },
+  hireHeading: { es: 'Empecemos un proyecto juntos', en: 'Let’s start a project together' },
   hireIntro: {
     es: 'Elige los servicios, revisa los precios de partida y describe tu proyecto. Respondo cada solicitud con una propuesta.',
     en: 'Choose the services, review the starting prices and describe your project. I reply to every request with a proposal.',
