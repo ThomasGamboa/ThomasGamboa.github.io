@@ -17,6 +17,12 @@
     align-content: center;
   }
 
+  @media (max-aspect-ratio: 3 / 4) {
+    .chapter--hero {
+      align-content: end;
+    }
+  }
+
   .hero__title {
     display: grid;
     gap: var(--space-s);

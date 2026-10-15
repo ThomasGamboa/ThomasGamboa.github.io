@@ -1,6 +1,9 @@
-import { PerspectiveCamera, Scene } from 'three';
+import { PerspectiveCamera, Scene, type WebGLRenderTarget } from 'three';
 import { experienceAssets } from './assets.ts';
+import { CameraRig } from './camera/CameraRig.ts';
+import { heroShot, MutableShot, resolveShot } from './camera/shots.ts';
 import { type AssetRegistry, loadAssets } from './core/AssetLoader.ts';
+import { Pointer } from './core/Pointer.ts';
 import { PostProcessing } from './core/PostProcessing.ts';
 import type { ProgressListener } from './core/progress.ts';
 import { WeightedProgress } from './core/progress.ts';
@@ -17,6 +20,10 @@ import { type FrameState, Ticker } from './core/Ticker.ts';
 import { Viewport, type ViewportState } from './core/Viewport.ts';
 import { createRenderProfile, type RenderProfile } from './profile.ts';
 import { Cube } from './world/cube/Cube.ts';
+import { createEnvironmentMap } from './world/environment/environment-map.ts';
+import { Sky } from './world/environment/Sky.ts';
+import { Water } from './world/landscape/Water.ts';
+import { Dust } from './world/particles/Dust.ts';
 import type { WorldModule } from './world/WorldModule.ts';
 
 export interface ExperienceOptions {
@@ -34,7 +41,11 @@ export class Experience {
   readonly profile: RenderProfile = createRenderProfile();
   readonly post: PostProcessing;
   readonly assets: AssetRegistry;
+  readonly pointer = new Pointer();
+  readonly rig: CameraRig;
   readonly #modules: WorldModule[];
+  readonly #environment: WebGLRenderTarget;
+  readonly #shot = new MutableShot();
   readonly #monitor = new FrameRateMonitor({
     targetFps: 45,
     windowSeconds: 2,
@@ -67,7 +78,12 @@ export class Experience {
     this.renderer.resize(this.viewport.state);
 
     this.camera = new PerspectiveCamera(40, this.viewport.state.aspect, 0.1, 2000);
-    this.camera.position.set(0, 0, 4.5);
+    this.rig = new CameraRig(this.camera, this.pointer);
+    this.rig.setShot(resolveShot(heroShot, this.viewport.state.aspect, this.#shot));
+
+    const skyMap = assets.get('sky', 'environment') ?? null;
+    this.#environment = createEnvironmentMap(this.renderer.instance, skyMap);
+    this.scene.environment = this.#environment.texture;
 
     this.post = new PostProcessing(
       this.renderer.instance,
@@ -78,10 +94,16 @@ export class Experience {
     );
     this.post.resize(this.viewport.state);
 
-    this.#modules = [new Cube()];
+    this.#modules = [
+      new Sky(this.camera, skyMap),
+      new Water(this.viewport.state),
+      new Cube(),
+      new Dust({ center: [0, 4, -6], extent: [48, 9, 46] }, 7),
+    ];
     for (const module of this.#modules) {
       this.scene.add(module.object);
       module.applyQuality?.(this.#quality);
+      module.resize?.(this.viewport.state);
     }
 
     this.viewport.onChange(this.#onResize);
@@ -110,6 +132,8 @@ export class Experience {
       module.dispose();
     }
     this.post.dispose();
+    this.#environment.dispose();
+    this.pointer.dispose();
     this.assets.dispose();
     this.renderer.dispose();
   }
@@ -128,9 +152,15 @@ export class Experience {
     this.camera.updateProjectionMatrix();
     this.renderer.resize(state);
     this.post.resize(state);
+    this.rig.setShot(resolveShot(heroShot, state.aspect, this.#shot));
+    for (const module of this.#modules) {
+      module.resize?.(state);
+    }
   };
 
   readonly #onFrame = (frame: FrameState): void => {
+    this.pointer.update(frame.delta);
+    this.rig.update(frame);
     for (const module of this.#modules) {
       module.update(frame);
     }

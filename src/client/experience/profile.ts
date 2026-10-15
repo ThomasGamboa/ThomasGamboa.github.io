@@ -9,9 +9,9 @@ export interface RenderProfile {
 export function createRenderProfile(): RenderProfile {
   return {
     exposure: 1,
-    bloom: { intensity: 1.15, threshold: 0.42, smoothing: 0.3, radius: 0.78 },
+    bloom: { intensity: 0.95, threshold: 0.62, smoothing: 0.25, radius: 0.6 },
     chromaticAberration: { offset: 0.0011 },
-    grain: { opacity: 0.075 },
+    grain: { opacity: 0.06 },
     vignette: { offset: 0.28, darkness: 0.78 },
   };
 }
