@@ -56,7 +56,8 @@ void main() {
   vec3 groundedSky = texture2D(uSkyMap, equirectangularUv(direction)).rgb * uSkyIntensity;
   disk = 0.0;
 #else
-  vec3 groundedSky = (atmosphere + eclipse) * (1.0 - disk);
+  float grounded = pow(1.0 - uSpace, 4.0);
+  vec3 groundedSky = (atmosphere + eclipse * grounded) * (1.0 - disk * grounded);
 #endif
   vec3 color = mix(groundedSky, nebula, uSpace) + vec3(stars) * starVisibility * (1.0 - disk * (1.0 - uSpace));
   gl_FragColor = vec4(color, 1.0);

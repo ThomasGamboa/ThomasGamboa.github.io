@@ -1,7 +1,7 @@
 import { Vector3 } from 'three';
 import type { CameraShot } from './CameraRig.ts';
 
-type Triple = readonly [number, number, number];
+export type Triple = readonly [number, number, number];
 
 export interface ShotFrame {
   readonly position: Triple;
@@ -51,3 +51,57 @@ export const heroShot: ResponsiveShot = {
   landscape: { position: [0, 1.45, 10.2], target: [-2.8, 2.3, 0], fov: 34 },
   portrait: { position: [0, 1.5, 12.5], target: [0, 0.55, 0], fov: 52 },
 };
+
+export const aboutShot: ResponsiveShot = {
+  landscape: { position: [0.3, 2.5, 2.5], target: [-1.35, 2.3, 0], fov: 48 },
+  portrait: { position: [0, 2.7, 2.6], target: [0, 1.6, 0], fov: 64 },
+};
+
+function offset(center: Triple, radius: number, x: number, y: number, z: number): Triple {
+  return [center[0] + x * radius, center[1] + y * radius, center[2] + z * radius];
+}
+
+export function orbitShot(center: Triple, radius: number): ResponsiveShot {
+  return {
+    landscape: {
+      position: offset(center, radius, -0.75, 0.25, 4.6),
+      target: offset(center, radius, -1, 0, 0),
+      fov: 36,
+    },
+    portrait: {
+      position: offset(center, radius, 0, 0.4, 6.2),
+      target: offset(center, radius, 0, -0.95, 0),
+      fov: 54,
+    },
+  };
+}
+
+export function singularityShot(center: Triple, radius: number): ResponsiveShot {
+  return {
+    landscape: {
+      position: offset(center, radius, -1.4, 0.75, 7.6),
+      target: offset(center, radius, -2.2, 0, 0),
+      fov: 40,
+    },
+    portrait: {
+      position: offset(center, radius, 0, 1.1, 12),
+      target: offset(center, radius, 0, -1.9, 0),
+      fov: 58,
+    },
+  };
+}
+
+export function diveShot(center: Triple, radius: number): ResponsiveShot {
+  return {
+    landscape: {
+      position: offset(center, radius, -0.12, 0.2, 3.1),
+      target: offset(center, radius, -0.25, 0, 0),
+      fov: 52,
+    },
+    portrait: {
+      position: offset(center, radius, 0, 0.3, 4.4),
+      target: offset(center, radius, 0, -0.35, 0),
+      fov: 66,
+    },
+  };
+}

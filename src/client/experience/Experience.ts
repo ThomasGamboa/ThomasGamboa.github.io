@@ -1,7 +1,6 @@
 import { PerspectiveCamera, Scene, type WebGLRenderTarget } from 'three';
 import { experienceAssets } from './assets.ts';
 import { CameraRig } from './camera/CameraRig.ts';
-import { heroShot, MutableShot, resolveShot } from './camera/shots.ts';
 import { type AssetRegistry, loadAssets } from './core/AssetLoader.ts';
 import { Pointer } from './core/Pointer.ts';
 import { PostProcessing } from './core/PostProcessing.ts';
@@ -19,11 +18,10 @@ import { Renderer } from './core/Renderer.ts';
 import { type FrameState, Ticker } from './core/Ticker.ts';
 import { Viewport, type ViewportState } from './core/Viewport.ts';
 import { createRenderProfile, type RenderProfile } from './profile.ts';
-import { Cube } from './world/cube/Cube.ts';
+import { Director } from './timeline/Director.ts';
+import { ScrollTimeline } from './timeline/ScrollTimeline.ts';
+import { composeWorld } from './world/compose.ts';
 import { createEnvironmentMap } from './world/environment/environment-map.ts';
-import { Sky } from './world/environment/Sky.ts';
-import { Water } from './world/landscape/Water.ts';
-import { Dust } from './world/particles/Dust.ts';
 import type { WorldModule } from './world/WorldModule.ts';
 
 export interface ExperienceOptions {
@@ -43,9 +41,10 @@ export class Experience {
   readonly assets: AssetRegistry;
   readonly pointer = new Pointer();
   readonly rig: CameraRig;
-  readonly #modules: WorldModule[];
+  readonly timeline: ScrollTimeline;
+  readonly #director: Director;
+  readonly #modules: readonly WorldModule[];
   readonly #environment: WebGLRenderTarget;
-  readonly #shot = new MutableShot();
   readonly #monitor = new FrameRateMonitor({
     targetFps: 45,
     windowSeconds: 2,
@@ -60,7 +59,7 @@ export class Experience {
     const assets = await loadAssets(experienceAssets, (progress) => stages.set('assets', progress));
     const experience = new Experience(options.canvas, assets, options.tierOverride);
     stages.set('build', 1);
-    await experience.renderer.instance.compileAsync(experience.scene, experience.camera);
+    await experience.#compile();
     stages.set('compile', 1);
     return experience;
   }
@@ -79,11 +78,26 @@ export class Experience {
 
     this.camera = new PerspectiveCamera(40, this.viewport.state.aspect, 0.1, 2000);
     this.rig = new CameraRig(this.camera, this.pointer);
-    this.rig.setShot(resolveShot(heroShot, this.viewport.state.aspect, this.#shot));
+    this.timeline = new ScrollTimeline(document);
 
     const skyMap = assets.get('sky', 'environment') ?? null;
     this.#environment = createEnvironmentMap(this.renderer.instance, skyMap);
     this.scene.environment = this.#environment.texture;
+
+    const world = composeWorld({
+      camera: this.camera,
+      viewport: this.viewport.state,
+      skyMap,
+      chapterIds: this.timeline.chapterIds,
+      scope: document,
+    });
+    this.#modules = world.modules;
+    this.#director = new Director(this.timeline, world.cast, world.layouts);
+    for (const module of this.#modules) {
+      this.scene.add(module.object);
+      module.applyQuality?.(this.#quality);
+      module.resize?.(this.viewport.state);
+    }
 
     this.post = new PostProcessing(
       this.renderer.instance,
@@ -91,21 +105,12 @@ export class Experience {
       this.camera,
       this.#quality,
       this.profile,
+      [world.cast.singularity.lensing],
     );
     this.post.resize(this.viewport.state);
 
-    this.#modules = [
-      new Sky(this.camera, skyMap),
-      new Water(this.viewport.state),
-      new Cube(),
-      new Dust({ center: [0, 4, -6], extent: [48, 9, 46] }, 7),
-    ];
-    for (const module of this.#modules) {
-      this.scene.add(module.object);
-      module.applyQuality?.(this.#quality);
-      module.resize?.(this.viewport.state);
-    }
-
+    this.timeline.update(0);
+    this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.viewport.onChange(this.#onResize);
     this.ticker.add(this.#onFrame);
   }
@@ -115,8 +120,19 @@ export class Experience {
   }
 
   start(): void {
-    this.post.render(0);
+    this.#onFrame({ delta: 0, elapsed: 0, frame: 0 });
     this.ticker.start();
+  }
+
+  advance(seconds: number, step = 1 / 60): void {
+    this.timeline.sync();
+    let elapsed = 0;
+    let frame = 0;
+    while (elapsed < seconds) {
+      elapsed += step;
+      frame += 1;
+      this.#onFrame({ delta: step, elapsed, frame });
+    }
   }
 
   setTier(tier: QualityTier): void {
@@ -127,6 +143,7 @@ export class Experience {
   dispose(): void {
     this.ticker.stop();
     this.viewport.dispose();
+    this.timeline.dispose();
     for (const module of this.#modules) {
       this.scene.remove(module.object);
       module.dispose();
@@ -136,6 +153,17 @@ export class Experience {
     this.pointer.dispose();
     this.assets.dispose();
     this.renderer.dispose();
+  }
+
+  async #compile(): Promise<void> {
+    const hidden = this.#modules.filter((module) => !module.object.visible);
+    for (const module of hidden) {
+      module.object.visible = true;
+    }
+    await this.renderer.instance.compileAsync(this.scene, this.camera);
+    for (const module of hidden) {
+      module.object.visible = false;
+    }
   }
 
   #applyQuality(quality: QualitySettings): void {
@@ -152,7 +180,6 @@ export class Experience {
     this.camera.updateProjectionMatrix();
     this.renderer.resize(state);
     this.post.resize(state);
-    this.rig.setShot(resolveShot(heroShot, state.aspect, this.#shot));
     for (const module of this.#modules) {
       module.resize?.(state);
     }
@@ -160,6 +187,8 @@ export class Experience {
 
   readonly #onFrame = (frame: FrameState): void => {
     this.pointer.update(frame.delta);
+    this.timeline.update(frame.delta);
+    this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.rig.update(frame);
     for (const module of this.#modules) {
       module.update(frame);

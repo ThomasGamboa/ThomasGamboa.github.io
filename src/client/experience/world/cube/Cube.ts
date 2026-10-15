@@ -23,6 +23,7 @@ import type { WorldModule } from '../WorldModule.ts';
 const size = 1.5;
 const thickness = 0.04;
 const restHeight = 2.3;
+const coreColor = new Color(2.3, 0.82, 0.78);
 
 interface Face {
   readonly pivot: Group;
@@ -68,7 +69,7 @@ export class Cube implements WorldModule {
     transparent: true,
   });
   readonly #coreGeometry = new IcosahedronGeometry(0.2, 3);
-  readonly #coreMaterial = new MeshBasicMaterial({ color: new Color(3.2, 1.1, 1.05) });
+  readonly #coreMaterial = new MeshBasicMaterial({ color: coreColor.clone() });
   readonly #latticeGeometry = new EdgesGeometry(new OctahedronGeometry(0.42));
   readonly #latticeMaterial = new LineBasicMaterial({
     color: new Color(1.4, 1.35, 1.3),
@@ -79,6 +80,7 @@ export class Cube implements WorldModule {
   readonly #core: Mesh;
   readonly #lattice: LineSegments;
   #open = 0;
+  #dissolve = 0;
 
   constructor() {
     applySoapFilm(this.#glass, this.#film);
@@ -131,6 +133,18 @@ export class Cube implements WorldModule {
     this.#edgeMaterial.opacity = 1 - eased * 0.6;
   }
 
+  set dissolve(value: number) {
+    this.#dissolve = Math.min(Math.max(value, 0), 1);
+    const fade = 1 - this.#dissolve;
+    this.#shell.scale.setScalar(1 + this.#dissolve * 2.2);
+    for (const face of this.#faces) {
+      face.pivot.scale.setScalar(Math.max(fade, 0.001));
+    }
+    this.#coreMaterial.color.copy(coreColor).multiplyScalar(fade);
+    this.#latticeMaterial.opacity = 0.55 * fade;
+    this.object.visible = this.#dissolve < 0.999;
+  }
+
   applyQuality(quality: QualitySettings): void {
     this.#glass.transmission = quality.transmission ? 1 : 0;
     this.#glass.transparent = !quality.transmission;
@@ -149,7 +163,7 @@ export class Cube implements WorldModule {
       Math.cos(elapsed * 0.27) * 0.05 * settle,
     );
     const pulse = 1 + Math.sin(elapsed * 2.1) * 0.06;
-    this.#core.scale.setScalar(pulse * (1 + this.#open * 0.8));
+    this.#core.scale.setScalar(pulse * (1 - this.#open * 0.45) * (1 + this.#dissolve * 6));
     this.#lattice.rotation.set(elapsed * 0.3, elapsed * 0.45, 0);
     this.#lattice.scale.setScalar(1 + this.#open * 1.6);
   }

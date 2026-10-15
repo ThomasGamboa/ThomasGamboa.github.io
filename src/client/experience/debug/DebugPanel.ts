@@ -4,6 +4,7 @@ import type { Experience } from '../Experience.ts';
 
 export function mountDebugPanel(experience: Experience): GUI {
   const gui = new GUI({ title: 'Experience' });
+  Object.assign(window, { experience });
   const { profile, post } = experience;
   const apply = () => post.applyProfile(profile);
 
