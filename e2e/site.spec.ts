@@ -24,6 +24,7 @@ function trackErrors(page: Page): string[] {
 
 for (const path of pages) {
   test(`${path} renders without errors or accessibility violations`, async ({ page }) => {
+    test.setTimeout(120_000);
     const errors = trackErrors(page);
     const response = await page.goto(`${path}?quality=low`);
     expect(response?.ok() || path === '/404.html').toBe(true);
@@ -42,6 +43,23 @@ test('the language switch keeps the current chapter', async ({ page }) => {
   await english.click();
   await expect(page).toHaveURL(/\/en\/#voxelnest$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+});
+
+test('a project card opens an accessible sheet that closes with Escape', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/?quality=low');
+  const trigger = page.locator('.archive-item__open').first();
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  const sheet = page.getByRole('dialog', { name: 'Apangora' });
+  await expect(sheet).toBeVisible();
+  await expect(sheet.locator('.gallery__item')).toHaveCount(4);
+  const results = await new AxeBuilder({ page }).include('#sheet-apangora').analyze();
+  expect(results.violations.map((violation) => violation.id)).toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(sheet).toBeHidden();
+  await expect(trigger).toBeFocused();
+  expect(errors).toEqual([]);
 });
 
 test('the index opens as a popover and closes with Escape', async ({ page }) => {

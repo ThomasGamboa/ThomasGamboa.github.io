@@ -176,9 +176,9 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
   ${steps}
   <p class="hire-form__disclaimer">${ui.pricingDisclaimer[locale]}</p>
   <div class="hire-form__actions">
-    <button class="hire-button action action--quiet" type="button" data-hire-previous hidden>${hireCopy.previous[locale]}</button>
+    <button class="hire-button action" type="button" data-hire-previous hidden>${hireCopy.previous[locale]}</button>
     <button class="hire-button action" type="button" data-hire-next hidden>${hireCopy.next[locale]}</button>
-    <button class="hire-button action action--signal" type="submit" data-hire-submit>${hireCopy.submit[locale]}</button>
+    <button class="hire-button action" type="submit" data-hire-submit>${hireCopy.submit[locale]}</button>
   </div>
   <p class="hire-form__status" role="status" aria-live="polite" data-hire-status>${endpoint ? null : hireCopy.unavailable[locale]}</p>
   <noscript><p class="hire-form__status">${hireCopy.noscript[locale]}</p></noscript>

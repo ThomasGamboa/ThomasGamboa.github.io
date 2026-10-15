@@ -76,6 +76,7 @@ export type ContentBlock =
       readonly type: 'gallery';
       readonly heading?: LocalizedText;
       readonly items: readonly MediaReference[];
+      readonly sizes?: string;
     }
   | {
       readonly type: 'video';
@@ -125,6 +126,9 @@ export interface ArchiveProject {
   readonly tools: readonly string[];
   readonly collaborators: readonly Collaborator[];
   readonly links: readonly ExternalLink[];
+  readonly story: Localized<readonly string[]>;
+  readonly gallery: readonly MediaReference[];
+  readonly video: { readonly id: string; readonly title: LocalizedText } | null;
 }
 
 export type ChapterId = 'hero' | 'about' | WorldId | 'contact';

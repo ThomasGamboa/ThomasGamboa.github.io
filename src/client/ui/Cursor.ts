@@ -140,6 +140,7 @@ export class Cursor {
       document.querySelector<HTMLElement>('[data-experience-canvas]')?.dataset.cursor ?? '';
     this.#root = document.createElement('div');
     this.#root.className = 'cursor';
+    this.#root.popover = 'manual';
     this.#root.setAttribute('aria-hidden', 'true');
     this.#root.style.setProperty('--lens-radius', `${cursorState.radius}px`);
     this.#lens = document.createElement('span');
@@ -156,6 +157,21 @@ export class Cursor {
     this.#tag.append(this.#tagText);
     this.#root.append(this.#lens, this.#pin, this.#tag);
     host.append(createLensFilter(cursorState.radius), this.#root);
+    this.#root.showPopover();
+    new MutationObserver((records) => {
+      if (records.some((record) => (record.target as HTMLDialogElement).open)) {
+        this.#raise();
+      }
+    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+    document.addEventListener(
+      'toggle',
+      (event) => {
+        if (event.target !== this.#root && (event as ToggleEvent).newState === 'open') {
+          this.#raise();
+        }
+      },
+      true,
+    );
 
     window.addEventListener('pointermove', this.#onMove, { passive: true });
     document.addEventListener('pointerover', this.#onOver);
@@ -173,6 +189,11 @@ export class Cursor {
       this.#toggle('visible', this.#placed);
       cursorState.visible = this.#placed;
     });
+  }
+
+  #raise(): void {
+    this.#root.hidePopover();
+    this.#root.showPopover();
   }
 
   #toggle(state: 'visible' | 'hover' | 'pressed' | 'surface' | 'label', enabled: boolean): void {

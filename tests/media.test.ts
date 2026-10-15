@@ -23,6 +23,17 @@ describe('media library', () => {
     expect(markup).not.toMatch(/-2048\./);
   });
 
+  it('adds an animated source only when motion is allowed', () => {
+    const markup = mediaLibrary.picture(
+      { src: 'projects/apangora/01.webp', alt: cover.alt },
+      'es',
+      { sizes: '100vw' },
+    ).value;
+    expect(markup).toContain('media="(prefers-reduced-motion: no-preference)"');
+    expect(markup).toMatch(/-motion\.webp 960w/);
+    expect(markup).toMatch(/type="image\/avif"/);
+  });
+
   it('fails loudly for missing media', () => {
     expect(() =>
       mediaLibrary.picture({ src: 'missing.png', alt: cover.alt }, 'es', { sizes: '100vw' }),

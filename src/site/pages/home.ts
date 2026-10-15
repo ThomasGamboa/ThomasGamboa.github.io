@@ -7,6 +7,7 @@ import { worlds } from '../../content/worlds.ts';
 import { formatIndex, formatMonth } from '../../shared/i18n/format.ts';
 import type { Locale } from '../../shared/i18n/locales.ts';
 import { hirePath, projectPath } from '../../shared/i18n/paths.ts';
+import { renderContentBlocks } from '../components/content-blocks.ts';
 import { renderExperienceStage } from '../components/experience-stage.ts';
 import { renderHighlights } from '../components/highlights.ts';
 import { html, type SafeHtml } from '../html.ts';
@@ -25,29 +26,73 @@ function renderChapter(id: ChapterId, locale: Locale, modifier: string, body: Sa
 </section>`;
 }
 
+function sheetId(project: ArchiveProject): string {
+  return `sheet-${project.id}`;
+}
+
+function renderProjectMeta(project: ArchiveProject, locale: Locale): SafeHtml {
+  return html`${project.fields[locale].join(', ')} · <time datetime="${project.publishedOn}">${formatMonth(project.publishedOn, locale)}</time>`;
+}
+
 function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml {
+  return html`<li class="archive-item" data-project="${project.id}">
+  <article class="archive-item__card">
+    ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
+    <h3 class="archive-item__title"><a class="archive-item__open" href="#${sheetId(project)}" aria-haspopup="dialog" data-sheet-open data-cursor="${ui.cursorOpenProject[locale]}">${project.title}</a></h3>
+    ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
+    <p class="archive-item__meta">${renderProjectMeta(project, locale)}</p>
+  </article>
+</li>`;
+}
+
+function renderProjectSheet(project: ArchiveProject, locale: Locale): SafeHtml {
+  const id = sheetId(project);
+  const poster = project.gallery[0] ?? project.cover;
   const collaborators = project.collaborators.length
     ? html`<dt>${ui.projectCollaborators[locale]}</dt>
       <dd>${project.collaborators.map((person, index) => html`${index > 0 ? ', ' : null}${person.href ? html`<a href="${person.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${person.name}</a>` : person.name}`)}</dd>`
     : null;
+  const media = [
+    ...(project.video && poster
+      ? [
+          {
+            type: 'video' as const,
+            provider: 'youtube' as const,
+            id: project.video.id,
+            title: project.video.title,
+            poster,
+          },
+        ]
+      : []),
+    ...(project.gallery.length
+      ? [
+          {
+            type: 'gallery' as const,
+            items: project.gallery,
+            sizes: '(min-width: 48rem) 52vw, 100vw',
+          },
+        ]
+      : []),
+  ];
 
-  return html`<li class="archive-item" data-project="${project.id}">
-  <article class="archive-item__card">
-    ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
-    <h3 class="archive-item__title">${project.title}</h3>
-    ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
+  return html`<dialog class="project-sheet surface" id="${id}" aria-labelledby="${id}-title" data-project-sheet>
+  <div class="project-sheet__scroll">
+    <a class="project-sheet__close" href="#${findChapter('archive').anchor[locale]}" data-sheet-close data-cursor="${ui.galleryClose[locale]}">${ui.galleryClose[locale]} <span aria-hidden="true">×</span></a>
+    <header class="project-sheet__header">
+      <p class="eyebrow">${renderProjectMeta(project, locale)}</p>
+      <h2 class="project-sheet__title" id="${id}-title">${project.title}</h2>
+      ${project.summary ? html`<p class="project-sheet__lead">${project.summary[locale]}</p>` : null}
+    </header>
+    <div class="project-sheet__story">${project.story[locale].map((paragraph) => html`<p>${paragraph}</p>`)}</div>
     <dl class="archive-item__facts">
-      <dt>${ui.projectFields[locale]}</dt>
-      <dd>${project.fields[locale].join(', ')}</dd>
       <dt>${ui.projectTools[locale]}</dt>
       <dd>${project.tools.join(', ')}</dd>
       ${collaborators}
-      <dt>${ui.projectPublished[locale]}</dt>
-      <dd><time datetime="${project.publishedOn}">${formatMonth(project.publishedOn, locale)}</time></dd>
     </dl>
-    ${project.links.length ? html`<ul class="archive-item__links">${project.links.map((link) => html`<li><a href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`)}</ul>` : null}
-  </article>
-</li>`;
+    ${project.links.length ? html`<div class="chapter__actions">${project.links.map((link) => html`<a class="action" href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a>`)}</div>` : null}
+    ${renderContentBlocks(media, locale)}
+  </div>
+</dialog>`;
 }
 
 function renderWorldActions(world: World, locale: Locale): SafeHtml | null {
@@ -56,7 +101,7 @@ function renderWorldActions(world: World, locale: Locale): SafeHtml | null {
   }
   return html`<div class="chapter__actions">
   ${world.page ? html`<a class="chapter__action action" href="${projectPath(locale, world.slug)}" data-cursor="${ui.cursorExplore[locale]}">${world.page.action[locale]}</a>` : null}
-  ${world.links.map((link) => html`<a class="chapter__action action action--quiet" href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a>`)}
+  ${world.links.map((link) => html`<a class="chapter__action action" href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a>`)}
 </div>`;
 }
 
@@ -120,7 +165,8 @@ ${renderChapter(
   html`<h2 class="chapter__title" id="contact-title" data-reveal>${ui.contactHeading[locale]}</h2>
   <p class="chapter__lead" data-reveal>${ui.contactBody[locale]}</p>
   <a class="chapter__action action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.contactAction[locale]}</a>`,
-)}`;
+)}
+${archiveProjects.map((project) => renderProjectSheet(project, locale))}`;
 
   return {
     meta: {

@@ -38,7 +38,7 @@ function renderBlock(block: ContentBlock, locale: Locale): SafeHtml {
   <ul class="gallery">${block.items.map(
     (item, index) => html`<li class="gallery__item">
     <button class="gallery__trigger" type="button" data-gallery-index="${index}" data-cursor="${ui.cursorExpand[locale]}" aria-label="${item.alt[locale]}">
-      ${mediaLibrary.picture(item, locale, { sizes: '(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw' })}
+      ${mediaLibrary.picture(item, locale, { sizes: block.sizes ?? '(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw' })}
       <span class="gallery__index" aria-hidden="true">${formatIndex(index + 1)}</span>
     </button>
   </li>`,

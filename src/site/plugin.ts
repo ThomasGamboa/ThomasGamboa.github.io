@@ -26,6 +26,7 @@ interface StaticFile {
 const mediaTypes: Readonly<Record<string, string>> = {
   avif: 'image/avif',
   webp: 'image/webp',
+  motion: 'image/webp',
 };
 
 function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {

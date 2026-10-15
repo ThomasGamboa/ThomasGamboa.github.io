@@ -21,6 +21,7 @@ export const ui = {
   cursorExpand: { es: 'Ampliar', en: 'Expand' },
   cursorPlay: { es: 'Reproducir', en: 'Play' },
   cursorDrag: { es: 'Arrastrar', en: 'Drag' },
+  cursorOpenProject: { es: 'Ver proyecto', en: 'View project' },
   playVideo: { es: 'Reproducir vídeo', en: 'Play video' },
   galleryClose: { es: 'Cerrar', en: 'Close' },
   galleryPrevious: { es: 'Anterior', en: 'Previous' },

@@ -47,24 +47,21 @@ export const profile = {
     heading: { es: 'Trayectoria', en: 'Track record' } satisfies LocalizedText,
     entries: [
       {
+        period: '2019 — 2024',
+        title: { es: 'Licenciatura en Medios Interactivos', en: 'BA in Interactive Media' },
+        place: usfq,
+        body: {
+          es: 'Subespecialización en Arte y Tecnología.',
+          en: 'Minor in Art and Technology.',
+        },
+      },
+      {
         period: '2023 — 2024',
         title: { es: 'La moneda en Ecuador', en: 'La moneda en Ecuador' },
         place: { es: 'Banco Central del Ecuador · Cuenca', en: 'Central Bank of Ecuador · Cuenca' },
         body: {
           es: 'Una línea del tiempo para tablet sobre la historia de la moneda ecuatoriana, con sus piezas más importantes en 3D.',
           en: 'A tablet timeline of Ecuadorian currency, with its most important coins in 3D.',
-        },
-      },
-      {
-        period: '2023',
-        title: { es: 'Luciérnagas / Mariposas', en: 'Luciérnagas / Mariposas' },
-        place: {
-          es: 'Centro Cultural Metropolitano · Quito',
-          en: 'Metropolitan Cultural Center · Quito',
-        },
-        body: {
-          es: 'Instalación con el artista Christian Proaño: unas gafas de realidad virtual enlazadas a un circuito que detecta a quien se acerca y cambia el entorno en tiempo real.',
-          en: 'An installation with artist Christian Proaño: a VR headset linked wirelessly to a circuit that senses whoever walks up and reshapes the world in real time.',
         },
       },
       {
@@ -95,15 +92,6 @@ export const profile = {
         body: {
           es: 'Diseñé, animé y programé el sitio de la carrera como un videojuego 2D. Estuvo en línea hasta 2024.',
           en: 'I designed, animated and programmed the program’s website as a 2D video game. It stayed online until 2024.',
-        },
-      },
-      {
-        period: '2019 — 2024',
-        title: { es: 'Licenciatura en Medios Interactivos', en: 'BA in Interactive Media' },
-        place: usfq,
-        body: {
-          es: 'Subespecialización en Arte y Tecnología.',
-          en: 'Minor in Art and Technology.',
         },
       },
     ] satisfies readonly PathEntry[],

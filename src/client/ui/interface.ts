@@ -3,6 +3,7 @@ import { Cursor } from './Cursor.ts';
 import { Hud } from './Hud.ts';
 import { bindMedia } from './media.ts';
 import { bindChapterLinks, bindLanguageLinks, bindSiteMenu } from './navigation.ts';
+import { bindProjectSheets } from './project-sheets.ts';
 import { bindRefraction, refract } from './refraction.ts';
 import { revealOnScroll } from './reveal.ts';
 import { scramble } from './scramble.ts';
@@ -67,6 +68,7 @@ export function startInterface(): ChapterTracker {
   scrambleActions(document);
   revealOnScroll(document);
   bindMedia(document);
+  bindProjectSheets(document);
   Cursor.mount(document.body);
   whenStageReady(() => {
     const headline = document.querySelector<HTMLElement>('h1');

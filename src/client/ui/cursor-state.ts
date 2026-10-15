@@ -3,7 +3,7 @@ export const cursorState = {
   y: 0,
   velocityX: 0,
   velocityY: 0,
-  radius: 44,
+  radius: 36,
   visible: false,
   overSurface: false,
 };

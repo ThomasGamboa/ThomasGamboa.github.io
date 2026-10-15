@@ -10,16 +10,19 @@ export const mediaDirectory = 'src/assets/media';
 export const mediaPublicPrefix = 'media';
 
 const widths = [480, 960, 1440, 2048] as const;
+const motionWidths = [480, 960] as const;
+const pixelArtWidth = 512;
 const formats = ['avif', 'webp'] as const;
 const supported = new Set(['.png', '.jpg', '.jpeg', '.webp']);
 
-type Format = (typeof formats)[number];
+type Format = (typeof formats)[number] | 'motion';
 
 interface MediaSource {
   readonly key: string;
   readonly file: string;
   readonly width: number;
   readonly height: number;
+  readonly frames: number;
   readonly hash: string;
 }
 
@@ -88,7 +91,14 @@ export class MediaLibrary {
       return variants.map((variant) => `/${variant.fileName} ${variant.width}w`).join(', ');
     });
     const fallback = this.#variantsFor(source, 'webp').at(-1);
+    const motion =
+      source.frames > 1
+        ? this.#motionVariantsFor(source)
+            .map((variant) => `/${variant.fileName} ${variant.width}w`)
+            .join(', ')
+        : null;
     return html`<picture${attributes({ class: options.className })}>
+  ${motion ? html`<source type="image/webp" media="(prefers-reduced-motion: no-preference)" srcset="${motion}" sizes="${options.sizes}">` : null}
   <source type="image/avif" srcset="${sets[0] ?? ''}" sizes="${options.sizes}">
   <source type="image/webp" srcset="${sets[1] ?? ''}" sizes="${options.sizes}">
   <img${attributes({
@@ -99,6 +109,7 @@ export class MediaLibrary {
     loading: options.eager ? 'eager' : 'lazy',
     decoding: 'async',
     sizes: options.sizes,
+    'data-pixel': source.width <= pixelArtWidth,
   })}>
 </picture>`;
   }
@@ -109,14 +120,20 @@ export class MediaLibrary {
     if (existing) {
       return existing;
     }
-    const pipeline = sharp(variant.source.file).resize({
+    const { source } = variant;
+    const animated = variant.format === 'motion';
+    const pipeline = sharp(source.file, {
+      animated,
+      page: animated ? 0 : Math.floor(source.frames / 2),
+      limitInputPixels: false,
+    }).resize({
       width: variant.width,
       withoutEnlargement: true,
     });
     const output =
       variant.format === 'avif'
         ? await pipeline.avif({ quality: 52, effort: 4 }).toBuffer()
-        : await pipeline.webp({ quality: 78, effort: 4 }).toBuffer();
+        : await pipeline.webp({ quality: animated ? 64 : 78, effort: 4, loop: 0 }).toBuffer();
     await mkdir(cacheDirectory, { recursive: true });
     await writeFile(cached, output);
     return output;
@@ -128,6 +145,18 @@ export class MediaLibrary {
     return [...new Set(chosen)].map((width) => {
       const fileName = `${mediaPublicPrefix}/${slugify(source.key)}-${source.hash}-${width}.${format}`;
       const variant = this.#variants.get(fileName) ?? { source, width, format, fileName };
+      this.#variants.set(fileName, variant);
+      this.#used.add(fileName);
+      return variant;
+    });
+  }
+
+  #motionVariantsFor(source: MediaSource): MediaVariant[] {
+    const largest = Math.min(source.width, motionWidths.at(-1) ?? source.width);
+    const chosen = [...motionWidths.filter((width) => width < largest), largest];
+    return [...new Set(chosen)].map((width) => {
+      const fileName = `${mediaPublicPrefix}/${slugify(source.key)}-${source.hash}-${width}-motion.webp`;
+      const variant = this.#variants.get(fileName) ?? { source, width, format: 'motion', fileName };
       this.#variants.set(fileName, variant);
       this.#used.add(fileName);
       return variant;
@@ -148,7 +177,8 @@ export class MediaLibrary {
           key,
           file,
           width: metadata.width ?? 0,
-          height: metadata.height ?? 0,
+          height: metadata.pageHeight ?? metadata.height ?? 0,
+          frames: metadata.pages ?? 1,
           hash: createHash('sha1').update(buffer).digest('hex').slice(0, 8),
         });
       }),
