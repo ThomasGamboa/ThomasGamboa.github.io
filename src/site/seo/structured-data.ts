@@ -109,6 +109,7 @@ export function worldStructuredData(locale: Locale, path: string, world: World):
       inLanguage: localeDefinitions[locale].htmlLang,
       author: { '@id': personId },
       creator: { '@id': personId },
+      sameAs: world.links.map((link) => link.href),
     },
   ]);
 }

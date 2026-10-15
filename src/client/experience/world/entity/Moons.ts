@@ -12,6 +12,7 @@ import {
 import type { Pointer } from '../../core/Pointer.ts';
 import { createRandom } from '../../core/random.ts';
 import type { FrameState } from '../../core/Ticker.ts';
+import type { FilmReflections } from '../environment/Reflections.ts';
 import type { WorldModule } from '../WorldModule.ts';
 import type { Entity } from './Entity.ts';
 import {
@@ -57,6 +58,7 @@ export class Moons implements WorldModule {
     fluid: FluidField,
     capacity: number,
     seed: number,
+    film: FilmReflections,
   ) {
     this.#entity = entity;
     this.#camera = camera;
@@ -69,7 +71,7 @@ export class Moons implements WorldModule {
       if (!palette) {
         break;
       }
-      const uniforms = createEntityUniforms(palette, [64, 48]);
+      const uniforms = createEntityUniforms(palette, [64, 48], film);
       uniforms.uSeed.value = index * 7.3;
       uniforms.uWobble.value = 0.035;
       uniforms.uGlow.value = 0.12;
@@ -151,6 +153,9 @@ export class Moons implements WorldModule {
       moon.mesh.rotation.y = elapsed * 0.2 + moon.phase;
       moon.uniforms.uEntityTime.value = elapsed + index * 3.1;
       moon.uniforms.uFluid.value = this.#fluid.texture;
+      moon.uniforms.uFilm.value = this.#entity.uniforms.uFilm.value;
+      moon.uniforms.uChrome.value = this.#entity.uniforms.uChrome.value;
+      moon.uniforms.uRelief.value = this.#entity.uniforms.uRelief.value * 0.8;
     });
   }
 

@@ -2,6 +2,7 @@ import type { World } from '../../content/types.ts';
 import { ui } from '../../content/ui.ts';
 import { sectionPath } from '../../shared/i18n/paths.ts';
 import { renderContentBlocks } from '../components/content-blocks.ts';
+import { renderHighlights } from '../components/highlights.ts';
 import { html } from '../html.ts';
 import type { PageContext, PageDocument } from '../page.ts';
 import { worldStructuredData } from '../seo/structured-data.ts';
@@ -15,6 +16,7 @@ export function renderWorldPage(context: PageContext, world: World): PageDocumen
     <p class="eyebrow">${world.eyebrow[locale]}</p>
     <h1 class="page__title" id="world-title" data-reveal>${world.title[locale]}</h1>
     <p class="page__lead">${world.summary[locale]}</p>
+    ${renderHighlights(world.highlights, locale)}
   </header>
   ${renderContentBlocks(world.blocks, locale)}
   <nav class="page__return">

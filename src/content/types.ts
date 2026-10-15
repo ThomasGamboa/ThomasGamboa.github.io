@@ -1,7 +1,14 @@
 import type { Price } from '../shared/i18n/format.ts';
 import type { Localized, LocalizedText } from '../shared/i18n/locales.ts';
 
-export type ExternalLinkKind = 'behance' | 'instagram' | 'linkedin' | 'github' | 'itch' | 'website';
+export type ExternalLinkKind =
+  | 'behance'
+  | 'instagram'
+  | 'linkedin'
+  | 'github'
+  | 'itch'
+  | 'unity'
+  | 'website';
 
 export interface ExternalLink {
   readonly kind: ExternalLinkKind;
@@ -22,6 +29,20 @@ export interface MediaReference {
 export interface ProcessStep {
   readonly title: LocalizedText;
   readonly body: LocalizedText;
+}
+
+export interface CatalogItem {
+  readonly id: string;
+  readonly title: string;
+  readonly category: LocalizedText;
+  readonly summary: LocalizedText;
+  readonly price: Price | null;
+  readonly links: readonly ExternalLink[];
+}
+
+export interface Highlight {
+  readonly value: string;
+  readonly label: LocalizedText;
 }
 
 export interface SeoCopy {
@@ -68,6 +89,11 @@ export type ContentBlock =
       readonly type: 'process';
       readonly heading: LocalizedText;
       readonly steps: readonly ProcessStep[];
+    }
+  | {
+      readonly type: 'catalog';
+      readonly heading: LocalizedText;
+      readonly items: readonly CatalogItem[];
     };
 
 export type WorldId = 'nightbounds' | 'voxelnest' | 'archive';
@@ -82,7 +108,9 @@ export interface World {
   readonly title: LocalizedText;
   readonly summary: LocalizedText;
   readonly schemaType: WorldSchemaType;
-  readonly page: { readonly seo: SeoCopy } | null;
+  readonly page: { readonly seo: SeoCopy; readonly action: LocalizedText } | null;
+  readonly highlights: readonly Highlight[];
+  readonly links: readonly ExternalLink[];
   readonly blocks: readonly ContentBlock[];
   readonly projectIds: readonly string[];
 }

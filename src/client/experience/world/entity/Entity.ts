@@ -4,10 +4,10 @@ import {
   Mesh,
   type MeshPhysicalMaterial,
   type PerspectiveCamera,
+  PlaneGeometry,
   Quaternion,
   Raycaster,
   Sphere,
-  SphereGeometry,
   Vector2,
   Vector3,
 } from 'three';
@@ -15,6 +15,7 @@ import type { Triple } from '../../camera/shots.ts';
 import type { Pointer } from '../../core/Pointer.ts';
 import type { QualitySettings } from '../../core/quality.ts';
 import type { FrameState } from '../../core/Ticker.ts';
+import type { FilmReflections } from '../environment/Reflections.ts';
 import type { WorldModule } from '../WorldModule.ts';
 import {
   createEntityMaterial,
@@ -62,7 +63,7 @@ export class Entity implements WorldModule {
   readonly #pointer: Pointer;
   readonly #fluid: FluidField;
   readonly #material: MeshPhysicalMaterial;
-  readonly #mesh: Mesh<SphereGeometry, MeshPhysicalMaterial>;
+  readonly #mesh: Mesh<PlaneGeometry, MeshPhysicalMaterial>;
   readonly #jelly = new Vector3();
   readonly #jellyVelocity = new Vector3();
   readonly #angular = { x: 0, y: 0 };
@@ -87,12 +88,13 @@ export class Entity implements WorldModule {
     fluid: FluidField,
     center: Triple,
     palette: Palette,
+    film: FilmReflections,
   ) {
     this.#camera = camera;
     this.#pointer = pointer;
     this.#fluid = fluid;
     this.center = new Vector3(...center);
-    this.uniforms = createEntityUniforms(palette, this.#segments);
+    this.uniforms = createEntityUniforms(palette, this.#segments, film);
     this.#material = createEntityMaterial(this.uniforms, {
       color: new Color(1, 1, 1),
       metalness: 0,
@@ -108,7 +110,7 @@ export class Entity implements WorldModule {
       iridescenceThicknessRange: [180, 560],
       envMapIntensity: 1.25,
     });
-    this.#mesh = new Mesh(new SphereGeometry(1, ...this.#segments), this.#material);
+    this.#mesh = new Mesh(new PlaneGeometry(1, 1, ...this.#segments), this.#material);
     this.#mesh.frustumCulled = false;
     this.#pivot.add(this.#mesh);
     this.object.add(this.#pivot);
@@ -145,6 +147,9 @@ export class Entity implements WorldModule {
     uniforms.uGlow.value = mix(from.glow, to.glow, t) + this.#energy * 0.35;
     uniforms.uRim.value = mix(from.rim, to.rim, t);
     uniforms.uBands.value = mix(from.bands, to.bands, t);
+    uniforms.uFilm.value = mix(from.film, to.film, t);
+    uniforms.uChrome.value = mix(from.chrome, to.chrome, t);
+    uniforms.uRelief.value = mix(from.relief, to.relief, t) * (1 + this.#energy * 0.8);
     this.#glass = mix(from.glass, to.glass, t);
     uniforms.uAcid.value = 1 - this.#glass;
     this.#scale = mix(from.scale, to.scale, t);
@@ -163,7 +168,7 @@ export class Entity implements WorldModule {
     if (segments !== this.#segments) {
       this.#segments = segments;
       this.#mesh.geometry.dispose();
-      this.#mesh.geometry = new SphereGeometry(1, ...segments);
+      this.#mesh.geometry = new PlaneGeometry(1, 1, ...segments);
       this.uniforms.uGrid.value.set(segments[0], segments[1]);
     }
     this.#material.transparent = !quality.transmission;

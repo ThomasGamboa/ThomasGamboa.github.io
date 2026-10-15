@@ -8,6 +8,7 @@ import { formatIndex, formatMonth } from '../../shared/i18n/format.ts';
 import type { Locale } from '../../shared/i18n/locales.ts';
 import { hirePath, projectPath } from '../../shared/i18n/paths.ts';
 import { renderExperienceStage } from '../components/experience-stage.ts';
+import { renderHighlights } from '../components/highlights.ts';
 import { html, type SafeHtml } from '../html.ts';
 import { mediaLibrary } from '../media.ts';
 import type { PageContext, PageDocument } from '../page.ts';
@@ -44,9 +45,38 @@ function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml
       <dt>${ui.projectPublished[locale]}</dt>
       <dd><time datetime="${project.publishedOn}">${formatMonth(project.publishedOn, locale)}</time></dd>
     </dl>
-    <ul class="archive-item__links">${project.links.map((link) => html`<li><a href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`)}</ul>
+    ${project.links.length ? html`<ul class="archive-item__links">${project.links.map((link) => html`<li><a href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`)}</ul>` : null}
   </article>
 </li>`;
+}
+
+function renderWorldActions(world: World, locale: Locale): SafeHtml | null {
+  if (!world.page && world.links.length === 0) {
+    return null;
+  }
+  return html`<div class="chapter__actions">
+  ${world.page ? html`<a class="chapter__action action" href="${projectPath(locale, world.slug)}" data-cursor="${ui.cursorExplore[locale]}">${world.page.action[locale]}</a>` : null}
+  ${world.links.map((link) => html`<a class="chapter__action action action--quiet" href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a>`)}
+</div>`;
+}
+
+function renderAbout(locale: Locale): SafeHtml {
+  return html`<h2 class="chapter__title" id="about-title" data-reveal>${profile.about.heading[locale]}</h2>
+  ${profile.about.paragraphs[locale].map((paragraph) => html`<p data-reveal>${paragraph}</p>`)}
+  <section class="path" aria-labelledby="about-path-title">
+    <h3 class="eyebrow" id="about-path-title">${profile.path.heading[locale]}</h3>
+    <ol class="path__list">${profile.path.entries.map(
+      (entry) => html`<li class="path__entry">
+      <p class="path__period">${entry.period}</p>
+      <div class="path__detail">
+        <h4 class="path__title">${entry.title[locale]}</h4>
+        <p class="path__place">${entry.place[locale]}</p>
+        <p class="path__body">${entry.body[locale]}</p>
+      </div>
+    </li>`,
+    )}</ol>
+    <ul class="tool-list" aria-label="${ui.projectTools[locale]}">${profile.tools.map((tool) => html`<li>${tool}</li>`)}</ul>
+  </section>`;
 }
 
 function renderWorld(world: World, locale: Locale): SafeHtml {
@@ -62,8 +92,9 @@ function renderWorld(world: World, locale: Locale): SafeHtml {
     html`<p class="eyebrow">${world.eyebrow[locale]}</p>
   <h2 class="chapter__title" id="${world.id}-title" data-reveal>${world.title[locale]}</h2>
   <p class="chapter__lead" data-reveal>${world.summary[locale]}</p>
+  ${renderHighlights(world.highlights, locale)}
   ${projects.length ? html`<ul class="archive-list">${projects}</ul>` : null}
-  ${world.page ? html`<a class="chapter__action action" href="${projectPath(locale, world.slug)}" data-cursor="${ui.cursorExplore[locale]}">${ui.exploreWorld[locale]}</a>` : null}`,
+  ${renderWorldActions(world, locale)}`,
   );
 }
 
@@ -80,13 +111,7 @@ export function renderHomePage(context: PageContext): PageDocument {
     <span class="hero__role">${profile.role[locale]}</span>
   </h1>`,
   )}
-${renderChapter(
-  'about',
-  locale,
-  'about',
-  html`<h2 class="chapter__title" id="about-title" data-reveal>${profile.about.heading[locale]}</h2>
-  ${profile.about.paragraphs[locale].map((paragraph) => html`<p data-reveal>${paragraph}</p>`)}`,
-)}
+${renderChapter('about', locale, 'about', renderAbout(locale))}
 ${worlds.map((world) => renderWorld(world, locale))}
 ${renderChapter(
   'contact',

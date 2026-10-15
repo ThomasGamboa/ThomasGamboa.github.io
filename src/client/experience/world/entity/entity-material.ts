@@ -10,6 +10,7 @@ import {
 import entityFragment from '../../shaders/entity.frag.glsl?raw';
 import entityVertex from '../../shaders/entity.vert.glsl?raw';
 import noise from '../../shaders/noise.glsl?raw';
+import type { FilmReflections } from '../environment/Reflections.ts';
 
 export type Palette = readonly [
   ColorRepresentation,
@@ -29,7 +30,11 @@ export function writePalette(target: readonly Color[], palette: Palette): void {
   });
 }
 
-export function createEntityUniforms(palette: Palette, segments: readonly [number, number]) {
+export function createEntityUniforms(
+  palette: Palette,
+  segments: readonly [number, number],
+  film: FilmReflections,
+) {
   return {
     uEntityTime: { value: 0 },
     uShapeA: { value: 0 },
@@ -54,6 +59,11 @@ export function createEntityUniforms(palette: Palette, segments: readonly [numbe
     uRim: { value: 0 },
     uBands: { value: 1.4 },
     uFluidOffset: { value: new Vector2() },
+    uFilmMap: { value: film.texture },
+    uFilmRotation: { value: film.rotation },
+    uFilm: { value: 0 },
+    uRelief: { value: 0 },
+    uChrome: { value: 0 },
   };
 }
 
@@ -69,6 +79,8 @@ const normalChunk = `
   float entityLength = length(entityCross);
   vec3 objectNormal = entityLength > 1e-8 ? entityCross / entityLength : normalize(entityPoint + 0.00001);
   vEntityUv = uv;
+  vEntityTangent = (modelViewMatrix * vec4(entityAlongU, 0.0)).xyz;
+  vEntityBitangent = (modelViewMatrix * vec4(entityAlongV, 0.0)).xyz;
   vEntityTube = mix(tubeOf(uShapeA), tubeOf(uShapeB), uMorph);
   #ifdef USE_TANGENT
     vec3 objectTangent = vec3(tangent.xyz);
@@ -78,7 +90,47 @@ const colorChunk = `
   #include <color_fragment>
   vec4 entityField = fluidSample();
   vec3 entityAlbedo = acidAlbedo(entityField);
-  diffuseColor.rgb = mix(diffuseColor.rgb, entityAlbedo, uAcid);`;
+  vec3 entityHue = entityAlbedo / max(max(entityAlbedo.r, max(entityAlbedo.g, entityAlbedo.b)), 0.08);
+  vec3 entityMetal = mix(entityAlbedo, entityHue * 0.92, uChrome);
+  diffuseColor.rgb = mix(diffuseColor.rgb, entityMetal, uAcid);`;
+
+const reliefChunk = `
+  #include <normal_fragment_maps>
+  if (uRelief > 0.0001) {
+    vec3 entityTangent = vEntityTangent / max(length(vEntityTangent), 1e-6);
+    vec3 entityBitangent = vEntityBitangent / max(length(vEntityBitangent), 1e-6);
+    vec2 entitySlope = reliefSlope();
+    normal = normalize(normal - uRelief * faceDirection * (entitySlope.x * entityTangent + entitySlope.y * entityBitangent));
+  }`;
+
+const environmentChunk = `
+  #ifdef USE_ENVMAP
+    #ifdef ENVMAP_TYPE_CUBE_UV
+      vec3 entityEnvironment(vec3 direction, float roughness) {
+        vec3 studio = textureCubeUV(envMap, envMapRotation * direction, roughness).rgb;
+        vec3 film = textureCubeUV(uFilmMap, uFilmRotation * direction, roughness).rgb;
+        return mix(studio, film, uFilm);
+      }
+    #endif
+    vec3 getIBLIrradiance(const in vec3 normal) {
+      #ifdef ENVMAP_TYPE_CUBE_UV
+        vec3 worldNormal = transformNormalByInverseViewMatrix(normal, viewMatrix);
+        return PI * entityEnvironment(worldNormal, 1.0) * envMapIntensity;
+      #else
+        return vec3(0.0);
+      #endif
+    }
+    vec3 getIBLRadiance(const in vec3 viewDir, const in vec3 normal, const in float roughness) {
+      #ifdef ENVMAP_TYPE_CUBE_UV
+        vec3 reflectVec = reflect(-viewDir, normal);
+        reflectVec = normalize(mix(reflectVec, normal, pow4(roughness)));
+        reflectVec = transformDirectionByInverseViewMatrix(reflectVec, viewMatrix);
+        return entityEnvironment(reflectVec, roughness) * envMapIntensity;
+      #else
+        return vec3(0.0);
+      #endif
+    }
+  #endif`;
 
 const emissiveChunk = `
   #include <emissivemap_fragment>
@@ -100,6 +152,8 @@ export function createEntityMaterial(
       .replace('#include <beginnormal_vertex>', normalChunk)
       .replace('#include <begin_vertex>', 'vec3 transformed = entityPoint;');
     shader.fragmentShader = `${entityFragment}\n${shader.fragmentShader}`
+      .replace('#include <envmap_physical_pars_fragment>', environmentChunk)
+      .replace('#include <normal_fragment_maps>', reliefChunk)
       .replace('#include <color_fragment>', colorChunk)
       .replace('#include <emissivemap_fragment>', emissiveChunk)
       .replace('#include <opaque_fragment>', rimChunk);

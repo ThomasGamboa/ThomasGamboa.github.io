@@ -1,7 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
-const pages = ['/', '/en/', '/contratar/', '/en/hire/', '/proyectos/the-nightbounds/', '/404.html'];
+const pages = [
+  '/',
+  '/en/',
+  '/contratar/',
+  '/en/hire/',
+  '/proyectos/the-nightbounds/',
+  '/en/projects/voxelnest/',
+  '/404.html',
+];
 
 function trackErrors(page: Page): string[] {
   const errors: string[] = [];

@@ -1,3 +1,4 @@
+import { assetStorePublisher, itchProfile } from './catalog.ts';
 import type { ExternalLink } from './types.ts';
 
 export const site = {
@@ -23,6 +24,16 @@ export const socialLinks: readonly ExternalLink[] = [
     kind: 'behance',
     href: 'https://www.behance.net/thomasgamboa2',
     label: { es: 'Behance', en: 'Behance' },
+  },
+  {
+    kind: 'itch',
+    href: itchProfile,
+    label: { es: 'itch.io', en: 'itch.io' },
+  },
+  {
+    kind: 'unity',
+    href: assetStorePublisher,
+    label: { es: 'Unity Asset Store', en: 'Unity Asset Store' },
   },
 ];
 

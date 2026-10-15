@@ -1,6 +1,6 @@
 import type { ContentBlock } from '../../content/types.ts';
 import { ui } from '../../content/ui.ts';
-import { formatIndex } from '../../shared/i18n/format.ts';
+import { formatIndex, formatStorePrice } from '../../shared/i18n/format.ts';
 import type { Locale } from '../../shared/i18n/locales.ts';
 import { html, type SafeHtml } from '../html.ts';
 import { mediaLibrary } from '../media.ts';
@@ -62,6 +62,20 @@ function renderBlock(block: ContentBlock, locale: Locale): SafeHtml {
     <p>${step.body[locale]}</p>
   </li>`,
   )}</ol>
+</section>`;
+    case 'catalog':
+      return html`<section class="content-block content-block--catalog">
+  <h2>${block.heading[locale]}</h2>
+  <ul class="catalog">${block.items.map(
+    (item) => html`<li class="catalog__item">
+    <article class="catalog__card">
+      <p class="catalog__meta"><span>${item.category[locale]}</span><span class="catalog__price">${item.price ? formatStorePrice(item.price, locale) : ui.catalogFree[locale]}</span></p>
+      <h3 class="catalog__title">${item.title}</h3>
+      <p class="catalog__summary">${item.summary[locale]}</p>
+      <ul class="catalog__links">${item.links.map((link) => html`<li><a href="${link.href}" rel="noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}" aria-label="${item.title}, ${link.label[locale]}">${link.label[locale]} <span aria-hidden="true">↗</span></a></li>`)}</ul>
+    </article>
+  </li>`,
+  )}</ul>
 </section>`;
   }
 }

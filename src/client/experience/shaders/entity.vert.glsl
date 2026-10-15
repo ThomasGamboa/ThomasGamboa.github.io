@@ -15,6 +15,8 @@ uniform float uSeed;
 
 varying vec2 vEntityUv;
 varying float vEntityTube;
+varying vec3 vEntityTangent;
+varying vec3 vEntityBitangent;
 
 const float ENTITY_TAU = 6.28318530718;
 const float ENTITY_PI = 3.14159265359;

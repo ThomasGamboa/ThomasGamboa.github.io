@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { voxelNestCatalog } from '../src/content/catalog.ts';
 import { chapters } from '../src/content/chapters.ts';
 import { profile } from '../src/content/profile.ts';
 import { archiveProjects } from '../src/content/projects.ts';
@@ -61,6 +62,7 @@ describe('content integrity', () => {
       serviceCategories,
       socialLinks,
       chapters,
+      voxelNestCatalog,
     };
     for (const [name, source] of Object.entries(sources)) {
       collectLocalizedGaps(source, name, gaps);
@@ -105,9 +107,22 @@ describe('content integrity', () => {
         }
       }
     }
-    const links = [...socialLinks, ...archiveProjects.flatMap((project) => project.links)];
+    const links = [
+      ...socialLinks,
+      ...archiveProjects.flatMap((project) => project.links),
+      ...worlds.flatMap((world) => world.links),
+      ...voxelNestCatalog.flatMap((item) => item.links),
+    ];
     for (const link of links) {
       expect(new URL(link.href).protocol).toBe('https:');
+    }
+  });
+
+  it('lists every catalog item once with store links and non-negative prices', () => {
+    expect(duplicates(voxelNestCatalog.map((item) => item.id))).toEqual([]);
+    for (const item of voxelNestCatalog) {
+      expect(item.links.length).toBeGreaterThan(0);
+      expect(item.price === null || item.price.amount > 0).toBe(true);
     }
   });
 
