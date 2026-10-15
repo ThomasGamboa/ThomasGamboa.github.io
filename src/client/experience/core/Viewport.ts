@@ -9,7 +9,7 @@ export type ViewportListener = (state: ViewportState) => void;
 
 export class Viewport {
   readonly #element: HTMLElement;
-  readonly #maximumPixelRatio: number;
+  #maximumPixelRatio: number;
   readonly #listeners = new Set<ViewportListener>();
   readonly #observer: ResizeObserver;
   #state: ViewportState;
@@ -29,6 +29,11 @@ export class Viewport {
   onChange(listener: ViewportListener): () => void {
     this.#listeners.add(listener);
     return () => this.#listeners.delete(listener);
+  }
+
+  setMaximumPixelRatio(value: number): void {
+    this.#maximumPixelRatio = value;
+    this.#update();
   }
 
   dispose(): void {

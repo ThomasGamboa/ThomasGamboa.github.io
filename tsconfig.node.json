@@ -4,5 +4,13 @@
     "lib": ["ES2023"],
     "types": ["node"]
   },
-  "include": ["src/site", "src/shared", "src/content", "tests", "vite.config.ts"]
+  "include": [
+    "src/site",
+    "src/shared",
+    "src/content",
+    "src/client/experience/core/quality.ts",
+    "src/client/experience/core/progress.ts",
+    "tests",
+    "vite.config.ts"
+  ]
 }

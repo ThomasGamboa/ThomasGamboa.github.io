@@ -14,7 +14,10 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         codeSplitting: {
-          groups: [{ name: 'three', test: /[\\/]node_modules[\\/]three[\\/]/ }],
+          groups: [
+            { name: 'three', test: /[\\/]node_modules[\\/]three[\\/]build[\\/]/ },
+            { name: 'postprocessing', test: /[\\/]node_modules[\\/]postprocessing[\\/]/ },
+          ],
         },
       },
     },
