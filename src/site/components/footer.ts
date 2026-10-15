@@ -51,7 +51,7 @@ export function renderFooter(context: PageContext): SafeHtml {
     ${renderLinkGroup('hire', ui.navHire[locale], hire)}
   </div>
   <div class="site-footer__bottom">
-    <p class="site-footer__legal"><small>© ${context.year} ${profile.name}. ${ui.footerRights[locale]}</small></p>
+    <p class="site-footer__legal"><small>© <span data-current-year>${context.year}</span> ${profile.name}. ${ui.footerRights[locale]}</small></p>
     <a class="site-footer__top" href="#main">${ui.backToTop[locale]} ↑</a>
   </div>
 </footer>`;

@@ -122,6 +122,10 @@ export class Entity implements WorldModule {
     return this.#scale;
   }
 
+  get glass(): number {
+    return this.#glass;
+  }
+
   get energy(): number {
     return this.#energy;
   }

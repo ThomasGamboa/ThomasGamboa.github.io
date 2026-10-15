@@ -40,7 +40,9 @@ function renderLanguageSwitch(context: PageContext): SafeHtml {
 export function renderHeader(context: PageContext): SafeHtml {
   const { locale } = context;
 
-  return html`<header class="site-header surface">
+  const brandState = context.route.view.kind === 'home' ? 'hidden' : null;
+
+  return html`<header class="site-header surface"${attributes({ 'data-brand-state': brandState })}>
   <a class="brand" href="${homePath(locale)}" aria-label="${ui.homeLinkLabel[locale]}">
     ${renderBrandMark('brand__mark')}
     <span class="brand__name" aria-hidden="true">${site.name}</span>

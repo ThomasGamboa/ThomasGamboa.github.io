@@ -62,6 +62,33 @@ function scrambleActions(scope: Document): void {
   }
 }
 
+function stampYear(scope: Document): void {
+  const year = String(new Date().getFullYear());
+  for (const element of scope.querySelectorAll<HTMLElement>('[data-current-year]')) {
+    element.textContent = year;
+  }
+}
+
+function revealBrand(tracker: ChapterTracker): void {
+  const header = document.querySelector<HTMLElement>('.site-header[data-brand-state]');
+  const name = header?.querySelector<HTMLElement>('.brand__name');
+  if (!header || !name) {
+    return;
+  }
+  const text = name.textContent ?? '';
+  tracker.subscribe(({ id }) => {
+    const state = id === null || id === 'hero' ? 'hidden' : 'visible';
+    if (header.dataset.brandState === state) {
+      return;
+    }
+    header.dataset.brandState = state;
+    if (state === 'visible') {
+      scramble(name, text, 700);
+      refract(name, { strength: 8, duration: 1000 });
+    }
+  });
+}
+
 export function startInterface(): ChapterTracker {
   const tracker = new ChapterTracker(document);
   const hud = document.querySelector<HTMLElement>('[data-hud]');
@@ -77,6 +104,8 @@ export function startInterface(): ChapterTracker {
   bindMedia(document);
   bindProjectSheets(document);
   bindSecretMail(document);
+  stampYear(document);
+  revealBrand(tracker);
   Cursor.mount(document.body);
   whenStageReady(() => {
     const headline = document.querySelector<HTMLElement>('h1');

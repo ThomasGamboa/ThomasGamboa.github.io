@@ -2,6 +2,7 @@ import type { PerspectiveCamera, Texture, WebGLRenderer } from 'three';
 import type { Pointer } from '../core/Pointer.ts';
 import type { ViewportState } from '../core/Viewport.ts';
 import type { Cast } from '../timeline/Director.ts';
+import { Emblem } from './entity/Emblem.ts';
 import { Entity } from './entity/Entity.ts';
 import { FluidField } from './entity/FluidField.ts';
 import { type EntityForm, resolveForms } from './entity/forms.ts';
@@ -68,6 +69,7 @@ export function composeWorld(context: WorldContext): ComposedWorld {
     cast.dust,
     cast.motes,
     cast.entity,
+    new Emblem(entity, camera),
     cast.moons,
   ];
   return { cast, modules, forms, projectCount, fluid };

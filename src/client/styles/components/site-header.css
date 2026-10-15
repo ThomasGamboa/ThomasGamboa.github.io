@@ -28,6 +28,32 @@
     gap: 0.75rem;
     margin-inline-end: auto;
     color: var(--color-text);
+    clip-path: inset(-0.5rem -1rem);
+    transition:
+      opacity 420ms var(--ease-out-quart),
+      translate 900ms var(--ease-out-expo),
+      clip-path 900ms var(--ease-out-expo),
+      visibility 0s linear 0s;
+  }
+
+  .js .site-header[data-brand-state="hidden"] .brand {
+    opacity: 0;
+    visibility: hidden;
+    translate: -1rem 0;
+    clip-path: inset(-0.5rem 100% -0.5rem -1rem);
+    transition:
+      opacity 300ms var(--ease-out-quart),
+      translate 500ms var(--ease-out-expo),
+      clip-path 500ms var(--ease-out-expo),
+      visibility 0s linear 500ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand,
+    .js .site-header[data-brand-state="hidden"] .brand {
+      transition-duration: 1ms;
+      transition-delay: 0s;
+    }
   }
 
   .brand__mark {
