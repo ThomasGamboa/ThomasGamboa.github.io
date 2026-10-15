@@ -1,9 +1,5 @@
 @layer components {
   .site-menu {
-    --menu-x: calc(100% - 3rem);
-    --menu-y: 2.5rem;
-    --menu-radius: 150vmax;
-    --menu-reach: 0px;
     display: none;
     position: fixed;
     inset: 0;
@@ -15,49 +11,48 @@
     padding: 0;
     border: 0;
     overflow-y: auto;
-    background-color: var(--color-veil);
-    backdrop-filter: blur(18px);
+    background-color: var(--color-void);
     color: var(--color-text);
-    clip-path: circle(var(--menu-reach) at var(--menu-x) var(--menu-y));
+    clip-path: inset(0 0 100% 0);
     transition:
-      --menu-reach var(--bubble-duration) var(--bubble-ease),
-      overlay var(--bubble-duration) allow-discrete,
-      display var(--bubble-duration) allow-discrete;
+      clip-path var(--wipe-duration) var(--wipe-ease),
+      overlay var(--wipe-duration) allow-discrete,
+      display var(--wipe-duration) allow-discrete;
   }
 
   .site-menu::before {
     content: "";
     position: fixed;
-    inset: 0;
+    inset-inline: 0;
+    inset-block-start: -2px;
     z-index: 1;
-    background: conic-gradient(from 140deg at var(--menu-x) var(--menu-y), var(--film-stops));
-    mask: radial-gradient(
-      circle var(--menu-reach) at var(--menu-x) var(--menu-y),
-      transparent calc(var(--menu-reach) * 0.82),
-      rgb(0 0 0 / 0.16) calc(var(--menu-reach) * 0.96),
-      #000 calc(var(--menu-reach) - 1.5px),
-      transparent var(--menu-reach)
-    );
+    height: 2px;
+    background-color: var(--color-signal);
+    box-shadow: 0 0 1rem 0.15rem rgb(255 101 101 / 0.7);
     pointer-events: none;
-    transition: opacity 420ms var(--ease-out-quart);
+    translate: 0 0;
+    transition:
+      translate var(--wipe-duration) var(--wipe-ease),
+      opacity 240ms var(--ease-out-quart) var(--wipe-duration);
   }
 
   .site-menu:popover-open {
-    --menu-reach: var(--menu-radius);
     display: block;
+    clip-path: inset(0);
   }
 
   .site-menu:popover-open::before {
+    translate: 0 100svh;
     opacity: 0;
-    transition-delay: 700ms;
   }
 
   @starting-style {
     .site-menu:popover-open {
-      --menu-reach: 0px;
+      clip-path: inset(0 0 100% 0);
     }
 
     .site-menu:popover-open::before {
+      translate: 0 0;
       opacity: 1;
     }
   }
@@ -149,6 +144,7 @@
   .site-menu__chapter[aria-current="true"],
   .site-menu__chapter[aria-current="true"] .site-menu__index {
     color: var(--color-signal);
+    text-shadow: var(--glow-signal);
   }
 
   .site-menu__aside {
@@ -180,8 +176,11 @@
 
   .site-menu__close {
     position: absolute;
-    inset-block-start: calc(var(--hud-inset) + 0.875rem);
-    inset-inline-end: calc(var(--hud-inset) + 1.25rem);
+    inset-block-start: 0;
+    inset-inline-end: var(--gutter);
+    display: flex;
+    align-items: center;
+    height: var(--bar-height);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--tracking-mono);

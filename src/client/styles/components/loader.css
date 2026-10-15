@@ -41,21 +41,21 @@
     font-weight: 300;
     font-variant-numeric: tabular-nums;
     color: var(--color-signal);
+    text-shadow: var(--glow-signal);
   }
 
   .loader__track {
     display: block;
     width: min(16rem, 60vw);
     height: 1px;
-    border-radius: 1px;
     background-color: var(--color-line);
   }
 
   .loader__fill {
     display: block;
     height: 100%;
-    background: var(--film-line);
-    box-shadow: 0 0 0.75rem rgb(255 196 222 / 0.45);
+    background-color: var(--color-signal);
+    box-shadow: 0 0 0.75rem rgb(255 101 101 / 0.75);
     transform: scaleX(0);
     transform-origin: left center;
   }

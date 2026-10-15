@@ -20,7 +20,7 @@ function renderChapterRail(context: PageContext): SafeHtml {
       <span class="chapter-rail__index">${formatIndex(index + 1)}</span><span class="visually-hidden"> ${chapter.label[locale]}</span>
     </a></li>`,
   );
-  return html`<nav class="chapter-rail" aria-label="${ui.chapterNavigation[locale]}">
+  return html`<nav class="chapter-rail surface" aria-label="${ui.chapterNavigation[locale]}">
   <ol class="chapter-rail__list">${items}</ol>
 </nav>`;
 }
@@ -30,11 +30,7 @@ export function renderHud(context: PageContext, label: string): SafeHtml {
   const isHome = context.route.view.kind === 'home';
   const total = isHome ? formatIndex(chapters.length) : null;
 
-  return html`<div class="hud" data-hud aria-hidden="true">
-  <span class="hud__corner hud__corner--top-start"></span>
-  <span class="hud__corner hud__corner--top-end"></span>
-  <span class="hud__corner hud__corner--bottom-start"></span>
-  <span class="hud__corner hud__corner--bottom-end"></span>
+  return html`<div class="hud surface" data-hud aria-hidden="true">
   <div class="hud__readout hud__readout--location">
     <span class="hud__label">${location.label[context.locale]}</span>
     <span class="hud__value">${formatCoordinate(location.latitude, 'N', 'S')} · ${formatCoordinate(location.longitude, 'E', 'W')}</span>

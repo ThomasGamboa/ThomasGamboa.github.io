@@ -1,24 +1,7 @@
 import { absoluteUrl, site } from '../../content/site.ts';
-import { bubbleOriginKey } from '../../shared/design/transition.ts';
 import { localeDefinitions, locales, xDefaultLocale } from '../../shared/i18n/locales.ts';
-import { html, jsonScript, raw, type SafeHtml } from '../html.ts';
+import { html, jsonScript, type SafeHtml } from '../html.ts';
 import type { PageContext, PageMeta } from '../page.ts';
-
-const bootScript = `(() => {
-  const root = document.documentElement;
-  root.classList.replace('no-js', 'js');
-  try {
-    const origin = JSON.parse(sessionStorage.getItem('${bubbleOriginKey}') ?? 'null');
-    sessionStorage.removeItem('${bubbleOriginKey}');
-    if (origin) {
-      const x = origin.x * innerWidth;
-      const y = origin.y * innerHeight;
-      root.style.setProperty('--bubble-x', x + 'px');
-      root.style.setProperty('--bubble-y', y + 'px');
-      root.style.setProperty('--bubble-radius', Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 'px');
-    }
-  } catch {}
-})()`;
 
 function robotsDirective(context: PageContext): string {
   return site.indexable && context.route.indexable
@@ -94,6 +77,6 @@ ${verification}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<script>${raw(bootScript)}</script>
+<script>document.documentElement.classList.replace('no-js', 'js')</script>
 ${meta.structuredData ? jsonScript(meta.structuredData) : null}`;
 }

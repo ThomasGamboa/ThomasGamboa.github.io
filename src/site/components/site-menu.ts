@@ -32,7 +32,7 @@ export function renderSiteMenu(context: PageContext): SafeHtml {
       html`<li><a href="${link.href}" rel="me noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`,
   );
 
-  return html`<nav id="site-menu" class="site-menu" popover aria-label="${ui.menuLabel[locale]}">
+  return html`<nav id="site-menu" class="site-menu surface" popover aria-label="${ui.menuLabel[locale]}">
   <div class="site-menu__frame">
     <ol class="site-menu__chapters">${chapterItems}</ol>
     <div class="site-menu__aside">

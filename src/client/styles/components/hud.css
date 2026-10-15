@@ -1,90 +1,33 @@
 @layer components {
   .hud {
     position: fixed;
-    inset: var(--hud-inset);
+    inset-inline: 0;
+    inset-block-end: 0;
     z-index: var(--layer-hud);
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    height: var(--status-height);
+    padding-inline: var(--gutter);
+    border-block-start: 1px solid var(--color-line);
+    background-color: var(--color-void);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--tracking-mono);
-    line-height: 1.5;
+    line-height: 1;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
     color: var(--color-text-muted);
+    text-shadow: none;
     view-transition-name: hud;
   }
 
-  .hud::before,
-  .hud::after {
-    content: "";
-    position: absolute;
-    inset-inline: calc(var(--hud-inset) * -1);
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .hud::before {
-    inset-block-start: calc(var(--hud-inset) * -1);
-    height: 6.5rem;
-    background: linear-gradient(to bottom, rgb(0 0 0 / 0.94) 35%, transparent);
-  }
-
-  .hud::after {
-    inset-block-end: calc(var(--hud-inset) * -1);
-    height: 9rem;
-    background: linear-gradient(to top, rgb(0 0 0 / 0.96) 45%, transparent);
-  }
-
-  .hud__corner {
-    position: absolute;
-    width: 0.875rem;
-    height: 0.875rem;
-    border: 0 solid var(--color-line-strong);
-  }
-
-  .hud__corner--top-start {
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    border-block-start-width: 1px;
-    border-inline-start-width: 1px;
-  }
-
-  .hud__corner--top-end {
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    border-block-start-width: 1px;
-    border-inline-end-width: 1px;
-  }
-
-  .hud__corner--bottom-start {
-    inset-block-end: 0;
-    inset-inline-start: 0;
-    border-block-end-width: 1px;
-    border-inline-start-width: 1px;
-  }
-
-  .hud__corner--bottom-end {
-    inset-block-end: 0;
-    inset-inline-end: 0;
-    border-block-end-width: 1px;
-    border-inline-end-width: 1px;
-  }
-
   .hud__readout {
-    position: absolute;
-    inset-block-end: 1.25rem;
-    display: grid;
-    gap: 0.125rem;
-  }
-
-  .hud__readout--location {
-    inset-inline-start: 1.25rem;
-  }
-
-  .hud__readout--progress {
-    inset-inline-end: 1.25rem;
-    justify-items: end;
-    text-align: end;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
   }
 
   .hud__label {
@@ -93,13 +36,13 @@
 
   .hud__value--chapter {
     color: var(--color-text);
+    text-shadow: var(--glow-text);
   }
 
   .hud__meter {
     display: block;
     width: 7.5rem;
     height: 1px;
-    margin-block: 0.25rem;
     background-color: var(--color-line);
   }
 
@@ -107,16 +50,21 @@
     display: block;
     height: 100%;
     background-color: var(--color-signal);
+    box-shadow: 0 0 0.5rem rgb(255 101 101 / 0.8);
     transform-origin: left center;
     scale: var(--hud-progress, 0) 1;
   }
 
   .chapter-rail {
     position: fixed;
-    inset-block-start: 50%;
-    inset-inline-end: calc(var(--hud-inset) + 1.25rem);
+    inset-block: var(--bar-height) var(--status-height);
+    inset-inline-end: 0;
     z-index: var(--layer-hud);
-    translate: 0 -50%;
+    display: grid;
+    align-content: center;
+    width: var(--rail-width);
+    border-inline-start: 1px solid var(--color-line);
+    background-color: var(--color-void);
   }
 
   .chapter-rail__list {
@@ -127,9 +75,9 @@
   .chapter-rail__link {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 0.625rem;
-    padding-block: 0.375rem;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-block: 0.625rem;
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--tracking-mono);
@@ -138,26 +86,22 @@
     text-decoration: none;
   }
 
-  .chapter-rail__link::after {
-    content: "";
-    width: 0.75rem;
-    height: 1px;
-    background-color: currentColor;
-    transition: width var(--duration-slow) var(--ease-out-expo);
-  }
-
-  .chapter-rail__link:hover::after,
-  .chapter-rail__link[aria-current="true"]::after {
-    width: 2rem;
+  .chapter-rail__link:hover {
+    color: var(--color-text);
   }
 
   .chapter-rail__link[aria-current="true"] {
     color: var(--color-signal);
+    text-shadow: var(--glow-signal);
   }
 
   @media (width < 48rem) {
     .hud__readout--location {
       display: none;
+    }
+
+    .hud {
+      justify-content: flex-end;
     }
 
     .hud__meter {

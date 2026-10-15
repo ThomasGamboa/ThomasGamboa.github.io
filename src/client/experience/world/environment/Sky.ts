@@ -8,14 +8,13 @@ import {
   type Texture,
   Vector3,
 } from 'three';
-import { palette } from '../../../../shared/design/palette.ts';
 import type { FrameState } from '../../core/Ticker.ts';
 import noise from '../../shaders/noise.glsl?raw';
 import skyFragment from '../../shaders/sky.frag.glsl?raw';
 import skyVertex from '../../shaders/sky.vert.glsl?raw';
 import type { WorldModule } from '../WorldModule.ts';
 
-export const eclipseDirection = new Vector3(0.07, 0.25, -1).normalize();
+export const glintDirection = new Vector3(-0.35, 0.22, -1).normalize();
 
 export function createSkyUniforms(skyMap: Texture | null = null) {
   return {
@@ -23,10 +22,7 @@ export function createSkyUniforms(skyMap: Texture | null = null) {
     uSkyIntensity: { value: 1 },
     uTime: { value: 0 },
     uSpace: { value: 0 },
-    uHorizon: { value: new Color(palette.signal).multiplyScalar(0.12) },
-    uCorona: { value: new Color(palette.signal).multiplyScalar(0.9) },
-    uEclipseDirection: { value: eclipseDirection.clone() },
-    uEclipseSize: { value: 0.034 },
+    uHorizon: { value: new Color(0.075, 0.07, 0.11) },
   };
 }
 

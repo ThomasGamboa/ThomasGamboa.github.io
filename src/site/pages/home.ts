@@ -17,8 +17,10 @@ function renderChapter(id: ChapterId, locale: Locale, modifier: string, body: Sa
   const chapter = findChapter(id);
   const index = chapters.indexOf(chapter) + 1;
   return html`<section class="chapter chapter--${modifier}" id="${chapter.anchor[locale]}" data-chapter="${id}" data-chapter-label="${chapter.label[locale]}" aria-labelledby="${id}-title">
+  <div class="chapter__panel surface">
   ${index > 1 ? html`<p class="chapter__index" aria-hidden="true">${formatIndex(index)} / ${formatIndex(chapters.length)}</p>` : null}
   ${body}
+  </div>
 </section>`;
 }
 
@@ -29,7 +31,7 @@ function renderArchiveProject(project: ArchiveProject, locale: Locale): SafeHtml
     : null;
 
   return html`<li class="archive-item" data-project="${project.id}">
-  <article class="liquid-glass">
+  <article class="archive-item__card">
     ${project.cover ? mediaLibrary.picture(project.cover, locale, { sizes: '(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw', className: 'archive-item__cover' }) : null}
     <h3 class="archive-item__title">${project.title}</h3>
     ${project.summary ? html`<p class="archive-item__summary">${project.summary[locale]}</p>` : null}
@@ -61,7 +63,7 @@ function renderWorld(world: World, locale: Locale): SafeHtml {
   <h2 class="chapter__title" id="${world.id}-title" data-reveal>${world.title[locale]}</h2>
   <p class="chapter__lead" data-reveal>${world.summary[locale]}</p>
   ${projects.length ? html`<ul class="archive-list">${projects}</ul>` : null}
-  ${world.page ? html`<a class="chapter__action liquid-pill" href="${projectPath(locale, world.slug)}" data-cursor="${ui.cursorExplore[locale]}">${ui.exploreWorld[locale]}</a>` : null}`,
+  ${world.page ? html`<a class="chapter__action action" href="${projectPath(locale, world.slug)}" data-cursor="${ui.cursorExplore[locale]}">${ui.exploreWorld[locale]}</a>` : null}`,
   );
 }
 
@@ -92,7 +94,7 @@ ${renderChapter(
   'contact',
   html`<h2 class="chapter__title" id="contact-title" data-reveal>${ui.contactHeading[locale]}</h2>
   <p class="chapter__lead" data-reveal>${ui.contactBody[locale]}</p>
-  <a class="chapter__action liquid-pill" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.contactAction[locale]}</a>`,
+  <a class="chapter__action action" href="${hirePath(locale)}" data-cursor="${ui.cursorStart[locale]}">${ui.contactAction[locale]}</a>`,
 )}`;
 
   return {

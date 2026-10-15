@@ -6,7 +6,6 @@ import {
   Points,
   ShaderMaterial,
 } from 'three';
-import { palette } from '../../../../shared/design/palette.ts';
 import type { QualitySettings } from '../../core/quality.ts';
 import { createRandom } from '../../core/random.ts';
 import type { FrameState } from '../../core/Ticker.ts';
@@ -30,7 +29,7 @@ export class Dust implements WorldModule {
     uSize: { value: 64 },
     uOpacity: { value: 1 },
     uColor: { value: new Color(1.2, 1.15, 1.1) },
-    uAccent: { value: new Color(palette.signal).multiplyScalar(2) },
+    uAccent: { value: new Color(0.6, 1.4, 1.8) },
   };
 
   constructor(volume: DustVolume, seed: number) {

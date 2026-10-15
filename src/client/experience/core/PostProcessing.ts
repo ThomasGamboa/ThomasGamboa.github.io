@@ -30,16 +30,13 @@ export class PostProcessing {
     camera: Camera,
     quality: QualitySettings,
     profile: RenderProfile,
-    distortions: readonly Effect[] = [],
+    overlays: readonly Effect[] = [],
   ) {
     this.composer = new EffectComposer(renderer, {
       frameBufferType: HalfFloatType,
       multisampling: quality.multisampling,
     });
     this.composer.addPass(new RenderPass(scene, camera));
-    if (distortions.length > 0) {
-      this.composer.addPass(new EffectPass(camera, ...distortions));
-    }
 
     this.bloom = new BloomEffect({
       mipmapBlur: true,
@@ -72,6 +69,9 @@ export class PostProcessing {
         this.grain,
       ),
     );
+    if (overlays.length > 0) {
+      this.composer.addPass(new EffectPass(camera, ...overlays));
+    }
   }
 
   applyProfile(profile: RenderProfile): void {

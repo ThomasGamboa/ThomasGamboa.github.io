@@ -14,13 +14,13 @@ export function renderNotFoundPage(context: PageContext): PageDocument {
         html`<p lang="${localeDefinitions[candidate].htmlLang}">${ui.notFoundBody[candidate]} <a href="${homePath(candidate)}">${ui.notFoundAction[candidate]}</a></p>`,
     );
 
-  const main = html`<div class="page page--not-found">
+  const main = html`<div class="page page--not-found surface">
   <header class="page__header">
     <p class="eyebrow">${ui.notFoundEyebrow[locale]}</p>
     <h1 class="page__title">${ui.notFoundHeading[locale]}</h1>
     <p class="page__lead">${ui.notFoundBody[locale]}</p>
   </header>
-  <a class="page__action liquid-pill" href="${homePath(locale)}">${ui.notFoundAction[locale]}</a>
+  <a class="page__action action" href="${homePath(locale)}">${ui.notFoundAction[locale]}</a>
   ${alternatives}
 </div>`;
 

@@ -1,26 +1,21 @@
-import type { PerspectiveCamera, Texture } from 'three';
+import type { PerspectiveCamera, Texture, WebGLRenderer } from 'three';
+import type { Pointer } from '../core/Pointer.ts';
 import type { ViewportState } from '../core/Viewport.ts';
 import type { Cast } from '../timeline/Director.ts';
-import { Cube } from './cube/Cube.ts';
+import { Entity } from './entity/Entity.ts';
+import { FluidField } from './entity/FluidField.ts';
+import { type EntityForm, resolveForms } from './entity/forms.ts';
+import { Moons } from './entity/Moons.ts';
 import { Sky } from './environment/Sky.ts';
 import { Water } from './landscape/Water.ts';
 import { Dust } from './particles/Dust.ts';
-import { Nebula } from './particles/Nebula.ts';
-import { Singularity } from './singularity/Singularity.ts';
+import { Motes } from './particles/Motes.ts';
 import type { WorldModule } from './WorldModule.ts';
-import {
-  type CelestialBody,
-  resolveWorldLayouts,
-  singularityCenter,
-  singularityRadius,
-  type WorldLayout,
-} from './worlds/layouts.ts';
-import { MarbleWorld } from './worlds/MarbleWorld.ts';
-import { NightWorld } from './worlds/NightWorld.ts';
-import { VoxelWorld } from './worlds/VoxelWorld.ts';
 
 export interface WorldContext {
+  readonly renderer: WebGLRenderer;
   readonly camera: PerspectiveCamera;
+  readonly pointer: Pointer;
   readonly viewport: ViewportState;
   readonly skyMap: Texture | null;
   readonly chapterIds: readonly string[];
@@ -30,60 +25,44 @@ export interface WorldContext {
 export interface ComposedWorld {
   readonly cast: Cast;
   readonly modules: readonly WorldModule[];
-  readonly layouts: ReadonlyMap<string, WorldLayout>;
+  readonly forms: readonly EntityForm[];
+  readonly projectCount: number;
+  readonly fluid: FluidField;
 }
 
-function projectCount(scope: ParentNode, chapterId: string): number {
-  return scope.querySelectorAll(`[data-chapter="${chapterId}"] [data-project]`).length;
-}
-
-function createBody(
-  chapterId: string,
-  layout: WorldLayout,
-  index: number,
-  scope: ParentNode,
-): CelestialBody {
-  const seed = 101 + index * 37;
-  switch (layout.visual) {
-    case 'night':
-      return new NightWorld(chapterId, layout);
-    case 'voxel':
-      return new VoxelWorld(chapterId, layout, seed);
-    case 'marbles':
-      return new MarbleWorld(chapterId, layout, Math.max(projectCount(scope, chapterId), 5), seed);
-  }
-}
+export const entityCenter = [0, 2.3, 0] as const;
 
 export function composeWorld(context: WorldContext): ComposedWorld {
-  const layouts = resolveWorldLayouts(context.chapterIds);
-  const cube = new Cube();
-  const lastCenter = [...layouts.values()].at(-1)?.center[2] ?? -60;
+  const { renderer, camera, pointer } = context;
+  const forms = resolveForms(context.chapterIds);
+  const projectCount = context.scope.querySelectorAll('[data-project]').length;
+  const capacity = Math.max(
+    ...forms.map((form) => (form.moons === 'projects' ? projectCount : form.moons)),
+    0,
+  );
+  const fluid = new FluidField(renderer);
+  const entity = new Entity(
+    camera,
+    pointer,
+    fluid,
+    entityCenter,
+    forms[0]?.palette ?? ['#fff', '#fff', '#fff', '#fff', '#fff'],
+  );
   const cast: Cast = {
-    sky: new Sky(context.camera, context.skyMap),
+    sky: new Sky(camera, context.skyMap),
     water: new Water(context.viewport),
     dust: new Dust({ center: [0, 4, -6], extent: [48, 9, 46] }, 7),
-    cube,
-    nebula: new Nebula(
-      cube.object.position.clone(),
-      {
-        start: -6,
-        end: Math.min(lastCenter, singularityCenter[2] + 40),
-        height: singularityCenter[1],
-      },
-      23,
-    ),
-    bodies: [...layouts].map(([id, layout], index) => createBody(id, layout, index, context.scope)),
-    singularity: new Singularity(context.camera, singularityCenter, singularityRadius),
+    motes: new Motes(camera, pointer, 23),
+    entity,
+    moons: new Moons(entity, camera, pointer, fluid, capacity, 41),
   };
-
   const modules: WorldModule[] = [
     cast.sky,
     cast.water,
     cast.dust,
-    cast.nebula,
-    cast.cube,
-    ...cast.bodies,
-    cast.singularity,
+    cast.motes,
+    cast.entity,
+    cast.moons,
   ];
-  return { cast, modules, layouts };
+  return { cast, modules, forms, projectCount, fluid };
 }

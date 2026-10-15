@@ -6,7 +6,7 @@
     gap: var(--space-xl);
     padding: var(--space-xl) var(--gutter) calc(var(--space-xl) + 2.5rem);
     border-block-start: 1px solid var(--color-line);
-    background: linear-gradient(to bottom, rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.92) 40%);
+    background-color: var(--color-void);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--tracking-mono);

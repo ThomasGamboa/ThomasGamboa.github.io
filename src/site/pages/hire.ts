@@ -10,7 +10,7 @@ export function renderHirePage(context: PageContext): PageDocument {
   const title = ui.hireTitle[locale];
   const { endpoint, siteKey } = resolveHiringConfig();
 
-  const main = html`<div class="page page--hire">
+  const main = html`<div class="page page--hire surface">
   <header class="page__header">
     <p class="eyebrow">${ui.hireEyebrow[locale]}</p>
     <h1 class="page__title" data-reveal>${ui.hireHeading[locale]}</h1>

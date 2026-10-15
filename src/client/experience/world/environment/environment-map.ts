@@ -8,11 +8,9 @@ import {
   Scene,
   SphereGeometry,
   type Texture,
-  TorusGeometry,
   type WebGLRenderer,
   type WebGLRenderTarget,
 } from 'three';
-import { palette } from '../../../../shared/design/palette.ts';
 import { createSkyMaterial, createSkyUniforms } from './Sky.ts';
 
 interface Panel {
@@ -22,27 +20,12 @@ interface Panel {
   readonly position: readonly [number, number, number];
 }
 
-const signal = new Color(palette.signal);
-
 const panels: readonly Panel[] = [
-  {
-    width: 18,
-    height: 3,
-    color: new Color(2.4, 2.3, 2.2),
-    position: [0, 14, -6],
-  },
-  {
-    width: 2,
-    height: 16,
-    color: signal.clone().multiplyScalar(1.3),
-    position: [-14, 2, 2],
-  },
-  {
-    width: 2,
-    height: 16,
-    color: new Color(0.6, 0.75, 1.6),
-    position: [14, 2, -4],
-  },
+  { width: 16, height: 10, color: new Color(1.7, 1.68, 1.75), position: [-7, 13, 8] },
+  { width: 2.6, height: 20, color: new Color(0.15, 1.5, 2.1), position: [15, 1, 3] },
+  { width: 2.6, height: 20, color: new Color(2.1, 0.22, 1.2), position: [-15, 0, -4] },
+  { width: 22, height: 2.2, color: new Color(1, 1.5, 0.25), position: [0, -9, -10] },
+  { width: 9, height: 9, color: new Color(0.55, 0.32, 1.6), position: [6, 5, -15] },
 ];
 
 export function createEnvironmentMap(
@@ -52,10 +35,12 @@ export function createEnvironmentMap(
   const scene = new Scene();
   const disposables: { dispose(): void }[] = [];
 
-  const skyGeometry = new SphereGeometry(40, 32, 16);
-  const skyMaterial = createSkyMaterial(createSkyUniforms(skyMap));
-  scene.add(new Mesh(skyGeometry, skyMaterial));
-  disposables.push(skyGeometry, skyMaterial);
+  if (skyMap) {
+    const skyGeometry = new SphereGeometry(40, 32, 16);
+    const skyMaterial = createSkyMaterial(createSkyUniforms(skyMap));
+    scene.add(new Mesh(skyGeometry, skyMaterial));
+    disposables.push(skyGeometry, skyMaterial);
+  }
 
   for (const panel of panels) {
     const geometry = new PlaneGeometry(panel.width, panel.height);
@@ -67,16 +52,8 @@ export function createEnvironmentMap(
     disposables.push(geometry, material);
   }
 
-  const ringGeometry = new TorusGeometry(22, 0.35, 8, 96);
-  const ringMaterial = new MeshBasicMaterial({ color: signal.clone().multiplyScalar(0.6) });
-  const ring = new Mesh(ringGeometry, ringMaterial);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = -1.5;
-  scene.add(ring);
-  disposables.push(ringGeometry, ringMaterial);
-
   const generator = new PMREMGenerator(renderer);
-  const target = generator.fromScene(scene, 0.02, 0.1, 100);
+  const target = generator.fromScene(scene, 0.015, 0.1, 100);
   generator.dispose();
   for (const item of disposables) {
     item.dispose();

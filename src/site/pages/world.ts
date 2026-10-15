@@ -10,7 +10,7 @@ export function renderWorldPage(context: PageContext, world: World): PageDocumen
   const { locale, route } = context;
   const seo = world.page?.seo;
 
-  const main = html`<article class="page page--world" data-world="${world.id}" aria-labelledby="world-title">
+  const main = html`<article class="page page--world surface" data-world="${world.id}" aria-labelledby="world-title">
   <header class="page__header">
     <p class="eyebrow">${world.eyebrow[locale]}</p>
     <h1 class="page__title" id="world-title" data-reveal>${world.title[locale]}</h1>

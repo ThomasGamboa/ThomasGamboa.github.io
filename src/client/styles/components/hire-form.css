@@ -202,19 +202,27 @@
   }
 
   .service-option {
-    --glass-radius: 1rem;
-    --film-opacity: 0.35;
     display: grid;
     grid-template-columns: auto 1fr;
     gap: var(--space-s);
     padding: var(--space-s);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-void);
     cursor: pointer;
-    transition: background-color var(--duration-base) var(--ease-out-quart);
+    transition:
+      border-color var(--duration-fast) var(--ease-out-quart),
+      box-shadow var(--duration-base) var(--ease-out-expo);
+  }
+
+  .service-option:hover {
+    border-color: var(--color-line-strong);
   }
 
   .service-option:has(input:checked) {
-    --film-opacity: 1;
-    --glass-tint: rgb(255 101 101 / 0.14);
+    border-color: var(--color-signal);
+    box-shadow:
+      0 0 1.5rem -0.75rem rgb(255 101 101 / 0.7),
+      inset 0 0 1.25rem -0.9rem rgb(255 101 101 / 0.7);
   }
 
   .service-option:has(input:focus-visible) {
@@ -256,8 +264,8 @@
 
   .hire-notice {
     padding: var(--space-s);
-    border-inline-start: 2px solid var(--color-signal);
-    background-color: var(--color-signal-faint);
+    border: 1px solid var(--color-signal);
+    border-inline-start-width: 3px;
     font-size: var(--text-small);
   }
 
@@ -265,6 +273,7 @@
     display: grid;
     gap: var(--space-l);
     padding: var(--space-l);
+    border: 1px solid var(--color-line);
   }
 
   .hire-summary__section h3 {
@@ -319,26 +328,7 @@
   }
 
   .hire-button {
-    padding: 0.95rem 1.5rem;
-    color: var(--color-text);
-    font-family: var(--font-mono);
     font-size: var(--text-micro);
-    letter-spacing: var(--tracking-mono);
-    text-transform: uppercase;
-    transition: color var(--duration-fast) var(--ease-out-quart);
-  }
-
-  .hire-button--ghost {
-    color: var(--color-text-muted);
-  }
-
-  .hire-button--ghost:hover {
-    color: var(--color-text);
-  }
-
-  .hire-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
   }
 
   .hire-form__status {

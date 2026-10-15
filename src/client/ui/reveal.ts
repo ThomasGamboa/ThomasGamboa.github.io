@@ -1,3 +1,5 @@
+import { refract } from './refraction.ts';
+
 const lineDelay = 90;
 const wordDelay = 14;
 
@@ -52,7 +54,9 @@ export function revealOnScroll(scope: ParentNode): void {
         }
         observer.unobserve(entry.target);
         assignDelays(wordsByElement.get(entry.target) ?? []);
-        (entry.target as HTMLElement).dataset.revealState = 'visible';
+        const element = entry.target as HTMLElement;
+        element.dataset.revealState = 'visible';
+        refract(element, { strength: 10, duration: 1200 });
       }
     },
     { rootMargin: '0px 0px -12% 0px' },

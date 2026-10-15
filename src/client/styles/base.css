@@ -8,6 +8,7 @@
   body {
     background-color: var(--color-void);
     color: var(--color-text);
+    text-shadow: var(--glow-text);
     font-family: var(--font-sans);
     font-size: var(--text-body);
     font-weight: var(--weight-body);
@@ -22,6 +23,7 @@
   h4 {
     font-weight: var(--weight-light);
     line-height: var(--leading-tight);
+    text-shadow: var(--glow-heading);
     text-wrap: balance;
   }
 
@@ -38,6 +40,7 @@
 
   a:hover {
     color: var(--color-signal);
+    text-shadow: var(--glow-signal);
   }
 
   button {
@@ -99,6 +102,11 @@
     letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
     color: var(--color-signal);
+    text-shadow: var(--glow-signal);
+  }
+
+  .surface {
+    background-color: var(--color-void);
   }
 
   @media (prefers-reduced-motion: reduce) {

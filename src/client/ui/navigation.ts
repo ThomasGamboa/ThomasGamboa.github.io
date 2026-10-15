@@ -1,4 +1,5 @@
 import type { ChapterTracker } from './ChapterTracker.ts';
+import { refract } from './refraction.ts';
 
 export function bindChapterLinks(scope: ParentNode, tracker: ChapterTracker): void {
   const links = [...scope.querySelectorAll<HTMLAnchorElement>('[data-chapter-link]')];
@@ -50,21 +51,13 @@ export function bindSiteMenu(scope: Document): void {
   if (!menu || typeof menu.hidePopover !== 'function') {
     return;
   }
-  const invoker = scope.querySelector<HTMLElement>('[popovertarget="site-menu"]');
-  menu.addEventListener('beforetoggle', (event) => {
-    if ((event as ToggleEvent).newState !== 'open' || !invoker) {
+  menu.addEventListener('toggle', (event) => {
+    if ((event as ToggleEvent).newState !== 'open') {
       return;
     }
-    const bounds = invoker.getBoundingClientRect();
-    const x = bounds.left + bounds.width / 2;
-    const y = bounds.top + bounds.height / 2;
-    const radius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    );
-    menu.style.setProperty('--menu-x', `${x}px`);
-    menu.style.setProperty('--menu-y', `${y}px`);
-    menu.style.setProperty('--menu-radius', `${radius}px`);
+    menu.querySelectorAll<HTMLElement>('.site-menu__chapter').forEach((chapter, index) => {
+      window.setTimeout(() => refract(chapter, { strength: 14, duration: 1000 }), 120 + index * 60);
+    });
   });
   menu.addEventListener('click', (event) => {
     if (event.target instanceof Element && event.target.closest('a')) {

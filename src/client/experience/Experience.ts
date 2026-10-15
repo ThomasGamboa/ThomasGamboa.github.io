@@ -1,4 +1,5 @@
-import { PerspectiveCamera, Scene, type WebGLRenderTarget } from 'three';
+import { PerspectiveCamera, Scene, Vector2, type WebGLRenderTarget } from 'three';
+import { cursorState } from '../ui/cursor-state.ts';
 import { experienceAssets } from './assets.ts';
 import { CameraRig } from './camera/CameraRig.ts';
 import { type AssetRegistry, loadAssets } from './core/AssetLoader.ts';
@@ -15,8 +16,10 @@ import {
   qualityPresets,
 } from './core/quality.ts';
 import { Renderer } from './core/Renderer.ts';
+import { measureStageCenter } from './core/stage.ts';
 import { type FrameState, Ticker } from './core/Ticker.ts';
 import { Viewport, type ViewportState } from './core/Viewport.ts';
+import { CursorLensEffect } from './effects/CursorLensEffect.ts';
 import { createRenderProfile, type RenderProfile } from './profile.ts';
 import { Director } from './timeline/Director.ts';
 import { ScrollTimeline } from './timeline/ScrollTimeline.ts';
@@ -43,6 +46,10 @@ export class Experience {
   readonly rig: CameraRig;
   readonly timeline: ScrollTimeline;
   readonly #director: Director;
+  readonly #lens = new CursorLensEffect();
+  readonly #lensCenter = new Vector2(0.5, 0.5);
+  readonly #lensVelocity = new Vector2();
+  #lensStrength = 0;
   readonly #modules: readonly WorldModule[];
   readonly #environment: WebGLRenderTarget;
   readonly #monitor = new FrameRateMonitor({
@@ -87,14 +94,16 @@ export class Experience {
     this.scene.environment = this.#environment.texture;
 
     const world = composeWorld({
+      renderer: this.renderer.instance,
       camera: this.camera,
+      pointer: this.pointer,
       viewport: this.viewport.state,
       skyMap,
       chapterIds: this.timeline.chapterIds,
       scope: document,
     });
     this.#modules = world.modules;
-    this.#director = new Director(this.timeline, world.cast, world.layouts);
+    this.#director = new Director(this.timeline, world.cast, world.forms, world.projectCount);
     for (const module of this.#modules) {
       this.scene.add(module.object);
       module.applyQuality?.(this.#quality);
@@ -107,10 +116,11 @@ export class Experience {
       this.camera,
       this.#quality,
       this.profile,
-      [world.cast.singularity.lensing],
+      [this.#lens],
     );
     this.post.resize(this.viewport.state);
 
+    this.#frameStage(this.viewport.state);
     this.timeline.update(0);
     this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.viewport.onChange(this.#onResize);
@@ -177,8 +187,36 @@ export class Experience {
     }
   }
 
+  #updateLens(delta: number): void {
+    const { width, height } = this.viewport.state;
+    const target = cursorState.visible && !cursorState.overSurface ? 1 : 0;
+    this.#lensStrength += (target - this.#lensStrength) * (1 - Math.exp(-delta / 0.18));
+    this.#lensCenter.set(cursorState.x / width, 1 - cursorState.y / height);
+    this.#lensVelocity.set(cursorState.velocityX / width, -cursorState.velocityY / height);
+    this.#lens.configure(
+      this.#lensCenter,
+      this.#lensVelocity,
+      cursorState.radius / height,
+      this.#lensStrength,
+      this.viewport.state.aspect,
+    );
+  }
+
+  #frameStage({ width, height }: ViewportState): void {
+    const center = measureStageCenter(document, width, height);
+    this.camera.setViewOffset(
+      width,
+      height,
+      width / 2 - center.x,
+      height / 2 - center.y,
+      width,
+      height,
+    );
+  }
+
   readonly #onResize = (state: ViewportState): void => {
     this.camera.aspect = state.aspect;
+    this.#frameStage(state);
     this.camera.updateProjectionMatrix();
     this.renderer.resize(state);
     this.post.resize(state);
@@ -200,6 +238,7 @@ export class Experience {
     for (const module of this.#modules) {
       module.update(ambient);
     }
+    this.#updateLens(frame.delta);
     this.post.render(frame.delta);
 
     if (this.#adaptive) {

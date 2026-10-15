@@ -1,13 +1,12 @@
 import { Color, Group, Matrix4, Mesh, PlaneGeometry, ShaderMaterial, Texture } from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { palette } from '../../../../shared/design/palette.ts';
 import type { QualitySettings } from '../../core/quality.ts';
 import type { FrameState } from '../../core/Ticker.ts';
 import type { ViewportState } from '../../core/Viewport.ts';
 import noise from '../../shaders/noise.glsl?raw';
 import waterFragment from '../../shaders/water.frag.glsl?raw';
 import waterVertex from '../../shaders/water.vert.glsl?raw';
-import { eclipseDirection } from '../environment/Sky.ts';
+import { glintDirection } from '../environment/Sky.ts';
 import type { WorldModule } from '../WorldModule.ts';
 
 const size = 600;
@@ -15,14 +14,14 @@ const size = 600;
 function createUniforms() {
   return {
     tDiffuse: { value: new Texture() },
-    color: { value: new Color(0.5, 0.48, 0.5) },
+    color: { value: new Color(0.62, 0.62, 0.66) },
     textureMatrix: { value: new Matrix4() },
     uTime: { value: 0 },
     uDistortion: { value: 0.035 },
     uFade: { value: 1 },
     uDeep: { value: new Color(0.0015, 0.001, 0.002) },
-    uGlint: { value: new Color(palette.signal).multiplyScalar(0.9) },
-    uGlintDirection: { value: eclipseDirection.clone() },
+    uGlint: { value: new Color(0.7, 0.75, 0.9) },
+    uGlintDirection: { value: glintDirection.clone() },
   };
 }
 

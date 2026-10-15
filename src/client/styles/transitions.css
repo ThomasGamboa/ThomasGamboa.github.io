@@ -2,24 +2,9 @@
   navigation: auto;
 }
 
-@property --bubble-reach {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-
-@property --menu-reach {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
 :root {
-  --bubble-x: 50vw;
-  --bubble-y: 50vh;
-  --bubble-radius: 75vmax;
-  --bubble-duration: 1100ms;
-  --bubble-ease: cubic-bezier(0.62, 0, 0.18, 1);
+  --wipe-duration: 820ms;
+  --wipe-ease: cubic-bezier(0.76, 0, 0.18, 1);
 }
 
 ::view-transition-group(*) {
@@ -28,64 +13,59 @@
 }
 
 ::view-transition-old(root) {
-  animation: page-recede var(--bubble-duration) var(--bubble-ease) both;
+  animation: page-recede var(--wipe-duration) var(--wipe-ease) both;
 }
 
 ::view-transition-new(root) {
-  animation: bubble-reveal var(--bubble-duration) var(--bubble-ease) both;
+  animation: page-wipe var(--wipe-duration) var(--wipe-ease) both;
 }
 
 :root::after {
   content: none;
   position: fixed;
-  inset: 0;
+  inset-inline: 0;
+  inset-block-start: -2px;
   z-index: var(--layer-skip-link);
-  background: conic-gradient(from 210deg at var(--bubble-x) var(--bubble-y), var(--film-stops));
-  mask: radial-gradient(
-    circle var(--bubble-reach) at var(--bubble-x) var(--bubble-y),
-    transparent calc(var(--bubble-reach) * 0.8),
-    rgb(0 0 0 / 0.18) calc(var(--bubble-reach) * 0.96),
-    #000 calc(var(--bubble-reach) - 1.5px),
-    transparent var(--bubble-reach)
-  );
-  opacity: 0;
+  height: 2px;
+  background-color: var(--color-signal);
+  box-shadow: 0 0 1.25rem 0.2rem rgb(255 101 101 / 0.75);
   pointer-events: none;
 }
 
 :root:active-view-transition::after {
   content: "";
-  animation: bubble-rim var(--bubble-duration) var(--bubble-ease) both;
+  animation: wipe-line var(--wipe-duration) var(--wipe-ease) both;
 }
 
 @keyframes page-recede {
   to {
-    filter: blur(10px) brightness(0.45);
-    scale: 0.94;
+    opacity: 0.25;
+    filter: brightness(0.4);
   }
 }
 
-@keyframes bubble-reveal {
+@keyframes page-wipe {
   from {
-    clip-path: circle(0 at var(--bubble-x) var(--bubble-y));
+    clip-path: inset(0 0 100% 0);
   }
 
   to {
-    clip-path: circle(var(--bubble-radius) at var(--bubble-x) var(--bubble-y));
+    clip-path: inset(0);
   }
 }
 
-@keyframes bubble-rim {
+@keyframes wipe-line {
   from {
-    --bubble-reach: 0px;
+    translate: 0 0;
     opacity: 1;
   }
 
-  72% {
+  85% {
     opacity: 1;
   }
 
   to {
-    --bubble-reach: var(--bubble-radius);
+    translate: 0 100svh;
     opacity: 0;
   }
 }

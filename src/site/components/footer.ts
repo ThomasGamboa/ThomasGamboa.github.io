@@ -37,7 +37,7 @@ export function renderFooter(context: PageContext): SafeHtml {
       html`<li><a href="${link.href}" rel="me noopener" target="_blank" data-cursor="${ui.cursorExternal[locale]}">${link.label[locale]}</a></li>`,
   );
 
-  return html`<footer class="site-footer">
+  return html`<footer class="site-footer surface">
   <div class="site-footer__grid">
     <div class="site-footer__identity">
       ${renderBrandMark('site-footer__mark')}

@@ -1,17 +1,4 @@
 @layer layout {
-  :root:not([data-page="home"]) {
-    background:
-      radial-gradient(60vmax 40vmax at 82% 8%, rgb(255 101 101 / 0.12), transparent 70%),
-      radial-gradient(50vmax 36vmax at 8% 92%, rgb(150 90 230 / 0.08), transparent 70%),
-      radial-gradient(40vmax 30vmax at 62% 64%, rgb(110 210 230 / 0.05), transparent 70%),
-      var(--color-void);
-    background-attachment: fixed;
-  }
-
-  :root:not([data-page="home"]) body {
-    background-color: transparent;
-  }
-
   .experience-canvas {
     position: fixed;
     inset: 0;
@@ -37,7 +24,10 @@
   .page {
     display: grid;
     gap: var(--space-xl);
-    padding: calc(var(--space-xl) * 1.5) var(--gutter) var(--space-xl);
+    min-height: 100svh;
+    padding: calc(var(--bar-height) + var(--space-xl)) var(--gutter)
+      calc(var(--status-height) + var(--space-xl));
+    background-color: var(--color-void);
   }
 
   .page__header {
