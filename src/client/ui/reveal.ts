@@ -56,7 +56,9 @@ export function revealOnScroll(scope: ParentNode): void {
         assignDelays(wordsByElement.get(entry.target) ?? []);
         const element = entry.target as HTMLElement;
         element.dataset.revealState = 'visible';
-        refract(element, { strength: 10, duration: 1200 });
+        if (/^H[1-6]$/.test(element.tagName)) {
+          refract(element, { strength: 10, duration: 1200 });
+        }
       }
     },
     { rootMargin: '0px 0px -12% 0px' },

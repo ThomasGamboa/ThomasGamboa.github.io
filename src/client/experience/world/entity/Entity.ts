@@ -75,9 +75,11 @@ export class Entity implements WorldModule {
   #spinAngle = 0;
   #tilt = 0;
   #glass = 0;
+  #roughness = 0.3;
   #dent = 0;
   #rippleAge = 10;
   #energy = 0;
+  #hovered = false;
 
   constructor(
     camera: PerspectiveCamera,
@@ -101,6 +103,9 @@ export class Entity implements WorldModule {
       thickness: 1.4,
       dispersion: 0.35,
       transmission: 1,
+      iridescence: 0.0001,
+      iridescenceIOR: 1.6,
+      iridescenceThicknessRange: [180, 560],
       envMapIntensity: 1.25,
     });
     this.#mesh = new Mesh(new SphereGeometry(1, ...this.#segments), this.#material);
@@ -143,6 +148,10 @@ export class Entity implements WorldModule {
     this.#glass = mix(from.glass, to.glass, t);
     uniforms.uAcid.value = 1 - this.#glass;
     this.#scale = mix(from.scale, to.scale, t);
+    this.#roughness = mix(from.roughness, to.roughness, t);
+    this.#material.metalness = mix(from.metalness, to.metalness, t);
+    this.#material.iridescence = Math.max(mix(from.iridescence, to.iridescence, t), 0.0001);
+    this.#material.envMapIntensity = mix(from.reflection, to.reflection, t);
     this.#spin = mix(from.spin, to.spin, t);
     this.#applyGlass();
   }
@@ -206,7 +215,7 @@ export class Entity implements WorldModule {
       this.#material.transmission = 0;
       this.#material.opacity = 1 - this.#glass * 0.6;
     }
-    this.#material.roughness = mix(0.3, 0.04, this.#glass);
+    this.#material.roughness = mix(this.#roughness, 0.04, this.#glass);
   }
 
   #raycast(x: number, y: number): Vector3 | null {
@@ -229,7 +238,12 @@ export class Entity implements WorldModule {
       const [u, v] = surfaceUv(direction);
       this.#fluid.stir(u, v, Math.min(0.25 + speed * 0.8, 1.6));
     }
-    const target = direction ? 1 : 0;
+    const hovered = direction !== null;
+    if (hovered !== this.#hovered) {
+      this.#hovered = hovered;
+      window.dispatchEvent(new CustomEvent('scene-hover', { detail: hovered }));
+    }
+    const target = hovered ? 1 : 0;
     this.#dent += (target - this.#dent) * (1 - Math.exp(-step / 0.14));
     this.uniforms.uDent.value = this.#dent;
   }

@@ -78,10 +78,14 @@ export class Moons implements WorldModule {
       uniforms.uFluidOffset.value.set(random(), random() * 0.2);
       const material = createEntityMaterial(uniforms, {
         color: new Color(1, 1, 1),
-        roughness: 0.3,
+        metalness: 0.6,
+        roughness: 0.16,
         clearcoat: 1,
         clearcoatRoughness: 0.05,
-        envMapIntensity: 1.2,
+        iridescence: 0.75,
+        iridescenceIOR: 1.6,
+        iridescenceThicknessRange: [180, 560],
+        envMapIntensity: 1.7,
       });
       const mesh = new Mesh(this.#geometry, material);
       mesh.frustumCulled = false;

@@ -5,6 +5,7 @@ import { bindMedia } from './media.ts';
 import { bindChapterLinks, bindLanguageLinks, bindSiteMenu } from './navigation.ts';
 import { bindRefraction, refract } from './refraction.ts';
 import { revealOnScroll } from './reveal.ts';
+import { scramble } from './scramble.ts';
 
 function whenStageReady(callback: () => void): void {
   const loader = document.querySelector<HTMLElement>('[data-loader]');
@@ -37,6 +38,22 @@ function lightUpChapters(tracker: ChapterTracker): void {
   });
 }
 
+function scrambleActions(scope: Document): void {
+  for (const link of scope.querySelectorAll<HTMLAnchorElement>('a.action')) {
+    const text = link.textContent?.trim() ?? '';
+    if (!text) {
+      continue;
+    }
+    link.setAttribute('aria-label', text);
+    link.addEventListener('pointerenter', () => scramble(link, text, 480));
+    link.addEventListener('focus', () => {
+      if (link.matches(':focus-visible')) {
+        scramble(link, text, 480);
+      }
+    });
+  }
+}
+
 export function startInterface(): ChapterTracker {
   const tracker = new ChapterTracker(document);
   const hud = document.querySelector<HTMLElement>('[data-hud]');
@@ -47,6 +64,7 @@ export function startInterface(): ChapterTracker {
   bindLanguageLinks(document, tracker);
   bindSiteMenu(document);
   bindRefraction(document);
+  scrambleActions(document);
   revealOnScroll(document);
   bindMedia(document);
   Cursor.mount(document.body);

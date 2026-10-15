@@ -192,7 +192,12 @@ export class Experience {
     const target = cursorState.visible && !cursorState.overSurface ? 1 : 0;
     this.#lensStrength += (target - this.#lensStrength) * (1 - Math.exp(-delta / 0.18));
     this.#lensCenter.set(cursorState.x / width, 1 - cursorState.y / height);
-    this.#lensVelocity.set(cursorState.velocityX / width, -cursorState.velocityY / height);
+    const speed = Math.hypot(cursorState.velocityX, cursorState.velocityY);
+    const stretch = Math.min(speed / 2600, 0.45);
+    this.#lensVelocity
+      .set(cursorState.velocityX, -cursorState.velocityY)
+      .normalize()
+      .multiplyScalar(stretch);
     this.#lens.configure(
       this.#lensCenter,
       this.#lensVelocity,

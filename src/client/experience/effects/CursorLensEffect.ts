@@ -8,6 +8,11 @@ uniform float uRadius;
 uniform float uStrength;
 uniform float uAspect;
 
+float lensOffset(float radius) {
+  float depth = sqrt(max(1.0 - radius * radius, 0.0));
+  return -0.38 * depth + 0.55 * (1.0 - depth);
+}
+
 void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
   if (uStrength <= 0.001) {
     outputColor = inputColor;
@@ -15,28 +20,25 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   }
   vec2 delta = uv - uCenter;
   delta.x *= uAspect;
-  vec2 velocity = uVelocity * vec2(uAspect, 1.0);
-  float speed = length(velocity);
-  vec2 along = speed > 0.0001 ? velocity / speed : vec2(1.0, 0.0);
-  float stretch = 1.0 + min(speed * 2.2, 1.4);
+  float amount = length(uVelocity);
+  vec2 along = amount > 0.0001 ? uVelocity / amount : vec2(1.0, 0.0);
+  float stretch = 1.0 + amount;
   float parallel = dot(delta, along);
-  vec2 shaped = along * (parallel / stretch) + (delta - along * parallel) * (1.0 + min(speed * 0.6, 0.35));
+  vec2 shaped = along * (parallel / stretch) + (delta - along * parallel) * sqrt(stretch);
   float distanceToCenter = length(shaped) / uRadius;
   if (distanceToCenter >= 1.0) {
     outputColor = inputColor;
     return;
   }
-  float dome = 1.0 - distanceToCenter * distanceToCenter;
-  vec2 pull = -delta * dome * 0.42 * uStrength;
-  pull += along * dome * min(speed * 0.04, 0.03) * uStrength;
-  pull.x /= uAspect;
-  float spread = (0.02 + 0.06 * distanceToCenter * distanceToCenter) * uStrength;
+  vec2 offset = delta * lensOffset(distanceToCenter) * uStrength;
+  offset.x /= uAspect;
+  float spread = 0.1 * smoothstep(0.4, 1.0, distanceToCenter) + 0.02;
   vec3 color;
-  color.r = texture2D(inputBuffer, uv + pull * (1.0 - spread)).r;
-  color.g = texture2D(inputBuffer, uv + pull).g;
-  color.b = texture2D(inputBuffer, uv + pull * (1.0 + spread)).b;
-  float edge = smoothstep(0.9, 0.985, distanceToCenter) * (1.0 - smoothstep(0.985, 1.0, distanceToCenter));
-  color += edge * 0.035 * uStrength;
+  color.r = texture2D(inputBuffer, uv + offset * (1.0 - spread)).r;
+  color.g = texture2D(inputBuffer, uv + offset).g;
+  color.b = texture2D(inputBuffer, uv + offset * (1.0 + spread)).b;
+  float rim = smoothstep(0.93, 0.995, distanceToCenter);
+  color += rim * 0.05 * uStrength;
   outputColor = vec4(color, inputColor.a);
 }
 `;

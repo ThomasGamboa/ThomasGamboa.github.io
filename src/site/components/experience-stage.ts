@@ -9,5 +9,5 @@ export function renderExperienceStage(context: PageContext): SafeHtml {
   <p class="loader__value" aria-hidden="true"><span data-loader-value>000</span></p>
   <span class="loader__track" aria-hidden="true"><span class="loader__fill" data-loader-fill></span></span>
 </div>
-<canvas class="experience-canvas" data-experience-canvas aria-hidden="true"></canvas>`;
+<canvas class="experience-canvas" data-experience-canvas data-cursor="${ui.cursorDrag[locale]}" aria-hidden="true"></canvas>`;
 }

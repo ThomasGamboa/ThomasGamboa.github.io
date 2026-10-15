@@ -20,6 +20,7 @@ export const ui = {
   cursorStart: { es: 'Iniciar', en: 'Start' },
   cursorExpand: { es: 'Ampliar', en: 'Expand' },
   cursorPlay: { es: 'Reproducir', en: 'Play' },
+  cursorDrag: { es: 'Arrastrar', en: 'Drag' },
   playVideo: { es: 'Reproducir vídeo', en: 'Play video' },
   galleryClose: { es: 'Cerrar', en: 'Close' },
   galleryPrevious: { es: 'Anterior', en: 'Previous' },

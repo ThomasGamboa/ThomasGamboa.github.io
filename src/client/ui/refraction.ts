@@ -166,7 +166,7 @@ export function refract(element: HTMLElement, options: RefractionOptions = {}): 
   slot.frame = requestAnimationFrame(step);
 }
 
-const hoverSelector = 'a, button, [data-tooltip], .service-option, summary';
+const hoverSelector = 'a, button, [data-tooltip], summary';
 
 export function bindRefraction(scope: Document): void {
   reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
