@@ -50,7 +50,7 @@ void main() {
 
   vec3 nebula = vec3(0.0);
   float cloud = fbm(direction * 2.2 + vec3(0.0, uTime * 0.004, 0.0));
-  nebula += mix(vec3(0.05, 0.004, 0.012), vec3(0.03, 0.01, 0.06), smoothstep(-0.2, 0.5, direction.x)) * smoothstep(-0.1, 0.7, cloud) * 1.6;
+  nebula += mix(vec3(0.03, 0.004, 0.008), vec3(0.016, 0.014, 0.02), smoothstep(-0.2, 0.5, direction.x)) * smoothstep(-0.1, 0.8, cloud) * 0.6;
 
 #ifdef USE_SKY_MAP
   vec3 groundedSky = texture2D(uSkyMap, equirectangularUv(direction)).rgb * uSkyIntensity;

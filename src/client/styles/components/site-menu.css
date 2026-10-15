@@ -1,5 +1,9 @@
 @layer components {
   .site-menu {
+    --menu-x: calc(100% - 3rem);
+    --menu-y: 2.5rem;
+    --menu-radius: 150vmax;
+    --menu-reach: 0px;
     display: none;
     position: fixed;
     inset: 0;
@@ -14,21 +18,58 @@
     background-color: var(--color-veil);
     backdrop-filter: blur(18px);
     color: var(--color-text);
-    opacity: 0;
+    clip-path: circle(var(--menu-reach) at var(--menu-x) var(--menu-y));
     transition:
-      opacity var(--duration-base) var(--ease-out-quart),
-      overlay var(--duration-base) allow-discrete,
-      display var(--duration-base) allow-discrete;
+      --menu-reach var(--bubble-duration) var(--bubble-ease),
+      overlay var(--bubble-duration) allow-discrete,
+      display var(--bubble-duration) allow-discrete;
+  }
+
+  .site-menu::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: conic-gradient(from 140deg at var(--menu-x) var(--menu-y), var(--film-stops));
+    mask: radial-gradient(
+      circle var(--menu-reach) at var(--menu-x) var(--menu-y),
+      transparent calc(var(--menu-reach) * 0.82),
+      rgb(0 0 0 / 0.16) calc(var(--menu-reach) * 0.96),
+      #000 calc(var(--menu-reach) - 1.5px),
+      transparent var(--menu-reach)
+    );
+    pointer-events: none;
+    transition: opacity 420ms var(--ease-out-quart);
   }
 
   .site-menu:popover-open {
+    --menu-reach: var(--menu-radius);
     display: block;
-    opacity: 1;
+  }
+
+  .site-menu:popover-open::before {
+    opacity: 0;
+    transition-delay: 700ms;
   }
 
   @starting-style {
     .site-menu:popover-open {
-      opacity: 0;
+      --menu-reach: 0px;
+    }
+
+    .site-menu:popover-open::before {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-menu {
+      clip-path: none;
+      transition: none;
+    }
+
+    .site-menu::before {
+      display: none;
     }
   }
 

@@ -1,48 +1,55 @@
-import {
-  AdditiveBlending,
-  Color,
-  DoubleSide,
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  RingGeometry,
-  ShaderMaterial,
-  SphereGeometry,
-  Vector3,
-} from 'three';
-import { palette } from '../../../../shared/design/palette.ts';
+import { Color, Group, Mesh, SphereGeometry, TorusKnotGeometry } from 'three';
+import type { QualitySettings } from '../../core/quality.ts';
 import type { FrameState } from '../../core/Ticker.ts';
-import haloFragment from '../../shaders/halo.frag.glsl?raw';
-import noise from '../../shaders/noise.glsl?raw';
-import planetFragment from '../../shaders/planet.frag.glsl?raw';
-import planetVertex from '../../shaders/planet.vert.glsl?raw';
+import { createLiquidMaterial, type LiquidInks } from '../../materials/liquid.ts';
 import type { CelestialBody, WorldLayout } from './layouts.ts';
+
+const venom: LiquidInks = [
+  new Color(0.012, 0, 0.003),
+  new Color(0.2, 0.004, 0.018),
+  new Color(0.62, 0.05, 0.07),
+  new Color(0.07, 0, 0.016),
+];
+
+const lacquer = {
+  color: new Color(1, 1, 1),
+  metalness: 0.1,
+  roughness: 0.2,
+  clearcoat: 1,
+  clearcoatRoughness: 0.03,
+  iridescence: 0.4,
+  iridescenceIOR: 1.7,
+  iridescenceThicknessRange: [260, 520] as [number, number],
+  sheen: 1,
+  sheenColor: new Color(0.05, 0.42, 0.48),
+  sheenRoughness: 0.32,
+  envMapIntensity: 2.2,
+  transparent: true,
+};
+
+interface Droplet {
+  readonly mesh: Mesh;
+  readonly phase: number;
+  readonly speed: number;
+  readonly distance: number;
+  readonly lift: number;
+}
 
 export class NightWorld implements CelestialBody {
   readonly object = new Group();
   readonly chapterId: string;
-  readonly #planet: Mesh<SphereGeometry, ShaderMaterial>;
-  readonly #halo: Mesh<SphereGeometry, ShaderMaterial>;
-  readonly #ring: Mesh<RingGeometry, MeshBasicMaterial>;
-  readonly #moon: Mesh<SphereGeometry, ShaderMaterial>;
-  readonly #ringOpacity = 0.22;
-  readonly #planetUniforms = {
-    uTime: { value: 0 },
-    uPresence: { value: 0 },
-    uLightDirection: { value: new Vector3(0.8, 0.35, 0.4).normalize() },
-    uRim: { value: new Color(palette.signal).multiplyScalar(0.5) },
-    uCity: { value: new Color(3.4, 1.5, 0.7) },
-  };
-  readonly #haloUniforms = {
-    uColor: { value: new Color(palette.signal).multiplyScalar(0.55) },
-    uPresence: { value: 0 },
-    uPower: { value: 3.4 },
-  };
-  readonly #moonUniforms = {
-    ...this.#planetUniforms,
-    uCity: { value: new Color(0, 0, 0) },
-    uRim: { value: new Color(0.6, 0.55, 0.7) },
-  };
+  readonly #knotGeometry: TorusKnotGeometry;
+  readonly #dropGeometry = new SphereGeometry(1, 72, 48);
+  readonly #knot = createLiquidMaterial(
+    { inks: venom, seed: 3.1, scale: 0.08, bump: 0.12, film: 0.1, warp: 0.5, warpScale: 0.1 },
+    lacquer,
+  );
+  readonly #drop = createLiquidMaterial(
+    { inks: venom, seed: 8.4, scale: 0.45, bump: 0.06, film: 0.1, warp: 0.07, warpScale: 0.8 },
+    lacquer,
+  );
+  readonly #form: Mesh;
+  readonly #droplets: Droplet[] = [];
 
   constructor(chapterId: string, layout: WorldLayout) {
     this.chapterId = chapterId;
@@ -50,86 +57,63 @@ export class NightWorld implements CelestialBody {
     this.object.name = `world-${chapterId}`;
     this.object.position.set(...layout.center);
 
-    const sphere = new SphereGeometry(radius, 96, 64);
-    this.#planet = new Mesh(
-      sphere,
-      new ShaderMaterial({
-        name: 'NightPlanet',
-        vertexShader: planetVertex,
-        fragmentShader: `${noise}\n${planetFragment}`,
-        uniforms: this.#planetUniforms,
-      }),
-    );
+    this.#knotGeometry = new TorusKnotGeometry(radius * 0.5, radius * 0.16, 420, 72, 2, 3);
+    this.#form = new Mesh(this.#knotGeometry, this.#knot.material);
+    this.#form.rotation.set(0.5, 0.2, 0.3);
+    this.object.add(this.#form);
 
-    this.#halo = new Mesh(
-      new SphereGeometry(radius * 1.12, 64, 32),
-      new ShaderMaterial({
-        name: 'NightHalo',
-        vertexShader: planetVertex,
-        fragmentShader: haloFragment,
-        uniforms: this.#haloUniforms,
-        transparent: true,
-        depthWrite: false,
-        blending: AdditiveBlending,
-      }),
-    );
-
-    this.#ring = new Mesh(
-      new RingGeometry(radius * 1.55, radius * 1.58, 160),
-      new MeshBasicMaterial({
-        color: new Color(palette.signal).multiplyScalar(1.5),
-        transparent: true,
-        opacity: 0,
-        side: DoubleSide,
-        blending: AdditiveBlending,
-        depthWrite: false,
-      }),
-    );
-    this.#ring.rotation.set(Math.PI * 0.42, 0.2, 0);
-
-    this.#moon = new Mesh(
-      new SphereGeometry(radius * 0.14, 32, 16),
-      new ShaderMaterial({
-        name: 'NightMoon',
-        vertexShader: planetVertex,
-        fragmentShader: `${noise}\n${planetFragment}`,
-        uniforms: this.#moonUniforms,
-      }),
-    );
-
-    this.object.add(this.#planet, this.#halo, this.#ring, this.#moon);
+    [0.06, 0.09, 0.05, 0.12].forEach((size, index) => {
+      const mesh = new Mesh(this.#dropGeometry, this.#drop.material);
+      mesh.scale.setScalar(radius * size);
+      this.object.add(mesh);
+      this.#droplets.push({
+        mesh,
+        phase: index * 1.7,
+        speed: 0.05 + index * 0.017,
+        distance: radius * (1.05 + index * 0.16),
+        lift: radius * (0.18 + (index % 2) * 0.22),
+      });
+    });
     this.object.visible = false;
   }
 
   setPresence(value: number): void {
-    this.#planetUniforms.uPresence.value = value;
-    this.#haloUniforms.uPresence.value = value;
-    this.#ring.material.opacity = this.#ringOpacity * value;
-    this.object.scale.setScalar(0.85 + value * 0.15);
+    const eased = value * value * (3 - 2 * value);
+    this.#knot.material.opacity = eased;
+    this.#drop.material.opacity = eased;
+    this.#knot.uniforms.uLiquidWarp.value = 0.5 + (1 - eased) * 1.6;
+    this.object.scale.setScalar(0.55 + eased * 0.45);
     this.object.visible = value > 0.001;
+  }
+
+  applyQuality(quality: QualitySettings): void {
+    const sheen = quality.tier === 'low' ? 0 : 1;
+    this.#knot.material.sheen = sheen;
+    this.#drop.material.sheen = sheen;
   }
 
   update({ elapsed }: FrameState): void {
     if (!this.object.visible) {
       return;
     }
-    this.#planetUniforms.uTime.value = elapsed;
-    this.#planet.rotation.y = elapsed * 0.025;
-    const orbit = elapsed * 0.12;
-    const distance = this.#ring.geometry.parameters.outerRadius * 1.15;
-    this.#moon.position.set(
-      Math.cos(orbit) * distance,
-      Math.sin(orbit) * distance * 0.25,
-      Math.sin(orbit) * distance,
-    );
+    this.#knot.uniforms.uLiquidTime.value = elapsed;
+    this.#drop.uniforms.uLiquidTime.value = elapsed;
+    this.#form.rotation.y = 0.2 + elapsed * 0.035;
+    this.#form.rotation.z = 0.3 + Math.sin(elapsed * 0.11) * 0.12;
+    for (const droplet of this.#droplets) {
+      const angle = droplet.phase + elapsed * droplet.speed;
+      droplet.mesh.position.set(
+        Math.cos(angle) * droplet.distance,
+        Math.sin(angle * 0.7 + droplet.phase) * droplet.lift,
+        Math.sin(angle) * droplet.distance,
+      );
+    }
   }
 
   dispose(): void {
-    for (const mesh of [this.#planet, this.#halo, this.#moon]) {
-      mesh.geometry.dispose();
-      mesh.material.dispose();
-    }
-    this.#ring.geometry.dispose();
-    this.#ring.material.dispose();
+    this.#knotGeometry.dispose();
+    this.#dropGeometry.dispose();
+    this.#knot.material.dispose();
+    this.#drop.material.dispose();
   }
 }

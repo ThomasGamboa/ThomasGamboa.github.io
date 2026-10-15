@@ -3,47 +3,82 @@ import {
   Color,
   Group,
   InstancedMesh,
-  MeshBasicMaterial,
-  MeshStandardMaterial,
+  Mesh,
   Object3D,
+  SphereGeometry,
+  Vector3,
 } from 'three';
-import { palette } from '../../../../shared/design/palette.ts';
 import { createRandom } from '../../core/random.ts';
 import type { FrameState } from '../../core/Ticker.ts';
+import { createLiquidMaterial, type LiquidInks } from '../../materials/liquid.ts';
 import type { CelestialBody, WorldLayout } from './layouts.ts';
 
-const gridRadius = 10;
-const debrisCount = 60;
+const gridRadius = 7;
 const placement = new Object3D();
+const fracture = new Vector3(-0.35, 0.3, 0.88).normalize();
 
-interface Debris {
-  readonly radius: number;
+const obsidian: LiquidInks = [
+  new Color(0.012, 0.012, 0.014),
+  new Color(0.06, 0.058, 0.064),
+  new Color(0.2, 0.19, 0.21),
+  new Color(0.22, 0.02, 0.03),
+];
+
+const opal: LiquidInks = [
+  new Color(0.02, 0.004, 0.01),
+  new Color(0.55, 0.04, 0.08),
+  new Color(0.86, 0.8, 0.76),
+  new Color(0.16, 0.06, 0.22),
+];
+
+interface Fragment {
+  readonly home: Vector3;
+  readonly lift: number;
   readonly phase: number;
-  readonly speed: number;
-  readonly tilt: number;
-  readonly spin: number;
+  readonly spin: Vector3;
+  readonly size: number;
 }
 
 export class VoxelWorld implements CelestialBody {
   readonly object = new Group();
   readonly chapterId: string;
   readonly #geometry = new BoxGeometry(0.92, 0.92, 0.92);
-  readonly #material = new MeshStandardMaterial({
-    color: new Color(1, 1, 1),
-    metalness: 0.78,
-    roughness: 0.32,
-    envMapIntensity: 1.4,
-    transparent: true,
-  });
-  readonly #glowMaterial = new MeshBasicMaterial({
-    color: new Color(palette.signal).multiplyScalar(2.6),
-    transparent: true,
-  });
+  readonly #eggGeometry = new SphereGeometry(1, 96, 64);
+  readonly #stone = createLiquidMaterial(
+    { inks: obsidian, seed: 1.7, scale: 0.22, film: 0.08 },
+    {
+      color: new Color(1, 1, 1),
+      metalness: 0,
+      roughness: 0.14,
+      clearcoat: 1,
+      clearcoatRoughness: 0.02,
+      iridescence: 1,
+      iridescenceIOR: 1.45,
+      iridescenceThicknessRange: [260, 480],
+      envMapIntensity: 2,
+      transparent: true,
+    },
+  );
+  readonly #yolk = createLiquidMaterial(
+    { inks: opal, seed: 5.3, scale: 0.4, bump: 0.08, film: 0.15, warp: 0.06, warpScale: 0.7 },
+    {
+      color: new Color(1, 1, 1),
+      metalness: 0.05,
+      roughness: 0.2,
+      clearcoat: 1,
+      clearcoatRoughness: 0.03,
+      iridescence: 0.8,
+      iridescenceIOR: 1.6,
+      iridescenceThicknessRange: [240, 620],
+      envMapIntensity: 1.6,
+      transparent: true,
+    },
+  );
   readonly #shell: InstancedMesh;
-  readonly #glow: InstancedMesh;
-  readonly #debris: InstancedMesh;
-  readonly #debrisOrbits: Debris[] = [];
-  readonly #core = new Group();
+  readonly #loose: InstancedMesh;
+  readonly #egg: Mesh;
+  readonly #fragments: Fragment[] = [];
+  readonly #nest = new Group();
   readonly #unit: number;
 
   constructor(chapterId: string, layout: WorldLayout, seed: number) {
@@ -53,8 +88,8 @@ export class VoxelWorld implements CelestialBody {
     this.#unit = layout.radius / gridRadius;
     const random = createRandom(seed);
 
-    const shellCells: [number, number, number][] = [];
-    const glowCells: [number, number, number][] = [];
+    const shellCells: Vector3[] = [];
+    const cell = new Vector3();
     for (let x = -gridRadius; x <= gridRadius; x += 1) {
       for (let y = -gridRadius; y <= gridRadius; y += 1) {
         for (let z = -gridRadius; z <= gridRadius; z += 1) {
@@ -62,37 +97,57 @@ export class VoxelWorld implements CelestialBody {
           if (distance > gridRadius || distance <= gridRadius - 1) {
             continue;
           }
-          if (random() < 0.025) {
-            glowCells.push([x, y, z]);
+          cell.set(x, y, z);
+          const alignment = cell.clone().normalize().dot(fracture);
+          if (alignment > 0.74 + random() * 0.1) {
+            this.#fragments.push({
+              home: cell.clone().multiplyScalar(this.#unit),
+              lift: (alignment - 0.6) * (0.5 + random() * 0.8),
+              phase: random() * Math.PI * 2,
+              spin: new Vector3(random() - 0.5, random() - 0.5, random() - 0.5),
+              size: this.#unit * (0.55 + random() * 0.35),
+            });
           } else {
-            shellCells.push([x, y, z]);
+            shellCells.push(cell.clone());
           }
         }
       }
     }
 
-    this.#shell = this.#createInstances(this.#material, shellCells, random, true);
-    this.#glow = this.#createInstances(this.#glowMaterial, glowCells, random, false);
-    this.#debris = new InstancedMesh(this.#geometry, this.#material, debrisCount);
-    for (let index = 0; index < debrisCount; index += 1) {
-      this.#debrisOrbits.push({
-        radius: layout.radius * (1.25 + random() * 0.4),
-        phase: random() * Math.PI * 2,
-        speed: 0.08 + random() * 0.12,
-        tilt: (random() - 0.5) * 0.9,
-        spin: random() * 3,
-      });
-    }
+    this.#shell = new InstancedMesh(this.#geometry, this.#stone.material, shellCells.length);
+    const tint = new Color();
+    shellCells.forEach((point, index) => {
+      placement.position.copy(point).multiplyScalar(this.#unit);
+      placement.rotation.set(0, 0, 0);
+      placement.scale.setScalar(this.#unit * (0.94 + random() * 0.06));
+      placement.updateMatrix();
+      this.#shell.setMatrixAt(index, placement.matrix);
+      const shade = 0.75 + random() * 0.25;
+      this.#shell.setColorAt(
+        index,
+        random() < 0.05 ? tint.setRGB(1, 0.32, 0.34) : tint.setRGB(shade, shade, shade),
+      );
+    });
+    this.#shell.instanceMatrix.needsUpdate = true;
 
-    this.#core.add(this.#shell, this.#glow);
-    this.object.add(this.#core, this.#debris);
+    this.#loose = new InstancedMesh(this.#geometry, this.#stone.material, this.#fragments.length);
+    this.#fragments.forEach((_, index) => {
+      this.#loose.setColorAt(index, tint.setRGB(0.9, 0.9, 0.9));
+    });
+
+    this.#egg = new Mesh(this.#eggGeometry, this.#yolk.material);
+    this.#egg.scale.set(layout.radius * 0.38, layout.radius * 0.46, layout.radius * 0.38);
+
+    this.#nest.add(this.#shell, this.#loose, this.#egg);
+    this.object.add(this.#nest);
     this.object.visible = false;
   }
 
   setPresence(value: number): void {
-    this.#material.opacity = value;
-    this.#glowMaterial.opacity = value;
-    this.object.scale.setScalar(0.7 + value * 0.3);
+    const eased = value * value * (3 - 2 * value);
+    this.#stone.material.opacity = eased;
+    this.#yolk.material.opacity = eased;
+    this.object.scale.setScalar(0.7 + eased * 0.3);
     this.object.visible = value > 0.001;
   }
 
@@ -100,57 +155,32 @@ export class VoxelWorld implements CelestialBody {
     if (!this.object.visible) {
       return;
     }
-    this.#core.rotation.set(elapsed * 0.03, elapsed * 0.06, 0);
-    const pulse = 0.5 + 0.5 * Math.sin(elapsed * 1.7);
-    this.#glowMaterial.color.setRGB(1.3 + pulse * 0.7, 0.28 + pulse * 0.14, 0.28 + pulse * 0.14);
+    this.#stone.uniforms.uLiquidTime.value = elapsed;
+    this.#yolk.uniforms.uLiquidTime.value = elapsed;
+    this.#nest.rotation.set(Math.sin(elapsed * 0.07) * 0.12, Math.sin(elapsed * 0.05) * 0.35, 0);
+    this.#egg.rotation.y = elapsed * 0.08;
 
-    this.#debrisOrbits.forEach((orbit, index) => {
-      const angle = orbit.phase + elapsed * orbit.speed;
-      placement.position.set(
-        Math.cos(angle) * orbit.radius,
-        Math.sin(angle * 1.3) * orbit.radius * orbit.tilt,
-        Math.sin(angle) * orbit.radius,
+    this.#fragments.forEach((fragment, index) => {
+      const breath = 1 + fragment.lift * (1.6 + 0.2 * Math.sin(elapsed * 0.4 + fragment.phase));
+      placement.position.copy(fragment.home).multiplyScalar(breath);
+      placement.rotation.set(
+        fragment.spin.x * elapsed * 0.25,
+        fragment.spin.y * elapsed * 0.25,
+        fragment.spin.z * elapsed * 0.25,
       );
-      placement.rotation.set(elapsed * 0.4 + orbit.spin, elapsed * 0.3, 0);
-      placement.scale.setScalar(this.#unit * (0.35 + (index % 3) * 0.18));
+      placement.scale.setScalar(fragment.size * Math.max(1 - fragment.lift * 1.2, 0.35));
       placement.updateMatrix();
-      this.#debris.setMatrixAt(index, placement.matrix);
+      this.#loose.setMatrixAt(index, placement.matrix);
     });
-    this.#debris.instanceMatrix.needsUpdate = true;
+    this.#loose.instanceMatrix.needsUpdate = true;
   }
 
   dispose(): void {
     this.#geometry.dispose();
-    this.#material.dispose();
-    this.#glowMaterial.dispose();
+    this.#eggGeometry.dispose();
+    this.#stone.material.dispose();
+    this.#yolk.material.dispose();
     this.#shell.dispose();
-    this.#glow.dispose();
-    this.#debris.dispose();
-  }
-
-  #createInstances(
-    material: MeshStandardMaterial | MeshBasicMaterial,
-    cells: readonly [number, number, number][],
-    random: () => number,
-    tinted: boolean,
-  ): InstancedMesh {
-    const mesh = new InstancedMesh(this.#geometry, material, cells.length);
-    const tint = new Color();
-    cells.forEach(([x, y, z], index) => {
-      placement.position.set(x * this.#unit, y * this.#unit, z * this.#unit);
-      placement.rotation.set(0, 0, 0);
-      placement.scale.setScalar(this.#unit * (0.82 + random() * 0.18));
-      placement.updateMatrix();
-      mesh.setMatrixAt(index, placement.matrix);
-      if (tinted) {
-        const shade = 0.05 + random() * 0.09;
-        mesh.setColorAt(
-          index,
-          random() < 0.08 ? tint.setRGB(0.42, 0.05, 0.06) : tint.setRGB(shade, shade, shade * 1.1),
-        );
-      }
-    });
-    mesh.instanceMatrix.needsUpdate = true;
-    return mesh;
+    this.#loose.dispose();
   }
 }

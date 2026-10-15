@@ -34,7 +34,7 @@ const panels: readonly Panel[] = [
   {
     width: 2,
     height: 16,
-    color: signal.clone().multiplyScalar(2.6),
+    color: signal.clone().multiplyScalar(1.3),
     position: [-14, 2, 2],
   },
   {
@@ -68,7 +68,7 @@ export function createEnvironmentMap(
   }
 
   const ringGeometry = new TorusGeometry(22, 0.35, 8, 96);
-  const ringMaterial = new MeshBasicMaterial({ color: signal.clone().multiplyScalar(1.2) });
+  const ringMaterial = new MeshBasicMaterial({ color: signal.clone().multiplyScalar(0.6) });
   const ring = new Mesh(ringGeometry, ringMaterial);
   ring.rotation.x = Math.PI / 2;
   ring.position.y = -1.5;

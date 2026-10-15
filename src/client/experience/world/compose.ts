@@ -8,7 +8,6 @@ import { Dust } from './particles/Dust.ts';
 import { Nebula } from './particles/Nebula.ts';
 import { Singularity } from './singularity/Singularity.ts';
 import type { WorldModule } from './WorldModule.ts';
-import { BubbleWorld } from './worlds/BubbleWorld.ts';
 import {
   type CelestialBody,
   resolveWorldLayouts,
@@ -16,6 +15,7 @@ import {
   singularityRadius,
   type WorldLayout,
 } from './worlds/layouts.ts';
+import { MarbleWorld } from './worlds/MarbleWorld.ts';
 import { NightWorld } from './worlds/NightWorld.ts';
 import { VoxelWorld } from './worlds/VoxelWorld.ts';
 
@@ -49,8 +49,8 @@ function createBody(
       return new NightWorld(chapterId, layout);
     case 'voxel':
       return new VoxelWorld(chapterId, layout, seed);
-    case 'bubbles':
-      return new BubbleWorld(chapterId, layout, Math.max(projectCount(scope, chapterId), 5), seed);
+    case 'marbles':
+      return new MarbleWorld(chapterId, layout, Math.max(projectCount(scope, chapterId), 5), seed);
   }
 }
 

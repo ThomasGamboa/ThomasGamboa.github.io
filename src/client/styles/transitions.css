@@ -2,36 +2,91 @@
   navigation: auto;
 }
 
+@property --bubble-reach {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --menu-reach {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+:root {
+  --bubble-x: 50vw;
+  --bubble-y: 50vh;
+  --bubble-radius: 75vmax;
+  --bubble-duration: 1100ms;
+  --bubble-ease: cubic-bezier(0.62, 0, 0.18, 1);
+}
+
 ::view-transition-group(*) {
   animation-duration: var(--duration-slow);
   animation-timing-function: var(--ease-out-expo);
 }
 
 ::view-transition-old(root) {
-  animation: page-exit 380ms var(--ease-in-out-quart) both;
+  animation: page-recede var(--bubble-duration) var(--bubble-ease) both;
 }
 
 ::view-transition-new(root) {
-  animation: page-enter 900ms var(--ease-out-expo) both;
+  animation: bubble-reveal var(--bubble-duration) var(--bubble-ease) both;
 }
 
-@keyframes page-exit {
+:root::after {
+  content: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-skip-link);
+  background: conic-gradient(from 210deg at var(--bubble-x) var(--bubble-y), var(--film-stops));
+  mask: radial-gradient(
+    circle var(--bubble-reach) at var(--bubble-x) var(--bubble-y),
+    transparent calc(var(--bubble-reach) * 0.8),
+    rgb(0 0 0 / 0.18) calc(var(--bubble-reach) * 0.96),
+    #000 calc(var(--bubble-reach) - 1.5px),
+    transparent var(--bubble-reach)
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+:root:active-view-transition::after {
+  content: "";
+  animation: bubble-rim var(--bubble-duration) var(--bubble-ease) both;
+}
+
+@keyframes page-recede {
   to {
-    opacity: 0;
-    filter: blur(8px);
-    scale: 0.985;
+    filter: blur(10px) brightness(0.45);
+    scale: 0.94;
   }
 }
 
-@keyframes page-enter {
+@keyframes bubble-reveal {
   from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
+    clip-path: circle(0 at var(--bubble-x) var(--bubble-y));
   }
 
   to {
+    clip-path: circle(var(--bubble-radius) at var(--bubble-x) var(--bubble-y));
+  }
+}
+
+@keyframes bubble-rim {
+  from {
+    --bubble-reach: 0px;
     opacity: 1;
-    clip-path: inset(0);
+  }
+
+  72% {
+    opacity: 1;
+  }
+
+  to {
+    --bubble-reach: var(--bubble-radius);
+    opacity: 0;
   }
 }
 

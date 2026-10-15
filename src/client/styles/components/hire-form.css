@@ -202,25 +202,19 @@
   }
 
   .service-option {
-    position: relative;
+    --glass-radius: 1rem;
+    --film-opacity: 0.35;
     display: grid;
     grid-template-columns: auto 1fr;
     gap: var(--space-s);
     padding: var(--space-s);
-    border: 1px solid var(--color-line);
     cursor: pointer;
-    transition:
-      border-color var(--duration-fast) var(--ease-out-quart),
-      background-color var(--duration-base) var(--ease-out-quart);
-  }
-
-  .service-option:hover {
-    border-color: var(--color-line-strong);
+    transition: background-color var(--duration-base) var(--ease-out-quart);
   }
 
   .service-option:has(input:checked) {
-    border-color: var(--color-signal);
-    background-color: var(--color-signal-faint);
+    --film-opacity: 1;
+    --glass-tint: rgb(255 101 101 / 0.14);
   }
 
   .service-option:has(input:focus-visible) {
@@ -270,6 +264,7 @@
   .hire-summary {
     display: grid;
     gap: var(--space-l);
+    padding: var(--space-l);
   }
 
   .hire-summary__section h3 {
@@ -324,37 +319,21 @@
   }
 
   .hire-button {
-    padding: 0.875rem 1.25rem;
-    border: 1px solid var(--color-line-strong);
+    padding: 0.95rem 1.5rem;
     color: var(--color-text);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--tracking-mono);
     text-transform: uppercase;
-    transition:
-      border-color var(--duration-fast) var(--ease-out-quart),
-      color var(--duration-fast) var(--ease-out-quart);
-  }
-
-  .hire-button:hover {
-    border-color: var(--color-signal);
-    color: var(--color-signal);
+    transition: color var(--duration-fast) var(--ease-out-quart);
   }
 
   .hire-button--ghost {
-    border-color: transparent;
     color: var(--color-text-muted);
   }
 
-  .hire-button--primary {
-    border-color: var(--color-signal);
-    background-color: var(--color-signal);
-    color: var(--color-void);
-  }
-
-  .hire-button--primary:hover {
-    background-color: transparent;
-    color: var(--color-signal);
+  .hire-button--ghost:hover {
+    color: var(--color-text);
   }
 
   .hire-button:disabled {

@@ -47,13 +47,15 @@
     display: block;
     width: min(16rem, 60vw);
     height: 1px;
+    border-radius: 1px;
     background-color: var(--color-line);
   }
 
   .loader__fill {
     display: block;
     height: 100%;
-    background-color: var(--color-signal);
+    background: var(--film-line);
+    box-shadow: 0 0 0.75rem rgb(255 196 222 / 0.45);
     transform: scaleX(0);
     transform-origin: left center;
   }

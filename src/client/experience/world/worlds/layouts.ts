@@ -3,7 +3,7 @@ import type { WorldModule } from '../WorldModule.ts';
 
 export type { Triple };
 
-export type WorldVisual = 'night' | 'voxel' | 'bubbles';
+export type WorldVisual = 'night' | 'voxel' | 'marbles';
 
 export interface WorldLayout {
   readonly center: Triple;
@@ -19,7 +19,7 @@ export interface CelestialBody extends WorldModule {
 export const worldLayouts: Readonly<Record<string, WorldLayout>> = {
   nightbounds: { center: [-16, 7, -70], radius: 8, visual: 'night' },
   voxelnest: { center: [20, -2, -140], radius: 7, visual: 'voxel' },
-  archive: { center: [-12, 5, -205], radius: 7, visual: 'bubbles' },
+  archive: { center: [-12, 5, -205], radius: 7, visual: 'marbles' },
 };
 
 export const singularityCenter: Triple = [0, 2, -290];
@@ -36,7 +36,7 @@ export function resolveWorldLayouts(chapterIds: readonly string[]): Map<string, 
     const layout = worldLayouts[id] ?? {
       center: [side * 18, previous[1], previous[2] - 65] as Triple,
       radius: 7,
-      visual: 'bubbles' as const,
+      visual: 'marbles' as const,
     };
     layouts.set(id, layout);
     previous = layout.center;

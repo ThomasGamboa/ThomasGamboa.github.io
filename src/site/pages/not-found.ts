@@ -20,7 +20,7 @@ export function renderNotFoundPage(context: PageContext): PageDocument {
     <h1 class="page__title">${ui.notFoundHeading[locale]}</h1>
     <p class="page__lead">${ui.notFoundBody[locale]}</p>
   </header>
-  <a class="page__action" href="${homePath(locale)}">${ui.notFoundAction[locale]}</a>
+  <a class="page__action liquid-pill" href="${homePath(locale)}">${ui.notFoundAction[locale]}</a>
   ${alternatives}
 </div>`;
 

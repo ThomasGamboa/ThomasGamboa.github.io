@@ -26,13 +26,13 @@ export interface NebulaPath {
 }
 
 const tones = [
-  new Color(palette.signal).multiplyScalar(1.3),
-  new Color(0.55, 0.05, 0.12),
-  new Color(0.28, 0.08, 0.5),
-  new Color(0.9, 0.85, 1.1),
-  new Color(0.15, 0.3, 0.75),
+  new Color(0.78, 0.75, 0.72),
+  new Color(0.32, 0.31, 0.33),
+  new Color(0.42, 0.03, 0.05),
+  new Color(palette.signal).multiplyScalar(0.75),
+  new Color(0.95, 0.93, 0.9),
 ];
-const toneWeights = [0.34, 0.3, 0.2, 0.08, 0.08];
+const toneWeights = [0.3, 0.32, 0.2, 0.08, 0.1];
 
 export class Nebula implements WorldModule {
   readonly object: Points<BufferGeometry, ShaderMaterial>;
@@ -40,7 +40,7 @@ export class Nebula implements WorldModule {
     uTime: { value: 0 },
     uBirth: { value: 0 },
     uPixelRatio: { value: 1 },
-    uSize: { value: 150 },
+    uSize: { value: 110 },
     uOpacity: { value: 0 },
     uOrigin: { value: new Vector3() },
   };

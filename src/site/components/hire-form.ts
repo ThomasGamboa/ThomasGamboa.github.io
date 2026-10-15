@@ -46,7 +46,7 @@ function renderCatalog(field: HireField, categories: readonly ServiceCategory[],
     (category) => html`<div class="service-group" data-service-category="${category.id}">
   ${categories.length > 1 ? html`<p class="service-group__title"><span class="service-group__index" aria-hidden="true">${String.fromCharCode(65 + serviceCategories.indexOf(category))}</span> ${category.title[locale]}</p>` : null}
   <div class="service-group__options">${category.services.map(
-    (service) => html`<label class="service-option" data-service="${service.id}">
+    (service) => html`<label class="service-option liquid-glass" data-service="${service.id}">
     <input type="checkbox" name="${field.id}" value="${service.id}"${attributes({ 'aria-describedby': describedBy(field) })}>
     <span class="service-option__body">
       <span class="service-option__name">${service.name[locale]}</span>
@@ -157,7 +157,7 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
   ${step.fields.map((id) => renderField(id, locale))}
   ${
     step.id === 'review'
-      ? html`<div class="hire-summary" data-hire-summary></div>
+      ? html`<div class="hire-summary liquid-glass" data-hire-summary></div>
   <div class="hire-verification" data-hire-verification aria-label="${hireCopy.verification[locale]}"></div>`
       : null
   }
@@ -177,8 +177,8 @@ export function renderHireForm({ locale, endpoint, siteKey }: HireFormOptions): 
   <p class="hire-form__disclaimer">${ui.pricingDisclaimer[locale]}</p>
   <div class="hire-form__actions">
     <button class="hire-button hire-button--ghost" type="button" data-hire-previous hidden>${hireCopy.previous[locale]}</button>
-    <button class="hire-button" type="button" data-hire-next hidden>${hireCopy.next[locale]}</button>
-    <button class="hire-button hire-button--primary" type="submit" data-hire-submit>${hireCopy.submit[locale]}</button>
+    <button class="hire-button liquid-pill" type="button" data-hire-next hidden>${hireCopy.next[locale]}</button>
+    <button class="hire-button hire-button--primary liquid-pill liquid-pill--signal" type="submit" data-hire-submit>${hireCopy.submit[locale]}</button>
   </div>
   <p class="hire-form__status" role="status" aria-live="polite" data-hire-status>${endpoint ? null : hireCopy.unavailable[locale]}</p>
   <noscript><p class="hire-form__status">${hireCopy.noscript[locale]}</p></noscript>

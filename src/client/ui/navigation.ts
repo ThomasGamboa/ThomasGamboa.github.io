@@ -50,6 +50,22 @@ export function bindSiteMenu(scope: Document): void {
   if (!menu || typeof menu.hidePopover !== 'function') {
     return;
   }
+  const invoker = scope.querySelector<HTMLElement>('[popovertarget="site-menu"]');
+  menu.addEventListener('beforetoggle', (event) => {
+    if ((event as ToggleEvent).newState !== 'open' || !invoker) {
+      return;
+    }
+    const bounds = invoker.getBoundingClientRect();
+    const x = bounds.left + bounds.width / 2;
+    const y = bounds.top + bounds.height / 2;
+    const radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+    menu.style.setProperty('--menu-x', `${x}px`);
+    menu.style.setProperty('--menu-y', `${y}px`);
+    menu.style.setProperty('--menu-radius', `${radius}px`);
+  });
   menu.addEventListener('click', (event) => {
     if (event.target instanceof Element && event.target.closest('a')) {
       menu.hidePopover();
