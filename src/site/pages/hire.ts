@@ -1,6 +1,6 @@
-import { hiring } from '../../content/site.ts';
 import { ui } from '../../content/ui.ts';
 import { renderHireForm } from '../components/hire-form.ts';
+import { resolveHiringConfig } from '../hiring-config.ts';
 import { html } from '../html.ts';
 import type { PageContext, PageDocument } from '../page.ts';
 import { hireStructuredData } from '../seo/structured-data.ts';
@@ -8,8 +8,7 @@ import { hireStructuredData } from '../seo/structured-data.ts';
 export function renderHirePage(context: PageContext): PageDocument {
   const { locale, route } = context;
   const title = ui.hireTitle[locale];
-  const endpoint = process.env.PUBLIC_HIRE_ENDPOINT || hiring.endpoint;
-  const siteKey = process.env.PUBLIC_TURNSTILE_SITE_KEY || hiring.turnstileSiteKey;
+  const { endpoint, siteKey } = resolveHiringConfig();
 
   const main = html`<div class="page page--hire">
   <header class="page__header">

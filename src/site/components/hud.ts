@@ -16,8 +16,8 @@ function renderChapterRail(context: PageContext): SafeHtml {
     (
       chapter,
       index,
-    ) => html`<li><a class="chapter-rail__link" href="${sectionPath(locale, chapter.anchor[locale])}" data-chapter-link="${chapter.id}" data-tooltip="${chapter.label[locale]}" aria-label="${chapter.label[locale]}">
-      <span class="chapter-rail__index" aria-hidden="true">${formatIndex(index + 1)}</span>
+    ) => html`<li><a class="chapter-rail__link" href="${sectionPath(locale, chapter.anchor[locale])}" data-chapter-link="${chapter.id}" data-tooltip="${chapter.label[locale]}">
+      <span class="chapter-rail__index">${formatIndex(index + 1)}</span><span class="visually-hidden"> ${chapter.label[locale]}</span>
     </a></li>`,
   );
   return html`<nav class="chapter-rail" aria-label="${ui.chapterNavigation[locale]}">

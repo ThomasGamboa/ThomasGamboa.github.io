@@ -25,12 +25,11 @@ function renderLanguageSwitch(context: PageContext): SafeHtml {
       href,
       hreflang: definition.hreflang,
       lang: definition.htmlLang,
-      'aria-label': definition.label,
       'aria-current': locale === context.locale ? 'true' : null,
       'data-tooltip': definition.label,
       'data-language-link': locale,
       'data-chapter-anchors': chapterAnchorsFor(context, locale),
-    })}>${definition.shortLabel}</a></li>`;
+    })}>${definition.shortLabel}<span class="visually-hidden"> ${definition.label}</span></a></li>`;
   });
 
   return html`<nav class="language-switch" aria-label="${ui.languageNavigation[context.locale]}">

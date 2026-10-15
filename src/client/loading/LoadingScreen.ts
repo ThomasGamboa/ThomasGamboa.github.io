@@ -63,7 +63,6 @@ export class LoadingScreen {
   #render(progress: number): void {
     this.#displayed = progress;
     const percentage = Math.round(progress * 100);
-    this.#root.setAttribute('aria-valuenow', String(percentage));
     this.#root.style.setProperty('--loader-progress', progress.toFixed(4));
     if (this.#value) {
       this.#value.textContent = String(percentage).padStart(3, '0');

@@ -98,7 +98,7 @@ describe('navigation integrity', () => {
   it('resolves every internal link to an existing page and anchor', () => {
     for (const [path, document] of documents) {
       for (const [, href] of document.matchAll(/href="(\/[^"]*)"/g)) {
-        if (!href || href.startsWith('/src/') || /\.(ico|svg)$/.test(href)) {
+        if (!href || href.startsWith('/src/') || /\.(ico|svg|png|jpg|webmanifest)$/.test(href)) {
           continue;
         }
         const [target = '', anchor] = href.split('#');

@@ -51,6 +51,7 @@ export class Experience {
     warmupSeconds: 2,
     stableSeconds: 8,
   });
+  readonly #ambientScale = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.15 : 1;
   #quality: QualitySettings;
   #adaptive: boolean;
 
@@ -78,6 +79,7 @@ export class Experience {
 
     this.camera = new PerspectiveCamera(40, this.viewport.state.aspect, 0.1, 2000);
     this.rig = new CameraRig(this.camera, this.pointer);
+    this.rig.parallaxStrength = this.#ambientScale < 1 ? 0 : 1;
     this.timeline = new ScrollTimeline(document);
 
     const skyMap = assets.get('sky', 'environment') ?? null;
@@ -190,8 +192,13 @@ export class Experience {
     this.timeline.update(frame.delta);
     this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.rig.update(frame);
+    const ambient: FrameState = {
+      delta: frame.delta * this.#ambientScale,
+      elapsed: frame.elapsed * this.#ambientScale,
+      frame: frame.frame,
+    };
     for (const module of this.#modules) {
-      module.update(frame);
+      module.update(ambient);
     }
     this.post.render(frame.delta);
 

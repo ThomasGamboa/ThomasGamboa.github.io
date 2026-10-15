@@ -30,6 +30,7 @@ function alternateLinks(context: PageContext): SafeHtml[] {
 
 function openGraph(context: PageContext, meta: PageMeta): SafeHtml {
   const definition = localeDefinitions[context.locale];
+  const image = absoluteUrl(`/og/thomas-gamboa-${context.locale}.jpg`);
   const alternateLocales = locales
     .filter((locale) => locale !== context.locale && context.route.alternates[locale])
     .map(
@@ -44,7 +45,12 @@ function openGraph(context: PageContext, meta: PageMeta): SafeHtml {
 <meta property="og:url" content="${absoluteUrl(context.route.path)}">
 <meta property="og:locale" content="${definition.openGraphLocale}">
 ${alternateLocales}
-<meta name="twitter:card" content="summary_large_image">`;
+<meta property="og:image" content="${image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${meta.title}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${image}">`;
 }
 
 export function renderHead(context: PageContext, meta: PageMeta): SafeHtml {
@@ -69,6 +75,8 @@ ${openGraph(context, meta)}
 ${verification}
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <script>document.documentElement.classList.replace('no-js', 'js')</script>
 ${meta.structuredData ? jsonScript(meta.structuredData) : null}`;
 }

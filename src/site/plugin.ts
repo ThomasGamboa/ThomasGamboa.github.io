@@ -3,10 +3,13 @@ import path from 'node:path';
 import { type Connect, normalizePath, type Plugin, type ViteDevServer } from 'vite';
 import { palette } from '../shared/design/palette.ts';
 import { renderFavicon } from './brand.ts';
+import { resolveHiringConfig } from './hiring-config.ts';
 import { mediaLibrary, mediaPublicPrefix } from './media.ts';
 import { renderRoute } from './render.ts';
 import { buildRoutes, type Route } from './routes.ts';
+import { iconFiles, renderWebManifest } from './seo/icons.ts';
 import { renderRobots, renderSitemap } from './seo/indexing.ts';
+import { injectSecurityPolicy } from './seo/security.ts';
 
 interface TextResponse {
   readonly status: number;
@@ -30,6 +33,11 @@ function buildStaticFiles(routes: readonly Route[]): readonly StaticFile[] {
     { fileName: 'sitemap.xml', contentType: 'application/xml', body: renderSitemap(routes) },
     { fileName: 'robots.txt', contentType: 'text/plain', body: renderRobots() },
     { fileName: 'favicon.svg', contentType: 'image/svg+xml', body: renderFavicon(palette.signal) },
+    {
+      fileName: 'site.webmanifest',
+      contentType: 'application/manifest+json',
+      body: renderWebManifest(),
+    },
   ];
 }
 
@@ -71,6 +79,14 @@ function createDevHandler(
       const staticFile = staticFiles.find((file) => `/${file.fileName}` === pathname);
       if (staticFile) {
         send(response, { status: 200, ...staticFile });
+        return;
+      }
+
+      const icon = iconFiles.find((file) => `/${file.fileName}` === pathname);
+      if (icon) {
+        response.statusCode = 200;
+        response.setHeader('Content-Type', icon.contentType);
+        response.end(await icon.render());
         return;
       }
 
@@ -158,6 +174,15 @@ export function staticSite(): Plugin {
       return route ? renderRoute(route) : null;
     },
 
+    transformIndexHtml: {
+      order: 'post',
+      handler(document, context) {
+        return context.server
+          ? document
+          : injectSecurityPolicy(document, resolveHiringConfig().endpoint);
+      },
+    },
+
     configureServer(server) {
       server.middlewares.use(createDevHandler(server, routes, root, cacheDirectory));
     },
@@ -165,6 +190,9 @@ export function staticSite(): Plugin {
     async generateBundle() {
       for (const file of buildStaticFiles(routes)) {
         this.emitFile({ type: 'asset', fileName: file.fileName, source: file.body });
+      }
+      for (const icon of iconFiles) {
+        this.emitFile({ type: 'asset', fileName: icon.fileName, source: await icon.render() });
       }
       const variants = mediaLibrary.usedVariants;
       const outputs = await Promise.all(
