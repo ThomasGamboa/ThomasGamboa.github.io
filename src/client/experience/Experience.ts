@@ -16,7 +16,7 @@ import {
   qualityPresets,
 } from './core/quality.ts';
 import { Renderer } from './core/Renderer.ts';
-import { measureStageCenter } from './core/stage.ts';
+import { measureStageCenter, type StageCenter } from './core/stage.ts';
 import { type FrameState, Ticker } from './core/Ticker.ts';
 import { Viewport, type ViewportState } from './core/Viewport.ts';
 import { CursorLensEffect } from './effects/CursorLensEffect.ts';
@@ -60,6 +60,7 @@ export class Experience {
   readonly #pulse = new PulseEffect();
   readonly #pulseCenter = new Vector2(0.5, 0.5);
   #introOrigin = 0;
+  #stage: StageCenter = { x: 0, y: 0 };
   readonly #lens = new CursorLensEffect();
   readonly #lensCenter = new Vector2(0.5, 0.5);
   readonly #lensVelocity = new Vector2();
@@ -173,6 +174,7 @@ export class Experience {
       this.intro.cancel();
       this.post.setOverlayEnabled(this.#pulse, false);
       this.post.applyProfile(this.profile);
+      this.#placeStage(this.viewport.state);
     }
     if (!this.intro.active) {
       this.intro.play(handlers);
@@ -189,6 +191,7 @@ export class Experience {
       onComplete: () => {
         this.post.setOverlayEnabled(this.#pulse, false);
         this.post.applyProfile(this.profile);
+        this.#placeStage(this.viewport.state);
         handlers.onComplete?.();
       },
     });
@@ -308,13 +311,18 @@ export class Experience {
     );
   }
 
-  #frameStage({ width, height }: ViewportState): void {
-    const center = measureStageCenter(document, width, height);
+  #frameStage(state: ViewportState): void {
+    this.#stage = measureStageCenter(document, state.width, state.height);
+    this.#placeStage(state);
+  }
+
+  #placeStage({ width, height }: ViewportState): void {
+    const dock = this.intro.dock;
     this.camera.setViewOffset(
       width,
       height,
-      width / 2 - center.x,
-      height / 2 - center.y,
+      (width / 2 - this.#stage.x) * dock,
+      (height / 2 - this.#stage.y) * dock,
       width,
       height,
     );
@@ -340,6 +348,9 @@ export class Experience {
     );
     this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.rig.update(frame);
+    if (this.intro.active) {
+      this.#placeStage(this.viewport.state);
+    }
     const ambient: FrameState = {
       delta: frame.delta * this.#ambientScale,
       elapsed: frame.elapsed * this.#ambientScale,

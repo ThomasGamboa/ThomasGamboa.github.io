@@ -4,16 +4,38 @@
     pointer-events: none;
   }
 
+  :root:is([data-intro="pending"], [data-intro="reveal"]) .chapter--hero .chapter__panel {
+    background-color: transparent;
+    background-image: linear-gradient(var(--color-void), var(--color-void));
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: 0% 100%;
+  }
+
   :root[data-intro="pending"] .chapter--hero .chapter__panel {
     border-color: transparent;
   }
 
-  :root[data-intro="reveal"] :is(.site-header, .hud, .chapter-rail) {
-    transition: opacity 900ms var(--ease-out-quart) 520ms;
+  :root[data-intro="reveal"] .chapter--hero .chapter__panel {
+    background-size: 100% 100%;
+    transition:
+      background-size 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 700ms var(--ease-out-quart) 650ms;
   }
 
-  :root[data-intro="reveal"] .chapter--hero .chapter__panel {
-    transition: border-color 1400ms var(--ease-out-quart) 240ms;
+  :root[data-intro="reveal"] :is(.site-header, .hud, .chapter-rail) {
+    transition: opacity 800ms var(--ease-out-quart) 320ms;
+  }
+
+  @media (width < 48rem) {
+    :root:is([data-intro="pending"], [data-intro="reveal"]) .chapter--hero .chapter__panel {
+      background-position: left bottom;
+      background-size: 100% 0%;
+    }
+
+    :root[data-intro="reveal"] .chapter--hero .chapter__panel {
+      background-size: 100% 100%;
+    }
   }
 
   .hero__title[data-intro-state] .intro-word {
@@ -24,9 +46,9 @@
   .hero__title[data-intro-state] .intro-letter {
     display: inline-block;
     transition:
-      opacity 560ms var(--ease-out-quart) calc(var(--letter-index) * 34ms),
-      translate 1100ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--letter-index) * 34ms),
-      text-shadow 1300ms var(--ease-out-expo) calc(var(--letter-index) * 34ms + 120ms);
+      opacity 560ms var(--ease-out-quart) calc(var(--letter-index) * 34ms + 200ms),
+      translate 1100ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--letter-index) * 34ms + 200ms),
+      text-shadow 1300ms var(--ease-out-expo) calc(var(--letter-index) * 34ms + 320ms);
   }
 
   .hero__title[data-intro-state="enter"] .intro-letter {
@@ -38,7 +60,7 @@
   }
 
   .hero__title[data-intro-state="play"] .hero__role {
-    transition: opacity 700ms var(--ease-out-quart) 320ms;
+    transition: opacity 700ms var(--ease-out-quart) 460ms;
   }
 
   .hero__title[data-intro-state="enter"] .hero__role {

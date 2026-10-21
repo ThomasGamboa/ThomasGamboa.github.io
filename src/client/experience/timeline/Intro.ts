@@ -22,6 +22,7 @@ export interface IntroState {
   readonly rise: number;
   readonly fov: number;
   readonly turn: number;
+  readonly dock: number;
 }
 
 const timing = {
@@ -30,7 +31,9 @@ const timing = {
   impact: 1.95,
   wave: 1.05,
   reveal: 0.12,
-  duration: 3.2,
+  dockDelay: 0.08,
+  dock: 1.05,
+  duration: 3.3,
   rush: 4,
 } as const;
 
@@ -69,6 +72,7 @@ export class Intro implements IntroState {
   rise = 0;
   fov = 0;
   turn = 0;
+  dock = 1;
   #phase: Phase = 'idle';
   #time = 0;
   #handlers: IntroHandlers = {};
@@ -144,6 +148,7 @@ export class Intro implements IntroState {
     this.rise = 0;
     this.fov = 0;
     this.turn = 0;
+    this.dock = 1;
     this.#handlers.onComplete?.();
     this.#handlers = {};
   }
@@ -176,5 +181,6 @@ export class Intro implements IntroState {
     this.rise = 0.38 * Math.sin(Math.PI * flow);
     this.fov = 5 * (1 - flow);
     this.turn = -2.6 * (1 - flow) ** 2;
+    this.dock = easeInOutCubic(clamp01((after - timing.dockDelay) / timing.dock));
   }
 }

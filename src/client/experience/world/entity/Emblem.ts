@@ -17,8 +17,8 @@ import type { Entity } from './Entity.ts';
 
 const textureHeight = 1024;
 const emblemHeight = 0.76;
-const glow = 1.5;
-const tint = new Color(1, -0.1, -0.072);
+const glow = 1.35;
+const tint = new Color(1, -0.044, -0.031);
 
 function createTexture(): CanvasTexture {
   const scale = textureHeight / markHeight;

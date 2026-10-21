@@ -2,7 +2,7 @@ import { scramble } from './scramble.ts';
 
 const letterDelay = 34;
 const settleMilliseconds = 1500;
-const roleDelay = 320;
+const roleDelay = 460;
 
 function splitLetters(element: HTMLElement, text: string): void {
   const letters = document.createElement('span');

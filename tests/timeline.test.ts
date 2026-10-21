@@ -78,6 +78,7 @@ describe('intro', () => {
     expect(intro.active).toBe(true);
     expect(intro.assemble).toBe(0);
     expect(intro.emblem).toBe(0);
+    expect(intro.dock).toBe(0);
   });
 
   it('fires impact, reveal and completion in order and settles neutral', () => {
@@ -98,6 +99,7 @@ describe('intro', () => {
     expect(intro.active).toBe(false);
     expect(intro.assemble).toBe(1);
     expect(intro.turn).toBe(0);
+    expect(intro.dock).toBe(1);
   });
 
   it('finishes faster when the visitor scrolls away', () => {
