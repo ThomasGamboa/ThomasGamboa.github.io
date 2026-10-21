@@ -13,6 +13,7 @@ import type { Sky } from '../world/environment/Sky.ts';
 import type { Water } from '../world/landscape/Water.ts';
 import type { Dust } from '../world/particles/Dust.ts';
 import type { Motes } from '../world/particles/Motes.ts';
+import type { IntroState } from './Intro.ts';
 import type { ScrollTimeline } from './ScrollTimeline.ts';
 import { smootherstep, smoothstep } from './timeline-math.ts';
 
@@ -28,6 +29,7 @@ export interface Cast {
 export class Director {
   readonly #timeline: ScrollTimeline;
   readonly #cast: Cast;
+  readonly #intro: IntroState;
   readonly #forms: readonly EntityForm[];
   readonly #moonCounts: readonly number[];
   readonly #aboutIndex: number;
@@ -41,9 +43,11 @@ export class Director {
     cast: Cast,
     forms: readonly EntityForm[],
     projectCount: number,
+    intro: IntroState,
   ) {
     this.#timeline = timeline;
     this.#cast = cast;
+    this.#intro = intro;
     this.#forms = forms;
     this.#moonCounts = forms.map((form) => (form.moons === 'projects' ? projectCount : form.moons));
     const about = timeline.indexOf('about');
@@ -71,10 +75,20 @@ export class Director {
     resolveFrame(from, aspect, this.#from);
     resolveFrame(to, aspect, this.#to);
     blendFrames(this.#from, this.#to, amount, this.#frame);
+    this.#applyIntro();
     placeShot(entity.center, this.#frame, this.#shot);
 
     this.#choreograph(time, entity.energy);
     return this.#shot;
+  }
+
+  #applyIntro(): void {
+    const intro = this.#intro;
+    const frame = this.#frame;
+    frame.distance *= intro.distance;
+    frame.azimuth += intro.azimuth;
+    frame.elevation = frame.elevation * (1 - intro.level) + intro.rise;
+    frame.fov += intro.fov;
   }
 
   #choreograph(time: number, energy: number): void {

@@ -1,6 +1,7 @@
 import { ChapterTracker } from './ChapterTracker.ts';
 import { Cursor } from './Cursor.ts';
 import { Hud } from './Hud.ts';
+import { introduceHero } from './hero-intro.ts';
 import { bindMedia } from './media.ts';
 import { bindChapterLinks, bindLanguageLinks, bindSiteMenu } from './navigation.ts';
 import { bindProjectSheets } from './project-sheets.ts';
@@ -10,24 +11,32 @@ import { scramble } from './scramble.ts';
 import { bindSecretMail } from './secret-mail.ts';
 
 function whenStageReady(callback: () => void): void {
+  const root = document.documentElement;
   const loader = document.querySelector<HTMLElement>('[data-loader]');
-  if (!loader || loader.dataset.state === 'complete') {
+  const ready = (): boolean =>
+    root.dataset.intro
+      ? root.dataset.intro !== 'pending'
+      : !loader || loader.dataset.state === 'complete';
+  if (ready()) {
     callback();
     return;
   }
   const observer = new MutationObserver(() => {
-    if (loader.dataset.state === 'complete') {
+    if (ready()) {
       observer.disconnect();
       callback();
     }
   });
-  observer.observe(loader, { attributes: true, attributeFilter: ['data-state'] });
+  observer.observe(root, { attributes: true, attributeFilter: ['data-intro'] });
+  if (loader) {
+    observer.observe(loader, { attributes: true, attributeFilter: ['data-state'] });
+  }
 }
 
 const settleMilliseconds = 450;
 
-function lightUpChapters(tracker: ChapterTracker): void {
-  let activeId: string | null = null;
+function lightUpChapters(tracker: ChapterTracker, quietId: string | null): void {
+  let activeId = quietId;
   let timer = 0;
   tracker.subscribe(({ id }) => {
     if (!id || id === activeId) {
@@ -109,10 +118,15 @@ export function startInterface(): ChapterTracker {
   Cursor.mount(document.body);
   whenStageReady(() => {
     const headline = document.querySelector<HTMLElement>('h1');
-    if (headline) {
+    const introduced =
+      headline?.classList.contains('hero__title') === true &&
+      document.documentElement.dataset.intro === 'reveal';
+    if (headline && introduced) {
+      introduceHero(headline);
+    } else if (headline) {
       refract(headline, { strength: 16, duration: 1600 });
     }
-    lightUpChapters(tracker);
+    lightUpChapters(tracker, introduced ? 'hero' : null);
   });
   return tracker;
 }

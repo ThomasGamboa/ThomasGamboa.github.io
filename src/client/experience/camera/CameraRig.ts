@@ -24,6 +24,8 @@ export class CameraRig {
   #fov: number;
   #placed = false;
   #parallaxStrength = 1;
+  #kick = 0;
+  #kickAge = 0;
 
   constructor(camera: PerspectiveCamera, pointer: Pointer) {
     this.#camera = camera;
@@ -46,6 +48,11 @@ export class CameraRig {
       this.#target.copy(shot.target);
       this.#fov = shot.fov;
     }
+  }
+
+  kick(amount: number): void {
+    this.#kick = amount;
+    this.#kickAge = 0;
   }
 
   snap(): void {
@@ -73,8 +80,11 @@ export class CameraRig {
     this.#camera.position.addScaledVector(right, offsetX).addScaledVector(up, offsetY);
     this.#camera.lookAt(this.#target);
 
-    if (Math.abs(this.#camera.fov - this.#fov) > 0.01) {
-      this.#camera.fov = this.#fov;
+    this.#kickAge += delta;
+    const punch = this.#kick * Math.exp(-this.#kickAge * 4.5) * Math.cos(this.#kickAge * 12);
+    const fov = this.#fov + punch;
+    if (Math.abs(this.#camera.fov - fov) > 0.01) {
+      this.#camera.fov = fov;
       this.#camera.updateProjectionMatrix();
     }
   }

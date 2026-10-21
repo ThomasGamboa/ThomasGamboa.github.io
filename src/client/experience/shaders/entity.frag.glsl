@@ -12,11 +12,18 @@ uniform mat3 uFilmRotation;
 uniform float uFilm;
 uniform float uRelief;
 uniform float uChrome;
+uniform float uFront;
+uniform float uSheen;
 
 varying vec2 vEntityUv;
 varying float vEntityTube;
 varying vec3 vEntityTangent;
 varying vec3 vEntityBitangent;
+varying float vEntityFront;
+
+vec3 entitySpectrum(float x) {
+  return 0.5 + 0.5 * cos(6.28318 * (x + vec3(0.0, 0.33, 0.67)));
+}
 
 vec3 paletteAt(float x) {
   x = fract(x) * 5.0;

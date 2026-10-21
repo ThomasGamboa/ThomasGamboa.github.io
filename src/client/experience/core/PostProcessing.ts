@@ -23,6 +23,7 @@ export class PostProcessing {
   readonly grain: NoiseEffect;
   readonly vignette: VignetteEffect;
   readonly toneMapping: ToneMappingEffect;
+  readonly #overlays = new Map<Effect, EffectPass>();
 
   constructor(
     renderer: WebGLRenderer,
@@ -69,8 +70,17 @@ export class PostProcessing {
         this.grain,
       ),
     );
-    if (overlays.length > 0) {
-      this.composer.addPass(new EffectPass(camera, ...overlays));
+    for (const overlay of overlays) {
+      const pass = new EffectPass(camera, overlay);
+      this.composer.addPass(pass);
+      this.#overlays.set(overlay, pass);
+    }
+  }
+
+  setOverlayEnabled(overlay: Effect, enabled: boolean): void {
+    const pass = this.#overlays.get(overlay);
+    if (pass) {
+      pass.enabled = enabled;
     }
   }
 

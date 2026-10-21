@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { Intro } from '../src/client/experience/timeline/Intro.ts';
 import {
   band,
   smootherstep,
@@ -58,5 +59,76 @@ describe('easing helpers', () => {
     expect(band(2, 2, 0.2, 1)).toBe(1);
     expect(band(3.5, 2, 0.2, 1)).toBe(0);
     expect(band(1.4, 2, 0.2, 1)).toBeCloseTo(band(2.6, 2, 0.2, 1));
+  });
+});
+
+function runIntro(intro: Intro, seconds: number, rush = false): void {
+  for (let elapsed = 0; elapsed < seconds; elapsed += 1 / 60) {
+    intro.update(1 / 60, rush);
+  }
+}
+
+describe('intro', () => {
+  it('stays neutral until it is armed', () => {
+    const intro = new Intro();
+    expect(intro.active).toBe(false);
+    expect(intro.assemble).toBe(1);
+    expect(intro.light).toBe(1);
+    intro.arm();
+    expect(intro.active).toBe(true);
+    expect(intro.assemble).toBe(0);
+    expect(intro.emblem).toBe(0);
+  });
+
+  it('fires impact, reveal and completion in order and settles neutral', () => {
+    const intro = new Intro();
+    const events: string[] = [];
+    intro.arm();
+    intro.play({
+      onImpact: () => events.push('impact'),
+      onReveal: () => events.push('reveal'),
+      onComplete: () => events.push('complete'),
+    });
+    runIntro(intro, intro.impactTime - 0.1);
+    expect(events).toEqual([]);
+    runIntro(intro, 0.3);
+    expect(events).toEqual(['impact', 'reveal']);
+    runIntro(intro, 2);
+    expect(events).toEqual(['impact', 'reveal', 'complete']);
+    expect(intro.active).toBe(false);
+    expect(intro.assemble).toBe(1);
+    expect(intro.turn).toBe(0);
+  });
+
+  it('finishes faster when the visitor scrolls away', () => {
+    const intro = new Intro();
+    let complete = false;
+    intro.arm();
+    intro.play({ onComplete: () => (complete = true) });
+    runIntro(intro, 1, true);
+    expect(complete).toBe(true);
+  });
+
+  it('returns to neutral without firing handlers when cancelled', () => {
+    const intro = new Intro();
+    const events: string[] = [];
+    intro.arm();
+    intro.play({ onComplete: () => events.push('complete') });
+    runIntro(intro, 0.5);
+    intro.cancel();
+    expect(intro.active).toBe(false);
+    expect(intro.assemble).toBe(1);
+    expect(events).toEqual([]);
+  });
+
+  it('reveals immediately when it was never armed', () => {
+    const intro = new Intro();
+    const events: string[] = [];
+    intro.play({
+      onImpact: () => events.push('impact'),
+      onReveal: () => events.push('reveal'),
+      onComplete: () => events.push('complete'),
+    });
+    expect(events).toEqual(['reveal', 'complete']);
   });
 });

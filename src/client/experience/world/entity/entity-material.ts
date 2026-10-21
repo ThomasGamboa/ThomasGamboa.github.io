@@ -64,6 +64,9 @@ export function createEntityUniforms(
     uFilm: { value: 0 },
     uRelief: { value: 0 },
     uChrome: { value: 0 },
+    uAssemble: { value: 1 },
+    uFront: { value: 0 },
+    uSheen: { value: 0 },
   };
 }
 
@@ -82,6 +85,7 @@ const normalChunk = `
   vEntityTangent = (modelViewMatrix * vec4(entityAlongU, 0.0)).xyz;
   vEntityBitangent = (modelViewMatrix * vec4(entityAlongV, 0.0)).xyz;
   vEntityTube = mix(tubeOf(uShapeA), tubeOf(uShapeB), uMorph);
+  vEntityFront = uAssemble < 1.0 ? sin(ENTITY_PI * assembleLocal(uv)) : 0.0;
   #ifdef USE_TANGENT
     vec3 objectTangent = vec3(tangent.xyz);
   #endif`;
@@ -134,7 +138,13 @@ const environmentChunk = `
 
 const emissiveChunk = `
   #include <emissivemap_fragment>
-  totalEmissiveRadiance += entityAlbedo * uGlow * uAcid;`;
+  totalEmissiveRadiance += entityAlbedo * uGlow * uAcid;
+  if (uSheen > 0.001) {
+    float entityGrazing = 1.0 - abs(dot(normal, normalize(vViewPosition)));
+    vec3 entityPrism = entitySpectrum(entityGrazing * 1.4 + vEntityUv.x * 2.0 + vEntityUv.y * 3.0);
+    totalEmissiveRadiance += entityPrism * (pow(entityGrazing, 1.6) * 1.8 + 0.18) * uSheen;
+    totalEmissiveRadiance += entityPrism * vEntityFront * uFront * 2.6;
+  }`;
 
 const rimChunk = `
   float entityFacing = abs(dot(normal, normalize(vViewPosition)));

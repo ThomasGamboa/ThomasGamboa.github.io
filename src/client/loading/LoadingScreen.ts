@@ -79,10 +79,10 @@ export class LoadingScreen {
     const resolve = this.#resolveCompletion;
     this.#resolveCompletion = null;
     this.#root.dataset.state = 'complete';
+    resolve();
 
     const finish = () => {
       this.#root.hidden = true;
-      resolve();
     };
     if (this.#reducedMotion) {
       finish();

@@ -10,14 +10,15 @@ import {
   SRGBColorSpace,
 } from 'three';
 import { markHeight, markPath, markWidth } from '../../../../shared/design/brand-mark.ts';
-import { palette } from '../../../../shared/design/palette.ts';
 import type { FrameState } from '../../core/Ticker.ts';
+import type { IntroState } from '../../timeline/Intro.ts';
 import type { WorldModule } from '../WorldModule.ts';
 import type { Entity } from './Entity.ts';
 
 const textureHeight = 1024;
 const emblemHeight = 0.76;
-const glow = 1.6;
+const glow = 1.5;
+const tint = new Color(1, -0.1, -0.072);
 
 function createTexture(): CanvasTexture {
   const scale = textureHeight / markHeight;
@@ -40,15 +41,17 @@ export class Emblem implements WorldModule {
   readonly object = new Group();
   readonly #entity: Entity;
   readonly #camera: PerspectiveCamera;
+  readonly #intro: IntroState;
   readonly #mesh: Mesh<PlaneGeometry, MeshBasicMaterial>;
 
-  constructor(entity: Entity, camera: PerspectiveCamera) {
+  constructor(entity: Entity, camera: PerspectiveCamera, intro: IntroState) {
     this.#entity = entity;
     this.#camera = camera;
+    this.#intro = intro;
     const geometry = new PlaneGeometry(emblemHeight * (markWidth / markHeight), emblemHeight);
     const material = new MeshBasicMaterial({
       map: createTexture(),
-      color: new Color(palette.signal).multiplyScalar(glow),
+      color: tint.clone().multiplyScalar(glow),
       alphaTest: 0.5,
       alphaToCoverage: true,
       side: DoubleSide,
@@ -60,7 +63,8 @@ export class Emblem implements WorldModule {
   }
 
   update(_frame: FrameState): void {
-    const presence = this.#entity.glass;
+    const reveal = this.#intro.emblem;
+    const presence = this.#entity.glass * Math.min(reveal, 1);
     const visible = presence > 0.02;
     this.#mesh.visible = visible;
     if (!visible) {
@@ -69,7 +73,8 @@ export class Emblem implements WorldModule {
     const eased = presence * presence * (3 - 2 * presence);
     this.#mesh.position.copy(this.#entity.object.position);
     this.#mesh.quaternion.copy(this.#camera.quaternion);
-    this.#mesh.scale.setScalar(this.#entity.scale * eased);
+    this.#mesh.scale.setScalar(this.#entity.scale * eased * Math.max(reveal, 1));
+    this.#mesh.material.color.copy(tint).multiplyScalar(glow * (1 + this.#intro.flare * 1.4));
   }
 
   dispose(): void {

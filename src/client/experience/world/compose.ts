@@ -2,6 +2,7 @@ import type { PerspectiveCamera, Texture, WebGLRenderer } from 'three';
 import type { Pointer } from '../core/Pointer.ts';
 import type { ViewportState } from '../core/Viewport.ts';
 import type { Cast } from '../timeline/Director.ts';
+import type { IntroState } from '../timeline/Intro.ts';
 import { Emblem } from './entity/Emblem.ts';
 import { Entity } from './entity/Entity.ts';
 import { FluidField } from './entity/FluidField.ts';
@@ -22,6 +23,7 @@ export interface WorldContext {
   readonly skyMap: Texture | null;
   readonly chapterIds: readonly string[];
   readonly scope: ParentNode;
+  readonly intro: IntroState;
 }
 
 export interface ComposedWorld {
@@ -53,6 +55,7 @@ export function composeWorld(context: WorldContext): ComposedWorld {
     entityCenter,
     forms[0]?.palette ?? ['#fff', '#fff', '#fff', '#fff', '#fff'],
     reflections,
+    context.intro,
   );
   const cast: Cast = {
     sky: new Sky(camera, context.skyMap),
@@ -69,7 +72,7 @@ export function composeWorld(context: WorldContext): ComposedWorld {
     cast.dust,
     cast.motes,
     cast.entity,
-    new Emblem(entity, camera),
+    new Emblem(entity, camera, context.intro),
     cast.moons,
   ];
   return { cast, modules, forms, projectCount, fluid };

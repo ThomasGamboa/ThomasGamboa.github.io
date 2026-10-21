@@ -12,11 +12,13 @@ uniform float uRippleStrength;
 uniform vec3 uJelly;
 uniform vec2 uGrid;
 uniform float uSeed;
+uniform float uAssemble;
 
 varying vec2 vEntityUv;
 varying float vEntityTube;
 varying vec3 vEntityTangent;
 varying vec3 vEntityBitangent;
+varying float vEntityFront;
 
 const float ENTITY_TAU = 6.28318530718;
 const float ENTITY_PI = 3.14159265359;
@@ -95,12 +97,33 @@ float tubeOf(int id) {
   return id == 2 || id == 4 ? 1.0 : 0.0;
 }
 
+float assembleLocal(vec2 uv) {
+  float band = abs(uv.y - 0.5) * 2.0;
+  float delay = (1.0 - band) * 0.45;
+  return smoothstep(delay, delay + 0.55, uAssemble);
+}
+
+vec3 assembleShape(vec3 p, vec2 uv) {
+  if (uAssemble >= 1.0) {
+    return p;
+  }
+  float local = assembleLocal(uv);
+  float open = 1.0 - local;
+  vec3 d = sphereShape(uv);
+  vec3 disc = vec3(d.x * 1.75, d.y * 0.035, d.z * 1.75);
+  float angle = open * open * (1.2 + (1.0 - abs(uv.y - 0.5) * 2.0) * 2.4);
+  float c = cos(angle);
+  float s = sin(angle);
+  disc.xz = mat2(c, -s, s, c) * disc.xz;
+  return mix(disc, p, local);
+}
+
 vec3 entitySurface(vec2 uv) {
-  vec3 p = mix(shapeOf(uShapeA, uv), shapeOf(uShapeB, uv), uMorph);
+  vec3 p = assembleShape(mix(shapeOf(uShapeA, uv), shapeOf(uShapeB, uv), uMorph), uv);
   float t = uEntityTime * 0.22;
   vec3 q = p * 1.25 + vec3(uSeed, t, t * 0.7);
   vec3 flow = vec3(snoise(q), snoise(q + 11.3), snoise(q + 23.7));
-  float energy = uWobble + uTurbulence * sin(ENTITY_PI * uMorph);
+  float energy = uWobble + uTurbulence * sin(ENTITY_PI * uMorph) + 0.08 * sin(ENTITY_PI * uAssemble);
   p += flow * energy;
 
   vec3 direction = normalize(p + 0.00001);

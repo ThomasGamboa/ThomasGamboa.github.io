@@ -15,6 +15,7 @@ import type { Triple } from '../../camera/shots.ts';
 import type { Pointer } from '../../core/Pointer.ts';
 import type { QualitySettings } from '../../core/quality.ts';
 import type { FrameState } from '../../core/Ticker.ts';
+import type { IntroState } from '../../timeline/Intro.ts';
 import type { FilmReflections } from '../environment/Reflections.ts';
 import type { WorldModule } from '../WorldModule.ts';
 import {
@@ -42,6 +43,7 @@ const inverse = new Quaternion();
 const right = new Vector3();
 const up = new Vector3();
 const jellyTarget = new Vector3();
+const restingDispersion = 0.35;
 
 function mix(a: number, b: number, t: number): number {
   return a + (b - a) * t;
@@ -62,6 +64,7 @@ export class Entity implements WorldModule {
   readonly #camera: PerspectiveCamera;
   readonly #pointer: Pointer;
   readonly #fluid: FluidField;
+  readonly #intro: IntroState;
   readonly #material: MeshPhysicalMaterial;
   readonly #mesh: Mesh<PlaneGeometry, MeshPhysicalMaterial>;
   readonly #jelly = new Vector3();
@@ -79,6 +82,7 @@ export class Entity implements WorldModule {
   #roughness = 0.3;
   #dent = 0;
   #rippleAge = 10;
+  #rippleGain = 1;
   #energy = 0;
   #hovered = false;
 
@@ -89,10 +93,12 @@ export class Entity implements WorldModule {
     center: Triple,
     palette: Palette,
     film: FilmReflections,
+    intro: IntroState,
   ) {
     this.#camera = camera;
     this.#pointer = pointer;
     this.#fluid = fluid;
+    this.#intro = intro;
     this.center = new Vector3(...center);
     this.uniforms = createEntityUniforms(palette, this.#segments, film);
     this.#material = createEntityMaterial(this.uniforms, {
@@ -103,7 +109,7 @@ export class Entity implements WorldModule {
       clearcoatRoughness: 0.05,
       ior: 1.45,
       thickness: 1.4,
-      dispersion: 0.35,
+      dispersion: restingDispersion,
       transmission: 1,
       iridescence: 0.0001,
       iridescenceIOR: 1.6,
@@ -149,9 +155,13 @@ export class Entity implements WorldModule {
     uniforms.uWobble.value = mix(from.wobble, to.wobble, t);
     uniforms.uTurbulence.value = from.shape === to.shape ? 0.08 : 0.2;
     uniforms.uGlow.value = mix(from.glow, to.glow, t) + this.#energy * 0.35;
-    uniforms.uRim.value = mix(from.rim, to.rim, t);
+    const charge = this.#intro.charge;
+    uniforms.uRim.value = mix(from.rim, to.rim, t) + charge * 1.1;
     uniforms.uBands.value = mix(from.bands, to.bands, t);
-    uniforms.uFilm.value = mix(from.film, to.film, t);
+    uniforms.uFilm.value = mix(mix(from.film, to.film, t), 1, charge);
+    uniforms.uAssemble.value = this.#intro.assemble;
+    uniforms.uFront.value = this.#intro.front;
+    uniforms.uSheen.value = this.#intro.charge;
     uniforms.uChrome.value = mix(from.chrome, to.chrome, t);
     uniforms.uRelief.value = mix(from.relief, to.relief, t) * (1 + this.#energy * 0.8);
     this.#glass = mix(from.glass, to.glass, t);
@@ -159,9 +169,10 @@ export class Entity implements WorldModule {
     this.#scale = mix(from.scale, to.scale, t);
     this.#roughness = mix(from.roughness, to.roughness, t);
     this.#material.metalness = mix(from.metalness, to.metalness, t);
-    const iridescence = mix(from.iridescence, to.iridescence, t);
+    const iridescence = mix(mix(from.iridescence, to.iridescence, t), 1, charge);
     this.#material.iridescence = iridescence > 0.001 ? iridescence : 0;
-    this.#material.envMapIntensity = mix(from.reflection, to.reflection, t);
+    this.#material.envMapIntensity = mix(from.reflection, to.reflection, t) * (1 + charge * 0.6);
+    this.#material.dispersion = mix(restingDispersion, 2.6, charge);
     this.#spin = mix(from.spin, to.spin, t);
     this.#applyGlass();
   }
@@ -198,8 +209,12 @@ export class Entity implements WorldModule {
 
     this.object.position.copy(this.center);
     this.object.position.y += Math.sin(elapsed * 0.7) * 0.1;
-    this.object.scale.setScalar(this.#scale);
-    this.#pivot.rotation.set(this.#tilt + Math.sin(elapsed * 0.31) * 0.06, this.#spinAngle, 0);
+    this.object.scale.setScalar(this.#scale * this.#intro.spread);
+    this.#pivot.rotation.set(
+      this.#tilt + Math.sin(elapsed * 0.31) * 0.06,
+      this.#spinAngle + this.#intro.turn,
+      0,
+    );
     this.object.updateMatrixWorld();
 
     this.#updateHover(step);
@@ -208,7 +223,22 @@ export class Entity implements WorldModule {
 
     this.#rippleAge += step;
     this.uniforms.uRippleAge.value = this.#rippleAge;
-    this.uniforms.uRippleStrength.value = Math.exp(-this.#rippleAge * 0.6);
+    this.uniforms.uRippleStrength.value = Math.exp(-this.#rippleAge * 0.6) * this.#rippleGain;
+  }
+
+  prime(lead: number): void {
+    this.#spinAngle = -this.#spin * lead;
+    this.#angular.x = 0;
+    this.#angular.y = 0;
+  }
+
+  burst(): void {
+    const direction = this.#pivot.worldToLocal(local.copy(this.#camera.position)).normalize();
+    this.uniforms.uRippleDirection.value.copy(direction);
+    this.#rippleAge = 0;
+    this.#rippleGain = 2.4;
+    const [u, v] = surfaceUv(direction);
+    this.#fluid.stir(u, v, 3);
   }
 
   dispose(): void {
@@ -266,6 +296,7 @@ export class Entity implements WorldModule {
       }
       this.uniforms.uRippleDirection.value.copy(direction);
       this.#rippleAge = 0;
+      this.#rippleGain = 1;
       const [u, v] = surfaceUv(direction);
       this.#fluid.stir(u, v, 3);
       this.#angular.y += (Math.random() - 0.5) * 1.6;

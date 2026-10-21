@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Scene, Vector2, type WebGLRenderTarget } from 'three';
+import { PerspectiveCamera, Scene, Vector2, Vector3, type WebGLRenderTarget } from 'three';
 import { cursorState } from '../ui/cursor-state.ts';
 import { experienceAssets } from './assets.ts';
 import { CameraRig } from './camera/CameraRig.ts';
@@ -20,10 +20,13 @@ import { measureStageCenter } from './core/stage.ts';
 import { type FrameState, Ticker } from './core/Ticker.ts';
 import { Viewport, type ViewportState } from './core/Viewport.ts';
 import { CursorLensEffect } from './effects/CursorLensEffect.ts';
+import { PulseEffect } from './effects/PulseEffect.ts';
 import { createRenderProfile, type RenderProfile } from './profile.ts';
 import { Director } from './timeline/Director.ts';
+import { Intro, type IntroHandlers } from './timeline/Intro.ts';
 import { ScrollTimeline } from './timeline/ScrollTimeline.ts';
 import { composeWorld } from './world/compose.ts';
+import type { Entity } from './world/entity/Entity.ts';
 import { createEnvironmentMap } from './world/environment/environment-map.ts';
 import type { WorldModule } from './world/WorldModule.ts';
 
@@ -31,7 +34,13 @@ export interface ExperienceOptions {
   readonly canvas: HTMLCanvasElement;
   readonly onProgress: ProgressListener;
   readonly tierOverride: QualityTier | null;
+  readonly intro: boolean;
 }
+
+const projected = new Vector3();
+const waveReach = 1.65;
+const impactKick = -3.4;
+const rushThreshold = 0.03;
 
 export class Experience {
   readonly scene = new Scene();
@@ -45,7 +54,12 @@ export class Experience {
   readonly pointer = new Pointer();
   readonly rig: CameraRig;
   readonly timeline: ScrollTimeline;
+  readonly intro = new Intro();
   readonly #director: Director;
+  readonly #entity: Entity;
+  readonly #pulse = new PulseEffect();
+  readonly #pulseCenter = new Vector2(0.5, 0.5);
+  #introOrigin = 0;
   readonly #lens = new CursorLensEffect();
   readonly #lensCenter = new Vector2(0.5, 0.5);
   readonly #lensVelocity = new Vector2();
@@ -73,6 +87,11 @@ export class Experience {
     await experience.#compile();
     stages.set('compile', 1);
     await experience.#warmUp((progress) => stages.set('warm', progress));
+    if (options.intro && experience.timeline.time < rushThreshold) {
+      experience.#armIntro();
+    } else {
+      experience.post.setOverlayEnabled(experience.#pulse, false);
+    }
     return experience;
   }
 
@@ -105,9 +124,17 @@ export class Experience {
       skyMap,
       chapterIds: this.timeline.chapterIds,
       scope: document,
+      intro: this.intro,
     });
     this.#modules = world.modules;
-    this.#director = new Director(this.timeline, world.cast, world.forms, world.projectCount);
+    this.#entity = world.cast.entity;
+    this.#director = new Director(
+      this.timeline,
+      world.cast,
+      world.forms,
+      world.projectCount,
+      this.intro,
+    );
     for (const module of this.#modules) {
       this.scene.add(module.object);
       module.applyQuality?.(this.#quality);
@@ -120,7 +147,7 @@ export class Experience {
       this.camera,
       this.#quality,
       this.profile,
-      [this.#lens],
+      [this.#pulse, this.#lens],
     );
     this.post.resize(this.viewport.state);
 
@@ -138,6 +165,33 @@ export class Experience {
   start(): void {
     this.#onFrame({ delta: 0, elapsed: 0, frame: 0 });
     this.ticker.start();
+  }
+
+  playIntro(handlers: IntroHandlers): void {
+    this.#introOrigin = this.timeline.time;
+    if (this.intro.active && this.timeline.time > rushThreshold) {
+      this.intro.cancel();
+      this.post.setOverlayEnabled(this.#pulse, false);
+      this.post.applyProfile(this.profile);
+    }
+    if (!this.intro.active) {
+      this.intro.play(handlers);
+      return;
+    }
+    this.#entity.prime(this.intro.impactTime);
+    this.intro.play({
+      onImpact: () => {
+        this.#entity.burst();
+        this.rig.kick(impactKick);
+        handlers.onImpact?.();
+      },
+      onReveal: handlers.onReveal,
+      onComplete: () => {
+        this.post.setOverlayEnabled(this.#pulse, false);
+        this.post.applyProfile(this.profile);
+        handlers.onComplete?.();
+      },
+    });
   }
 
   advance(seconds: number, step = 1 / 60): void {
@@ -200,6 +254,31 @@ export class Experience {
     this.rig.snap();
   }
 
+  #armIntro(): void {
+    this.intro.arm();
+    this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
+    this.rig.snap();
+    this.#onFrame({ delta: 0, elapsed: 0, frame: 0 });
+  }
+
+  #updatePulse(): void {
+    const intro = this.intro;
+    projected.copy(this.#entity.object.position).project(this.camera);
+    this.#pulseCenter.set(projected.x * 0.5 + 0.5, projected.y * 0.5 + 0.5);
+    this.#pulse.configure(
+      this.#pulseCenter,
+      this.viewport.state.aspect,
+      intro.wave * waveReach,
+      intro.waveStrength,
+      intro.light,
+    );
+    const { bloom, chromaticAberration } = this.profile;
+    this.post.bloom.intensity = bloom.intensity * (1 + intro.flare * 0.9);
+    this.post.chromaticAberration.offset.setScalar(
+      chromaticAberration.offset * (1 + intro.flare * 7),
+    );
+  }
+
   #applyQuality(quality: QualitySettings): void {
     this.#quality = quality;
     this.post.composer.multisampling = quality.multisampling;
@@ -255,6 +334,10 @@ export class Experience {
   readonly #onFrame = (frame: FrameState): void => {
     this.pointer.update(frame.delta);
     this.timeline.update(frame.delta);
+    this.intro.update(
+      frame.delta,
+      Math.abs(this.timeline.time - this.#introOrigin) > rushThreshold,
+    );
     this.rig.setShot(this.#director.frame(this.viewport.state.aspect));
     this.rig.update(frame);
     const ambient: FrameState = {
@@ -266,6 +349,9 @@ export class Experience {
       module.update(ambient);
     }
     this.#updateLens(frame.delta);
+    if (this.intro.active) {
+      this.#updatePulse();
+    }
     this.post.render(frame.delta);
 
     if (this.#adaptive) {
